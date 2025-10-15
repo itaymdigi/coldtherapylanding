@@ -1,0 +1,55 @@
+{
+  "name": "Cold Therapy by Dan Hayat - טיפול בקור מאת דן חייט",
+  "short_name": "Cold Therapy",
+  "description": "Transform your mind and body with cold therapy, ice bath sessions, and breathwork in Herzliya, Israel",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c4a6e",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "wellness", "lifestyle"],
+  "lang": "he",
+  "dir": "rtl",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/20250906_123005.jpg",
+      "sizes": "1920x1080",
+      "type": "image/jpeg"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Session",
+      "short_name": "Book",
+      "description": "Book a cold therapy session",
+      "url": "/#packages",
+      "icons": [
+        {
+          "src": "/vite.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Contact Dan Hayat",
+      "url": "/#contact",
+      "icons": [
+        {
+          "src": "/vite.svg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

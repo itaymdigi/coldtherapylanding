@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://cold-therapy-dan-hayat.vercel.app/</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cold-therapy-dan-hayat.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cold-therapy-dan-hayat.vercel.app/" />
+    <image:image>
+      <image:loc>https://cold-therapy-dan-hayat.vercel.app/20250906_123005.jpg</image:loc>
+      <image:title>Dan Hayat - Cold Therapy Expert</image:title>
+      <image:caption>Professional cold therapy and ice bath sessions in Herzliya</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- About Section -->
+  <url>
+    <loc>https://cold-therapy-dan-hayat.vercel.app/#about</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Packages Section -->
+  <url>
+    <loc>https://cold-therapy-dan-hayat.vercel.app/#packages</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Gallery Section -->
+  <url>
+    <loc>https://cold-therapy-dan-hayat.vercel.app/#gallery</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Contact Section -->
+  <url>
+    <loc>https://cold-therapy-dan-hayat.vercel.app/#contact</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+</urlset>
