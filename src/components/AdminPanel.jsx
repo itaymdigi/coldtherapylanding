@@ -19,6 +19,28 @@ const AdminPanel = () => {
     handleAdminClose,
   } = useApp();
 
+  // Helper function to convert YouTube URLs to embed format
+  const convertToEmbedUrl = (url) => {
+    if (!url) return url;
+    
+    // Already an embed URL
+    if (url.includes('/embed/')) return url;
+    
+    // Convert youtube.com/watch?v=VIDEO_ID to youtube.com/embed/VIDEO_ID
+    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    }
+    
+    // Convert vimeo.com/VIDEO_ID to player.vimeo.com/video/VIDEO_ID
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch && !url.includes('player.vimeo.com')) {
+      return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    }
+    
+    return url;
+  };
+
   // Video management state
   const [videoForm, setVideoForm] = useState({
     title: '',
@@ -442,16 +464,22 @@ const AdminPanel = () => {
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Video URL (YouTube/Vimeo Embed) *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">Video URL (YouTube/Vimeo) *</label>
                     <input
                       type="url"
                       required
                       value={videoForm.videoUrl}
                       onChange={(e) => setVideoForm({...videoForm, videoUrl: e.target.value})}
-                      placeholder="https://www.youtube.com/embed/VIDEO_ID"
+                      onBlur={(e) => {
+                        const convertedUrl = convertToEmbedUrl(e.target.value);
+                        if (convertedUrl !== e.target.value) {
+                          setVideoForm({...videoForm, videoUrl: convertedUrl});
+                        }
+                      }}
+                      placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">Use embed URL, not watch URL</p>
+                    <p className="text-blue-300 text-xs mt-1">Paste any YouTube or Vimeo URL - it will be automatically converted to embed format</p>
                   </div>
 
                   <div>

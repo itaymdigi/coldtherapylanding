@@ -9,6 +9,24 @@ const BreathingVideosPage = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [userEmail, setUserEmail] = useState(''); // In real app, get from auth
 
+  // Helper function to ensure URL is in embed format
+  const ensureEmbedUrl = (url) => {
+    if (!url) return url;
+    if (url.includes('/embed/')) return url;
+    
+    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    }
+    
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch && !url.includes('player.vimeo.com')) {
+      return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    }
+    
+    return url;
+  };
+
   // Fetch videos and subscription
   const allVideos = useQuery(api.breathingVideos.getAllVideos);
   const freeVideos = useQuery(api.breathingVideos.getFreeVideos);
@@ -223,7 +241,7 @@ const BreathingVideosPage = () => {
                 <div className="aspect-video bg-black">
                   <iframe
                     className="w-full h-full"
-                    src={selectedVideo.videoUrl}
+                    src={ensureEmbedUrl(selectedVideo.videoUrl)}
                     title={selectedVideo.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
