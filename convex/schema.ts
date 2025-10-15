@@ -98,4 +98,18 @@ export default defineSchema({
     completed: v.boolean(),
     lastWatchedAt: v.number(),
   }),
+
+  // Media Library
+  media: defineTable({
+    fileName: v.string(),
+    fileType: v.string(), // "image" or "video"
+    mimeType: v.string(), // "image/jpeg", "video/mp4", etc.
+    fileSize: v.number(), // in bytes
+    url: v.string(), // base64 or external URL
+    thumbnailUrl: v.optional(v.string()),
+    uploadedBy: v.string(),
+    uploadedAt: v.number(),
+    tags: v.optional(v.array(v.string())),
+    description: v.optional(v.string()),
+  }),
 });

@@ -39,6 +39,15 @@ const AdminPanel = () => {
   const addVideo = useMutation(api.breathingVideos.addVideo);
   const updateVideo = useMutation(api.breathingVideos.updateVideo);
   const deleteVideo = useMutation(api.breathingVideos.deleteVideo);
+  
+  // Media library
+  const allMedia = useQuery(api.media.getAllMedia);
+  const uploadMedia = useMutation(api.media.uploadMedia);
+  const deleteMedia = useMutation(api.media.deleteMedia);
+  
+  // Media upload state
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [mediaFilter, setMediaFilter] = useState('all'); // 'all', 'image', 'video'
 
   const handleVideoSubmit = async (e) => {
     e.preventDefault();
@@ -115,6 +124,79 @@ const AdminPanel = () => {
     }
   };
 
+  const handleMediaUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingMedia(true);
+    
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        
+        await new Promise((resolve, reject) => {
+          reader.onloadend = async () => {
+            try {
+              const fileData = reader.result;
+              const fileType = file.type.startsWith('image/') ? 'image' : 'video';
+              
+              await uploadMedia({
+                fileName: file.name,
+                fileType: fileType,
+                mimeType: file.type,
+                fileSize: file.size,
+                url: fileData,
+                uploadedBy: 'admin',
+                tags: [],
+                description: '',
+              });
+              
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          };
+          
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      
+      alert(`✅ ${files.length} file(s) uploaded successfully!`);
+      event.target.value = ''; // Reset input
+    } catch (error) {
+      console.error('Error uploading media:', error);
+      alert('❌ Failed to upload some files.');
+    } finally {
+      setUploadingMedia(false);
+    }
+  };
+
+  const handleDeleteMedia = async (mediaId) => {
+    if (confirm('Are you sure you want to delete this file?')) {
+      try {
+        await deleteMedia({ id: mediaId });
+        alert('✅ File deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting media:', error);
+        alert('❌ Failed to delete file.');
+      }
+    }
+  };
+
+  const getFilteredMedia = () => {
+    if (!allMedia) return [];
+    if (mediaFilter === 'all') return allMedia;
+    return allMedia.filter(m => m.fileType === mediaFilter);
+  };
+
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-auto p-4 overflow-y-auto" onClick={handleAdminClose}>
       <div className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl border-2 border-cyan-400/50 max-w-4xl w-full my-8" onClick={(e) => e.stopPropagation()}>
@@ -143,6 +225,12 @@ const AdminPanel = () => {
             {/* Section Tabs */}
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
               <button 
+                onClick={() => setAdminSection('media')}
+                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'media' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
+              >
+                📁 Media Library
+              </button>
+              <button 
                 onClick={() => setAdminSection('videos')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'videos' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
@@ -167,6 +255,126 @@ const AdminPanel = () => {
                 👤 Dan's Photo
               </button>
             </div>
+
+            {/* Media Library Section */}
+            {adminSection === 'media' && (
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <h4 className="text-2xl font-semibold text-white mb-4">📁 Media Library</h4>
+                
+                {/* Upload Section */}
+                <div className="bg-white/5 p-6 rounded-2xl border-2 border-dashed border-cyan-400/30 hover:border-cyan-400 transition-all">
+                  <label className="cursor-pointer block text-center">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,video/*"
+                      onChange={handleMediaUpload}
+                      disabled={uploadingMedia}
+                      className="hidden"
+                    />
+                    <div className="py-8">
+                      <div className="text-6xl mb-4">📤</div>
+                      <h5 className="text-white font-bold text-xl mb-2">
+                        {uploadingMedia ? 'Uploading...' : 'Upload Media Files'}
+                      </h5>
+                      <p className="text-blue-200 mb-4">
+                        Click to browse or drag and drop
+                      </p>
+                      <p className="text-blue-300 text-sm">
+                        Supports: Images (JPG, PNG, GIF) and Videos (MP4, MOV, etc.)
+                      </p>
+                      <p className="text-cyan-400 text-sm mt-2">
+                        📱 Works on mobile and desktop!
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Filter Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setMediaFilter('all')}
+                    className={`px-4 py-2 rounded-full font-semibold transition-all ${mediaFilter === 'all' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200'}`}
+                  >
+                    All ({allMedia?.length || 0})
+                  </button>
+                  <button
+                    onClick={() => setMediaFilter('image')}
+                    className={`px-4 py-2 rounded-full font-semibold transition-all ${mediaFilter === 'image' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200'}`}
+                  >
+                    🖼️ Images ({allMedia?.filter(m => m.fileType === 'image').length || 0})
+                  </button>
+                  <button
+                    onClick={() => setMediaFilter('video')}
+                    className={`px-4 py-2 rounded-full font-semibold transition-all ${mediaFilter === 'video' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200'}`}
+                  >
+                    🎥 Videos ({allMedia?.filter(m => m.fileType === 'video').length || 0})
+                  </button>
+                </div>
+
+                {/* Media Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {getFilteredMedia().map((media) => (
+                    <div key={media._id} className="bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400 transition-all group">
+                      {/* Preview */}
+                      <div className="aspect-square bg-slate-800 relative">
+                        {media.fileType === 'image' ? (
+                          <img 
+                            src={media.url} 
+                            alt={media.fileName}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="text-4xl">🎥</div>
+                          </div>
+                        )}
+                        
+                        {/* Delete Button */}
+                        <button
+                          onClick={() => handleDeleteMedia(media._id)}
+                          className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          🗑️
+                        </button>
+
+                        {/* Copy URL Button */}
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(media.url);
+                            alert('✅ URL copied to clipboard!');
+                          }}
+                          className="absolute bottom-2 right-2 bg-cyan-500/80 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          📋 Copy URL
+                        </button>
+                      </div>
+                      
+                      {/* Info */}
+                      <div className="p-3">
+                        <p className="text-white text-sm font-semibold truncate" title={media.fileName}>
+                          {media.fileName}
+                        </p>
+                        <p className="text-blue-300 text-xs">
+                          {formatFileSize(media.fileSize)}
+                        </p>
+                        <p className="text-blue-400 text-xs">
+                          {new Date(media.uploadedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {getFilteredMedia().length === 0 && (
+                  <div className="text-center py-12 text-blue-200">
+                    <div className="text-6xl mb-4">📁</div>
+                    <p className="text-xl">No media files yet</p>
+                    <p className="text-sm mt-2">Upload your first file above!</p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Videos Section */}
             {adminSection === 'videos' && (
