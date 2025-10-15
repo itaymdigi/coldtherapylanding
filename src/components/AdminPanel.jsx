@@ -128,46 +128,75 @@ const AdminPanel = () => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
+    // Check file size limit (10MB per file)
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    for (let file of files) {
+      if (file.size > MAX_SIZE) {
+        alert(`❌ File "${file.name}" is too large. Maximum size is 10MB.`);
+        return;
+      }
+    }
+
     setUploadingMedia(true);
+    let successCount = 0;
+    let failCount = 0;
     
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const reader = new FileReader();
         
-        await new Promise((resolve, reject) => {
-          reader.onloadend = async () => {
-            try {
-              const fileData = reader.result;
-              const fileType = file.type.startsWith('image/') ? 'image' : 'video';
-              
-              await uploadMedia({
-                fileName: file.name,
-                fileType: fileType,
-                mimeType: file.type,
-                fileSize: file.size,
-                url: fileData,
-                uploadedBy: 'admin',
-                tags: [],
-                description: '',
-              });
-              
-              resolve();
-            } catch (error) {
-              reject(error);
-            }
-          };
-          
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        try {
+          await new Promise((resolve, reject) => {
+            reader.onloadend = async () => {
+              try {
+                const fileData = reader.result;
+                const fileType = file.type.startsWith('image/') ? 'image' : 'video';
+                
+                console.log(`Uploading ${file.name} (${(file.size / 1024).toFixed(1)}KB)...`);
+                
+                await uploadMedia({
+                  fileName: file.name,
+                  fileType: fileType,
+                  mimeType: file.type,
+                  fileSize: file.size,
+                  url: fileData,
+                  uploadedBy: 'admin',
+                  tags: [],
+                  description: '',
+                });
+                
+                successCount++;
+                console.log(`✅ ${file.name} uploaded successfully`);
+                resolve();
+              } catch (error) {
+                console.error(`Error uploading ${file.name}:`, error);
+                failCount++;
+                reject(error);
+              }
+            };
+            
+            reader.onerror = () => {
+              failCount++;
+              reject(new Error(`Failed to read ${file.name}`));
+            };
+            reader.readAsDataURL(file);
+          });
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+          // Continue with next file
+        }
       }
       
-      alert(`✅ ${files.length} file(s) uploaded successfully!`);
+      if (successCount > 0) {
+        alert(`✅ ${successCount} file(s) uploaded successfully!${failCount > 0 ? ` (${failCount} failed)` : ''}`);
+      } else {
+        alert('❌ All uploads failed. Files may be too large or invalid.');
+      }
       event.target.value = ''; // Reset input
     } catch (error) {
       console.error('Error uploading media:', error);
-      alert('❌ Failed to upload some files.');
+      alert('❌ Upload failed: ' + error.message);
     } finally {
       setUploadingMedia(false);
     }
@@ -283,7 +312,10 @@ const AdminPanel = () => {
                       <p className="text-blue-300 text-sm">
                         Supports: Images (JPG, PNG, GIF) and Videos (MP4, MOV, etc.)
                       </p>
-                      <p className="text-cyan-400 text-sm mt-2">
+                      <p className="text-yellow-400 text-sm mt-2">
+                        ⚠️ Maximum file size: 10MB per file
+                      </p>
+                      <p className="text-cyan-400 text-sm mt-1">
                         📱 Works on mobile and desktop!
                       </p>
                     </div>
