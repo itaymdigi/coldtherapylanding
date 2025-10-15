@@ -128,11 +128,11 @@ const AdminPanel = () => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
-    // Check file size limit (10MB per file)
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    // Check file size limit (2MB per file - Convex has document size limits)
+    const MAX_SIZE = 2 * 1024 * 1024; // 2MB
     for (let file of files) {
       if (file.size > MAX_SIZE) {
-        alert(`❌ File "${file.name}" is too large. Maximum size is 10MB.`);
+        alert(`❌ File "${file.name}" is too large. Maximum size is 2MB.\n\nTip: Compress images before uploading or use smaller files.`);
         return;
       }
     }
@@ -313,7 +313,7 @@ const AdminPanel = () => {
                         Supports: Images (JPG, PNG, GIF) and Videos (MP4, MOV, etc.)
                       </p>
                       <p className="text-yellow-400 text-sm mt-2">
-                        ⚠️ Maximum file size: 10MB per file
+                        ⚠️ Maximum file size: 2MB per file
                       </p>
                       <p className="text-cyan-400 text-sm mt-1">
                         📱 Works on mobile and desktop!
