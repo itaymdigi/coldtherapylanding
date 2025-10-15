@@ -51,10 +51,12 @@ export const AppProvider = ({ children }) => {
   const t = translations[language];
 
   // Fallback data with defaults
-  const galleryImages = convexGalleryImages?.map(img => img.url) || [
-    '/gallery1.jpg', '/gallery2.jpg', '/gallery3.jpg', '/gallery4.jpg',
-    '/gallery5.jpg', '/gallery6.jpg', '/gallery7.jpg'
-  ];
+  const galleryImages = (convexGalleryImages && convexGalleryImages.length > 0) 
+    ? convexGalleryImages.map(img => img.url)
+    : [
+        '/gallery1.jpg', '/gallery2.jpg', '/gallery3.jpg', '/gallery4.jpg',
+        '/gallery5.jpg', '/gallery6.jpg', '/gallery7.jpg'
+      ];
   const scheduleImage = convexScheduleImage?.url || null;
   const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
 
