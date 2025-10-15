@@ -9,9 +9,12 @@
  */
 
 import type * as bookings from "../bookings.js";
+import type * as breathingVideos from "../breathingVideos.js";
 import type * as danPhoto from "../danPhoto.js";
 import type * as galleryImages from "../galleryImages.js";
+import type * as payments from "../payments.js";
 import type * as scheduleImages from "../scheduleImages.js";
+import type * as subscriptions from "../subscriptions.js";
 
 import type {
   ApiFromModules,
@@ -29,9 +32,12 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
+  breathingVideos: typeof breathingVideos;
   danPhoto: typeof danPhoto;
   galleryImages: typeof galleryImages;
+  payments: typeof payments;
   scheduleImages: typeof scheduleImages;
+  subscriptions: typeof subscriptions;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

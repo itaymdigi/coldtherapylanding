@@ -12,8 +12,16 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 
+const BreathingVideosLazyRouteImport = createFileRoute('/breathing-videos')()
 const IndexLazyRouteImport = createFileRoute('/')()
 
+const BreathingVideosLazyRoute = BreathingVideosLazyRouteImport.update({
+  id: '/breathing-videos',
+  path: '/breathing-videos',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/breathing-videos.lazy').then((d) => d.Route),
+)
 const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
@@ -22,28 +30,39 @@ const IndexLazyRoute = IndexLazyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/breathing-videos': typeof BreathingVideosLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/breathing-videos': typeof BreathingVideosLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
+  '/breathing-videos': typeof BreathingVideosLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/breathing-videos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/breathing-videos'
+  id: '__root__' | '/' | '/breathing-videos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/breathing-videos': {
+      id: '/breathing-videos'
+      path: '/breathing-videos'
+      fullPath: '/breathing-videos'
+      preLoaderRoute: typeof BreathingVideosLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -56,6 +75,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  BreathingVideosLazyRoute: BreathingVideosLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
