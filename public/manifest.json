@@ -9,9 +9,9 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/vite.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/20250906_123005.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ],
@@ -34,7 +34,7 @@
       "url": "/#packages",
       "icons": [
         {
-          "src": "/vite.svg",
+          "src": "/20250906_123005.jpg",
           "sizes": "96x96"
         }
       ]
@@ -46,7 +46,7 @@
       "url": "/#contact",
       "icons": [
         {
-          "src": "/vite.svg",
+          "src": "/20250906_123005.jpg",
           "sizes": "96x96"
         }
       ]
