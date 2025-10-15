@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 import { translations } from '../data/translations';
 
 const AppContext = createContext();
@@ -12,51 +14,49 @@ export const useApp = () => {
 };
 
 export const AppProvider = ({ children }) => {
+  // Convex queries
+  const convexGalleryImages = useQuery(api.galleryImages.getGalleryImages);
+  const convexScheduleImage = useQuery(api.scheduleImages.getActiveScheduleImage);
+  const convexDanPhoto = useQuery(api.danPhoto.getActiveDanPhoto);
+
+  // Convex mutations
+  const addGalleryImage = useMutation(api.galleryImages.addGalleryImage);
+  const updateGalleryImage = useMutation(api.galleryImages.updateGalleryImage);
+  const updateScheduleImage = useMutation(api.scheduleImages.addScheduleImage);
+  const updateDanPhotoMutation = useMutation(api.danPhoto.updateDanPhoto);
+
+  // UI State
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPackages, setShowPackages] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [language, setLanguage] = useState('he'); // 'en' or 'he' - Default to Hebrew
-  const [scheduleImage, setScheduleImage] = useState(null);
   const [showAdmin, setShowAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [adminSection, setAdminSection] = useState('schedule');
-  const [galleryImages, setGalleryImages] = useState([
-    '/gallery1.jpg', '/gallery2.jpg', '/gallery3.jpg', '/gallery4.jpg',
-    '/gallery5.jpg', '/gallery6.jpg', '/gallery7.jpg'
-  ]);
-  const [danPhoto, setDanPhoto] = useState('/20250906_123005.jpg');
   const [statsAnimated, setStatsAnimated] = useState(false);
   const [statsSessions, setStatsSessions] = useState(0);
   const [statsSatisfaction, setStatsSatisfaction] = useState(0);
   const [statsClients, setStatsClients] = useState(0);
   const [statsTemp, setStatsTemp] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Refs
   const audioRef = useRef(null);
   const packagesRef = useRef(null);
   const statsRef = useRef(null);
 
   const t = translations[language];
 
-  // Load images from localStorage on mount
-  useEffect(() => {
-    const savedSchedule = localStorage.getItem('scheduleImage');
-    if (savedSchedule) {
-      setScheduleImage(savedSchedule);
-    }
-    
-    const savedGallery = localStorage.getItem('galleryImages');
-    if (savedGallery) {
-      setGalleryImages(JSON.parse(savedGallery));
-    }
-    
-    const savedDanPhoto = localStorage.getItem('danPhoto');
-    if (savedDanPhoto) {
-      setDanPhoto(savedDanPhoto);
-    }
-  }, []);
+  // Fallback data with defaults
+  const galleryImages = convexGalleryImages?.map(img => img.url) || [
+    '/gallery1.jpg', '/gallery2.jpg', '/gallery3.jpg', '/gallery4.jpg',
+    '/gallery5.jpg', '/gallery6.jpg', '/gallery7.jpg'
+  ];
+  const scheduleImage = convexScheduleImage?.url || null;
+  const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
 
   // Mouse tracking for parallax effect
   useEffect(() => {
@@ -113,24 +113,43 @@ export const AppProvider = ({ children }) => {
     }, 100);
   };
 
-  const handleImageUpload = (event, type, index = null) => {
+  const handleImageUpload = async (event, type, index = null) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const imageData = reader.result;
         
-        if (type === 'schedule') {
-          setScheduleImage(imageData);
-          localStorage.setItem('scheduleImage', imageData);
-        } else if (type === 'gallery' && index !== null) {
-          const newGalleryImages = [...galleryImages];
-          newGalleryImages[index] = imageData;
-          setGalleryImages(newGalleryImages);
-          localStorage.setItem('galleryImages', JSON.stringify(newGalleryImages));
-        } else if (type === 'danPhoto') {
-          setDanPhoto(imageData);
-          localStorage.setItem('danPhoto', imageData);
+        try {
+          if (type === 'schedule') {
+            await updateScheduleImage({
+              url: imageData,
+              title: 'Event Schedule',
+              description: 'Current event schedule'
+            });
+          } else if (type === 'gallery' && index !== null) {
+            const existingImage = convexGalleryImages?.[index];
+            if (existingImage) {
+              await updateGalleryImage({
+                id: existingImage._id,
+                url: imageData,
+                order: index
+              });
+            } else {
+              await addGalleryImage({
+                url: imageData,
+                order: index,
+                altText: `Gallery image ${index + 1}`
+              });
+            }
+          } else if (type === 'danPhoto') {
+            await updateDanPhotoMutation({
+              url: imageData
+            });
+          }
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert('Failed to upload image. Please try again.');
         }
       };
       reader.readAsDataURL(file);
@@ -167,7 +186,6 @@ export const AppProvider = ({ children }) => {
     language,
     setLanguage,
     scheduleImage,
-    setScheduleImage,
     showAdmin,
     setShowAdmin,
     isAuthenticated,
@@ -177,9 +195,7 @@ export const AppProvider = ({ children }) => {
     adminSection,
     setAdminSection,
     galleryImages,
-    setGalleryImages,
     danPhoto,
-    setDanPhoto,
     statsAnimated,
     setStatsAnimated,
     statsSessions,
