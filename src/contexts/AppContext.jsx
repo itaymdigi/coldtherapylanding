@@ -127,6 +127,7 @@ export const AppProvider = ({ children }) => {
               title: 'Event Schedule',
               description: 'Current event schedule'
             });
+            alert('✅ Schedule image uploaded successfully!');
           } else if (type === 'gallery' && index !== null) {
             const existingImage = convexGalleryImages?.[index];
             if (existingImage) {
@@ -142,14 +143,16 @@ export const AppProvider = ({ children }) => {
                 altText: `Gallery image ${index + 1}`
               });
             }
+            alert('✅ Gallery image uploaded successfully!');
           } else if (type === 'danPhoto') {
             await updateDanPhotoMutation({
               url: imageData
             });
+            alert('✅ Dan\'s photo uploaded successfully!');
           }
         } catch (error) {
           console.error('Error uploading image:', error);
-          alert('Failed to upload image. Please try again.');
+          alert('❌ Failed to upload image. Please try again.');
         }
       };
       reader.readAsDataURL(file);

@@ -84,7 +84,7 @@ export const addVideo = mutation({
   handler: async (ctx, args) => {
     const videoId = await ctx.db.insert("breathingVideos", {
       ...args,
-      isPublished: false,
+      isPublished: true, // Auto-publish videos
       views: 0,
       createdAt: Date.now(),
     });

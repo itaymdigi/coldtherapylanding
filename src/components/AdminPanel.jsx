@@ -51,7 +51,6 @@ const AdminPanel = () => {
           id: editingVideoId,
           ...videoForm,
           category: finalCategory,
-          isPublished: true, // Make sure it's published
         });
       } else {
         await addVideo({
