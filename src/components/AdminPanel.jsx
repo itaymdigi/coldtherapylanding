@@ -42,22 +42,30 @@ const AdminPanel = () => {
 
   const handleVideoSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted!', videoForm);
+    
     try {
       // Use custom category if provided
       const finalCategory = customCategory.trim() || videoForm.category;
       
+      console.log('Saving video with category:', finalCategory);
+      
       if (editingVideoId) {
+        console.log('Updating video:', editingVideoId);
         await updateVideo({
           id: editingVideoId,
           ...videoForm,
           category: finalCategory,
         });
       } else {
-        await addVideo({
+        console.log('Adding new video...');
+        const result = await addVideo({
           ...videoForm,
           category: finalCategory,
         });
+        console.log('Video added successfully:', result);
       }
+      
       // Reset form
       setVideoForm({
         title: '',
@@ -72,10 +80,10 @@ const AdminPanel = () => {
       });
       setCustomCategory('');
       setEditingVideoId(null);
-      alert('Video saved successfully! ✅');
+      alert('✅ Video saved successfully! Check the list below or go to /breathing-videos page.');
     } catch (error) {
       console.error('Error saving video:', error);
-      alert('Failed to save video. Please try again.');
+      alert('❌ Failed to save video: ' + error.message);
     }
   };
 
