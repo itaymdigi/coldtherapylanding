@@ -4,6 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import Header from './Header';
 import AdminPanel from './AdminPanel';
 import Background from './Background';
+import InstallPrompt from './InstallPrompt';
 
 const Layout = () => {
   const { language, audioRef, isPlaying, showAdmin, t } = useApp();
@@ -17,6 +18,9 @@ const Layout = () => {
 
       {/* Admin Panel */}
       {showAdmin && <AdminPanel />}
+
+      {/* PWA Install Prompt */}
+      <InstallPrompt />
 
       {/* 3D Background */}
       <Background />
