@@ -730,7 +730,15 @@ const AdminPanel = () => {
             {adminSection === 'heroVideo' && (
               <div className="space-y-4">
                 <h4 className="text-xl font-semibold text-white mb-4">🎥 Upload Hero Video</h4>
-                <p className="text-blue-200 text-sm mb-4">Upload a video to display in the hero section. Recommended: MP4 format, square aspect ratio (1:1), max 10MB.</p>
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                  <p className="text-yellow-200 text-sm font-semibold mb-2">⚠️ File Size Limit: 800KB Maximum</p>
+                  <p className="text-yellow-100 text-xs">
+                    • Use MP4 format, H.264 codec<br/>
+                    • Keep video under 5 seconds for best results<br/>
+                    • Compress using tools like HandBrake or online compressors<br/>
+                    • Recommended resolution: 720x720 or smaller
+                  </p>
+                </div>
                 <input 
                   type="file" 
                   accept="video/mp4,video/webm"

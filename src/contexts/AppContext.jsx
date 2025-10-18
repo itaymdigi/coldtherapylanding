@@ -121,6 +121,15 @@ export const AppProvider = ({ children }) => {
   const handleImageUpload = async (event, type, index = null) => {
     const file = event.target.files[0];
     if (file) {
+      // Check file size for videos (Convex has 1MB limit for documents)
+      if (type === 'heroVideo') {
+        const maxSize = 800 * 1024; // 800KB to be safe (base64 encoding increases size by ~33%)
+        if (file.size > maxSize) {
+          alert(`❌ Video file is too large (${(file.size / 1024).toFixed(0)}KB). Please use a video smaller than 800KB.\n\nTip: Compress your video or use a shorter clip.`);
+          return;
+        }
+      }
+      
       const reader = new FileReader();
       reader.onloadend = async () => {
         const imageData = reader.result;
