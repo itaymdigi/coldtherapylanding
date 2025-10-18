@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LivePracticeRouteImport } from './routes/live-practice'
 
 const InstructorTrainingLazyRouteImport = createFileRoute(
   '/instructor-training',
@@ -32,6 +33,11 @@ const BreathingVideosLazyRoute = BreathingVideosLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/breathing-videos.lazy').then((d) => d.Route),
 )
+const LivePracticeRoute = LivePracticeRouteImport.update({
+  id: '/live-practice',
+  path: '/live-practice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
@@ -40,30 +46,43 @@ const IndexLazyRoute = IndexLazyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/live-practice': typeof LivePracticeRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/live-practice': typeof LivePracticeRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
+  '/live-practice': typeof LivePracticeRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/breathing-videos' | '/instructor-training'
+  fullPaths:
+    | '/'
+    | '/live-practice'
+    | '/breathing-videos'
+    | '/instructor-training'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/breathing-videos' | '/instructor-training'
-  id: '__root__' | '/' | '/breathing-videos' | '/instructor-training'
+  to: '/' | '/live-practice' | '/breathing-videos' | '/instructor-training'
+  id:
+    | '__root__'
+    | '/'
+    | '/live-practice'
+    | '/breathing-videos'
+    | '/instructor-training'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  LivePracticeRoute: typeof LivePracticeRoute
   BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute
   InstructorTrainingLazyRoute: typeof InstructorTrainingLazyRoute
 }
@@ -84,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BreathingVideosLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live-practice': {
+      id: '/live-practice'
+      path: '/live-practice'
+      fullPath: '/live-practice'
+      preLoaderRoute: typeof LivePracticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -96,6 +122,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  LivePracticeRoute: LivePracticeRoute,
   BreathingVideosLazyRoute: BreathingVideosLazyRoute,
   InstructorTrainingLazyRoute: InstructorTrainingLazyRoute,
 }

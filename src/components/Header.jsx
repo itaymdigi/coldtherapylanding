@@ -27,7 +27,7 @@ const Header = () => {
                 <span>🎓</span> {t.instructorTraining}
               </Link>
               <Link to="/#about" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.about}</Link>
-              <Link to="/#live-practice" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold flex items-center gap-1 text-lg px-4 py-2 rounded-lg">
+              <Link to="/live-practice" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold flex items-center gap-1 text-lg px-4 py-2 rounded-lg">
                 <span>⏱️</span> {t.livePractice}
               </Link>
               <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.packages}</button>
@@ -128,7 +128,7 @@ const Header = () => {
                 {t.about}
               </Link>
               <Link 
-                to="/#live-practice" 
+                to="/live-practice" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
