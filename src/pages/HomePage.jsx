@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
+import LivePractice from '../components/sections/LivePractice';
 
 const HomePage = () => {
   const {
     t,
+    language,
     scrollToPackages,
     showPackages,
     packagesRef,
@@ -389,6 +391,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Live Practice Section */}
+      <LivePractice language={language} />
 
       {/* Why Ice Bath Section */}
       <div className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent">

@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as bookings from "../bookings.js";
 import type * as breathingVideos from "../breathingVideos.js";
 import type * as danPhoto from "../danPhoto.js";
@@ -15,6 +16,7 @@ import type * as galleryImages from "../galleryImages.js";
 import type * as heroVideo from "../heroVideo.js";
 import type * as media from "../media.js";
 import type * as payments from "../payments.js";
+import type * as practiceSessions from "../practiceSessions.js";
 import type * as scheduleImages from "../scheduleImages.js";
 import type * as subscriptions from "../subscriptions.js";
 
@@ -33,6 +35,7 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   bookings: typeof bookings;
   breathingVideos: typeof breathingVideos;
   danPhoto: typeof danPhoto;
@@ -40,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   heroVideo: typeof heroVideo;
   media: typeof media;
   payments: typeof payments;
+  practiceSessions: typeof practiceSessions;
   scheduleImages: typeof scheduleImages;
   subscriptions: typeof subscriptions;
 }>;

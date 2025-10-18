@@ -119,4 +119,38 @@ export default defineSchema({
     tags: v.optional(v.array(v.string())),
     description: v.optional(v.string()),
   }),
+
+  // Users for Live Practice
+  users: defineTable({
+    email: v.string(),
+    name: v.string(),
+    phone: v.optional(v.string()),
+    passwordHash: v.string(),
+    createdAt: v.number(),
+    lastLoginAt: v.optional(v.number()),
+    totalSessions: v.number(),
+    totalDuration: v.number(), // in seconds
+  }).index("by_email", ["email"]),
+
+  // Practice Sessions
+  practiceSessions: defineTable({
+    userId: v.id("users"),
+    duration: v.number(), // in seconds
+    temperature: v.optional(v.number()), // water temperature in Celsius
+    notes: v.optional(v.string()),
+    mood: v.optional(v.string()), // "excellent", "good", "neutral", "challenging"
+    completedAt: v.number(),
+    pauseCount: v.number(), // how many times user paused
+    personalBest: v.boolean(), // is this a personal record
+  }).index("by_user", ["userId"])
+    .index("by_user_completed", ["userId", "completedAt"]),
+
+  // Session Tokens for authentication
+  sessionTokens: defineTable({
+    userId: v.id("users"),
+    token: v.string(),
+    expiresAt: v.number(),
+    createdAt: v.number(),
+  }).index("by_token", ["token"])
+    .index("by_user", ["userId"]),
 });
