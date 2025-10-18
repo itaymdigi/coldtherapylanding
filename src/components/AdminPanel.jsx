@@ -57,20 +57,65 @@ const AdminPanel = () => {
   const [editingVideoId, setEditingVideoId] = useState(null);
   const [customCategory, setCustomCategory] = useState('');
 
-  // Convex queries and mutations
+  // Convex queries and mutations - Videos
   const videos = useQuery(api.breathingVideos.getAllVideos);
   const addVideo = useMutation(api.breathingVideos.addVideo);
   const updateVideo = useMutation(api.breathingVideos.updateVideo);
   const deleteVideo = useMutation(api.breathingVideos.deleteVideo);
+
+  // Get unique categories from existing videos
+  const uniqueCategories = React.useMemo(() => {
+    if (!videos) return [];
+    const categories = [...new Set(videos.map(v => v.category))];
+    return categories.sort();
+  }, [videos]);
   
   // Media library
   const allMedia = useQuery(api.media.getAllMedia);
   const uploadMedia = useMutation(api.media.uploadMedia);
   const deleteMedia = useMutation(api.media.deleteMedia);
+
+  // Gallery Images
+  const allGalleryImages = useQuery(api.galleryImages.getGalleryImages);
+  const addGalleryImage = useMutation(api.galleryImages.addGalleryImage);
+  const updateGalleryImage = useMutation(api.galleryImages.updateGalleryImage);
+  const deleteGalleryImage = useMutation(api.galleryImages.deleteGalleryImage);
+
+  // Schedule Images
+  const allScheduleImages = useQuery(api.scheduleImages.getAllScheduleImages);
+  const addScheduleImage = useMutation(api.scheduleImages.addScheduleImage);
+  const updateScheduleImage = useMutation(api.scheduleImages.updateScheduleImage);
+  const deleteScheduleImage = useMutation(api.scheduleImages.deleteScheduleImage);
+
+  // Dan Photos
+  const allDanPhotos = useQuery(api.danPhoto.getAllDanPhotos);
+  const addDanPhoto = useMutation(api.danPhoto.addDanPhoto);
+  const deleteDanPhoto = useMutation(api.danPhoto.deleteDanPhoto);
+
+  // Hero Videos
+  const allHeroVideos = useQuery(api.heroVideo.getAllHeroVideos);
+  const uploadHeroVideo = useMutation(api.heroVideo.uploadHeroVideo);
+  const updateHeroVideo = useMutation(api.heroVideo.updateHeroVideo);
+  const deleteHeroVideo = useMutation(api.heroVideo.deleteHeroVideo);
   
   // Media upload state
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [mediaFilter, setMediaFilter] = useState('all'); // 'all', 'image', 'video'
+
+  // Gallery state
+  const [galleryForm, setGalleryForm] = useState({ url: '', altText: '' });
+  const [editingGalleryId, setEditingGalleryId] = useState(null);
+
+  // Schedule state
+  const [scheduleForm, setScheduleForm] = useState({ url: '', title: '', description: '' });
+  const [editingScheduleId, setEditingScheduleId] = useState(null);
+
+  // Dan Photo state
+  const [danPhotoUrl, setDanPhotoUrl] = useState('');
+
+  // Hero Video state
+  const [heroVideoForm, setHeroVideoForm] = useState({ url: '', altText: '' });
+  const [editingHeroVideoId, setEditingHeroVideoId] = useState(null);
 
   const handleVideoSubmit = async (e) => {
     e.preventDefault();
@@ -247,6 +292,180 @@ const AdminPanel = () => {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  // Gallery handlers
+  const handleGallerySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingGalleryId) {
+        await updateGalleryImage({
+          id: editingGalleryId,
+          url: galleryForm.url,
+          altText: galleryForm.altText,
+        });
+        alert('✅ Gallery image updated!');
+      } else {
+        const order = (allGalleryImages?.length || 0) + 1;
+        await addGalleryImage({
+          url: galleryForm.url,
+          order: order,
+          altText: galleryForm.altText,
+        });
+        alert('✅ Gallery image added!');
+      }
+      setGalleryForm({ url: '', altText: '' });
+      setEditingGalleryId(null);
+    } catch (error) {
+      console.error('Error saving gallery image:', error);
+      alert('❌ Failed to save gallery image: ' + error.message);
+    }
+  };
+
+  const handleDeleteGalleryImage = async (id) => {
+    if (confirm('Are you sure you want to delete this gallery image?')) {
+      try {
+        await deleteGalleryImage({ id });
+        alert('✅ Gallery image deleted!');
+      } catch (error) {
+        console.error('Error deleting gallery image:', error);
+        alert('❌ Failed to delete gallery image.');
+      }
+    }
+  };
+
+  const handleSetActiveGalleryImage = async (id) => {
+    try {
+      await updateGalleryImage({ id, order: 1 });
+      alert('✅ Gallery image set as primary!');
+    } catch (error) {
+      console.error('Error updating gallery image:', error);
+      alert('❌ Failed to update gallery image.');
+    }
+  };
+
+  // Schedule handlers
+  const handleScheduleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingScheduleId) {
+        await updateScheduleImage({
+          id: editingScheduleId,
+          url: scheduleForm.url,
+          title: scheduleForm.title,
+          description: scheduleForm.description,
+        });
+        alert('✅ Schedule image updated!');
+      } else {
+        await addScheduleImage({
+          url: scheduleForm.url,
+          title: scheduleForm.title,
+          description: scheduleForm.description,
+        });
+        alert('✅ Schedule image added!');
+      }
+      setScheduleForm({ url: '', title: '', description: '' });
+      setEditingScheduleId(null);
+    } catch (error) {
+      console.error('Error saving schedule image:', error);
+      alert('❌ Failed to save schedule image: ' + error.message);
+    }
+  };
+
+  const handleDeleteScheduleImage = async (id) => {
+    if (confirm('Are you sure you want to delete this schedule image?')) {
+      try {
+        await deleteScheduleImage({ id });
+        alert('✅ Schedule image deleted!');
+      } catch (error) {
+        console.error('Error deleting schedule image:', error);
+        alert('❌ Failed to delete schedule image.');
+      }
+    }
+  };
+
+  const handleSetActiveSchedule = async (id) => {
+    try {
+      await updateScheduleImage({ id, isActive: true });
+      alert('✅ Schedule set as active!');
+    } catch (error) {
+      console.error('Error updating schedule:', error);
+      alert('❌ Failed to update schedule.');
+    }
+  };
+
+  // Dan Photo handlers
+  const handleDanPhotoSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await addDanPhoto({ url: danPhotoUrl });
+      alert('✅ Dan\'s photo uploaded!');
+      setDanPhotoUrl('');
+    } catch (error) {
+      console.error('Error uploading Dan\'s photo:', error);
+      alert('❌ Failed to upload photo: ' + error.message);
+    }
+  };
+
+  const handleDeleteDanPhoto = async (id) => {
+    if (confirm('Are you sure you want to delete this photo?')) {
+      try {
+        await deleteDanPhoto({ id });
+        alert('✅ Photo deleted!');
+      } catch (error) {
+        console.error('Error deleting photo:', error);
+        alert('❌ Failed to delete photo.');
+      }
+    }
+  };
+
+  // Hero Video handlers
+  const handleHeroVideoSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingHeroVideoId) {
+        await updateHeroVideo({
+          id: editingHeroVideoId,
+          url: heroVideoForm.url,
+          altText: heroVideoForm.altText,
+        });
+        alert('✅ Hero video updated!');
+      } else {
+        await uploadHeroVideo({
+          url: heroVideoForm.url,
+          altText: heroVideoForm.altText,
+          isActive: true,
+        });
+        alert('✅ Hero video uploaded!');
+      }
+      setHeroVideoForm({ url: '', altText: '' });
+      setEditingHeroVideoId(null);
+    } catch (error) {
+      console.error('Error saving hero video:', error);
+      alert('❌ Failed to save hero video: ' + error.message);
+    }
+  };
+
+  const handleDeleteHeroVideo = async (id) => {
+    if (confirm('Are you sure you want to delete this hero video?')) {
+      try {
+        await deleteHeroVideo({ id });
+        alert('✅ Hero video deleted!');
+      } catch (error) {
+        console.error('Error deleting hero video:', error);
+        alert('❌ Failed to delete hero video.');
+      }
+    }
+  };
+
+  const handleSetActiveHeroVideo = async (id) => {
+    try {
+      await updateHeroVideo({ id, isActive: true });
+      alert('✅ Hero video set as active!');
+    } catch (error) {
+      console.error('Error updating hero video:', error);
+      alert('❌ Failed to update hero video.');
+    }
   };
 
   return (
@@ -547,11 +766,22 @@ const AdminPanel = () => {
                         onChange={(e) => setVideoForm({...videoForm, category: e.target.value})}
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       >
+                        {/* Default categories */}
                         <option value="wim-hof">Wim Hof Method</option>
                         <option value="box-breathing">Box Breathing</option>
                         <option value="4-7-8">4-7-8 Technique</option>
                         <option value="pranayama">Pranayama</option>
                         <option value="beginner">Beginner Friendly</option>
+                        
+                        {/* Additional categories from existing videos */}
+                        {uniqueCategories
+                          .filter(cat => !['wim-hof', 'box-breathing', '4-7-8', 'pranayama', 'beginner'].includes(cat))
+                          .map(cat => (
+                            <option key={cat} value={cat}>
+                              {cat.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                            </option>
+                          ))
+                        }
                       </select>
                     </div>
                   </div>
@@ -662,106 +892,431 @@ const AdminPanel = () => {
 
             {/* Schedule Section */}
             {adminSection === 'schedule' && (
-              <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-white mb-4">Upload Event Schedule</h4>
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, 'schedule')}
-                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 cursor-pointer"
-                />
-                {scheduleImage && (
-                  <div className="mt-4">
-                    <img src={scheduleImage} alt="Schedule Preview" className="w-full rounded-lg border-2 border-cyan-400/30" />
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <h4 className="text-2xl font-semibold text-white mb-4">
+                  {editingScheduleId ? 'Edit Schedule' : 'Add New Schedule'}
+                </h4>
+                
+                {/* Schedule Form */}
+                <form onSubmit={handleScheduleSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+                    <input
+                      type="url"
+                      required
+                      value={scheduleForm.url}
+                      onChange={(e) => setScheduleForm({...scheduleForm, url: e.target.value})}
+                      placeholder="https://example.com/schedule.jpg or paste from Media Library"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
                   </div>
-                )}
+
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Title *</label>
+                    <input
+                      type="text"
+                      required
+                      value={scheduleForm.title}
+                      onChange={(e) => setScheduleForm({...scheduleForm, title: e.target.value})}
+                      placeholder="e.g., Weekly Schedule"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Description (Optional)</label>
+                    <textarea
+                      value={scheduleForm.description}
+                      onChange={(e) => setScheduleForm({...scheduleForm, description: e.target.value})}
+                      placeholder="Additional details..."
+                      rows="2"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                    >
+                      {editingScheduleId ? '💾 Update Schedule' : '➕ Add Schedule'}
+                    </button>
+                    {editingScheduleId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingScheduleId(null);
+                          setScheduleForm({ url: '', title: '', description: '' });
+                        }}
+                        className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                {/* Schedules List */}
+                <div className="space-y-3">
+                  <h4 className="text-xl font-semibold text-white">All Schedules ({allScheduleImages?.length || 0})</h4>
+                  {allScheduleImages?.map((schedule) => (
+                    <div key={schedule._id} className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                      <div className="flex gap-4">
+                        <img 
+                          src={schedule.url} 
+                          alt={schedule.title}
+                          className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-400/30"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h5 className="text-white font-semibold">{schedule.title}</h5>
+                            {schedule.isActive && <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">✓ Active</span>}
+                          </div>
+                          {schedule.description && <p className="text-blue-200 text-sm mb-2">{schedule.description}</p>}
+                          <div className="flex gap-2 mt-3">
+                            {!schedule.isActive && (
+                              <button
+                                onClick={() => handleSetActiveSchedule(schedule._id)}
+                                className="px-3 py-1 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-all text-sm"
+                              >
+                                ✓ Set Active
+                              </button>
+                            )}
+                            <button
+                              onClick={() => {
+                                setScheduleForm({
+                                  url: schedule.url,
+                                  title: schedule.title,
+                                  description: schedule.description || '',
+                                });
+                                setEditingScheduleId(schedule._id);
+                              }}
+                              className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all text-sm"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteScheduleImage(schedule._id)}
+                              className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all text-sm"
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {allScheduleImages?.length === 0 && (
+                    <div className="text-center py-8 text-blue-200">
+                      <div className="text-4xl mb-2">📅</div>
+                      <p>No schedules yet. Add your first schedule above!</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Gallery Section */}
             {adminSection === 'gallery' && (
-              <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-white mb-4">Upload Gallery Images</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {galleryImages.map((img, index) => (
-                    <div key={index} className="relative group">
-                      <img 
-                        src={img} 
-                        alt={`Gallery ${index + 1}`} 
-                        className="w-full h-40 object-cover rounded-lg border-2 border-cyan-400/30"
-                      />
-                      <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-lg">
-                        <span className="text-white font-semibold">📷 Change</span>
-                        <input 
-                          type="file" 
-                          accept="image/*"
-                          onChange={(e) => handleImageUpload(e, 'gallery', index)}
-                          className="hidden"
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <h4 className="text-2xl font-semibold text-white mb-4">
+                  {editingGalleryId ? 'Edit Gallery Image' : 'Add New Gallery Image'}
+                </h4>
+                
+                {/* Gallery Form */}
+                <form onSubmit={handleGallerySubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+                    <input
+                      type="url"
+                      required
+                      value={galleryForm.url}
+                      onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
+                      placeholder="https://example.com/image.jpg or paste from Media Library"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Alt Text (Optional)</label>
+                    <input
+                      type="text"
+                      value={galleryForm.altText}
+                      onChange={(e) => setGalleryForm({...galleryForm, altText: e.target.value})}
+                      placeholder="Describe the image..."
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                    >
+                      {editingGalleryId ? '💾 Update Image' : '➕ Add Image'}
+                    </button>
+                    {editingGalleryId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingGalleryId(null);
+                          setGalleryForm({ url: '', altText: '' });
+                        }}
+                        className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                {/* Gallery Images Grid */}
+                <div className="space-y-3">
+                  <h4 className="text-xl font-semibold text-white">All Gallery Images ({allGalleryImages?.length || 0})</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {allGalleryImages?.map((image) => (
+                      <div key={image._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                        <img 
+                          src={image.url} 
+                          alt={image.altText || 'Gallery image'}
+                          className="w-full h-40 object-cover"
                         />
-                      </label>
-                      <div className="absolute top-2 left-2 bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                        {index + 1}
+                        <div className="absolute top-2 left-2 bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          #{image.order}
+                        </div>
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                          <button
+                            onClick={() => {
+                              setGalleryForm({
+                                url: image.url,
+                                altText: image.altText || '',
+                              });
+                              setEditingGalleryId(image._id);
+                            }}
+                            className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteGalleryImage(image._id)}
+                            className="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-sm"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                        {image.altText && (
+                          <div className="p-2 bg-black/50">
+                            <p className="text-white text-xs truncate">{image.altText}</p>
+                          </div>
+                        )}
                       </div>
+                    ))}
+                  </div>
+                  {allGalleryImages?.length === 0 && (
+                    <div className="text-center py-8 text-blue-200">
+                      <div className="text-4xl mb-2">🖼️</div>
+                      <p>No gallery images yet. Add your first image above!</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             )}
 
             {/* Dan's Photo Section */}
             {adminSection === 'danPhoto' && (
-              <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-white mb-4">Upload Dan's Photo</h4>
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, 'danPhoto')}
-                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 cursor-pointer"
-                />
-                {danPhoto && (
-                  <div className="mt-4">
-                    <img src={danPhoto} alt="Dan Preview" className="w-full max-w-md mx-auto rounded-lg border-2 border-cyan-400/30" />
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <h4 className="text-2xl font-semibold text-white mb-4">Add Dan's Photo</h4>
+                
+                {/* Dan Photo Form */}
+                <form onSubmit={handleDanPhotoSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Photo URL *</label>
+                    <input
+                      type="url"
+                      required
+                      value={danPhotoUrl}
+                      onChange={(e) => setDanPhotoUrl(e.target.value)}
+                      placeholder="https://example.com/dan-photo.jpg or paste from Media Library"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
                   </div>
-                )}
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                  >
+                    ➕ Add Photo
+                  </button>
+                </form>
+
+                {/* Dan Photos List */}
+                <div className="space-y-3">
+                  <h4 className="text-xl font-semibold text-white">All Dan's Photos ({allDanPhotos?.length || 0})</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {allDanPhotos?.map((photo) => (
+                      <div key={photo._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                        <img 
+                          src={photo.url} 
+                          alt="Dan's photo"
+                          className="w-full h-48 object-cover"
+                        />
+                        {photo.isActive && (
+                          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            ✓ Active
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                          <button
+                            onClick={() => handleDeleteDanPhoto(photo._id)}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-sm"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {allDanPhotos?.length === 0 && (
+                    <div className="text-center py-8 text-blue-200">
+                      <div className="text-4xl mb-2">👤</div>
+                      <p>No photos yet. Add Dan's first photo above!</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Hero Video Section */}
             {adminSection === 'heroVideo' && (
-              <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-white mb-4">🎥 Upload Hero Video</h4>
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
-                  <p className="text-yellow-200 text-sm font-semibold mb-2">⚠️ File Size Limit: 800KB Maximum</p>
-                  <p className="text-yellow-100 text-xs">
-                    • Use MP4 format, H.264 codec<br/>
-                    • Keep video under 5 seconds for best results<br/>
-                    • Compress using tools like HandBrake or online compressors<br/>
-                    • Recommended resolution: 720x720 or smaller
-                  </p>
-                </div>
-                <input 
-                  type="file" 
-                  accept="video/mp4,video/webm"
-                  onChange={(e) => handleImageUpload(e, 'heroVideo')}
-                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 cursor-pointer"
-                />
-                {heroVideo && (
-                  <div className="mt-4">
-                    <div className="flex justify-center">
-                      <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-48 h-48 object-contain rounded-2xl border-2 border-cyan-400/30 shadow-xl shadow-cyan-500/20"
-                      >
-                        <source src={heroVideo} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                    <p className="text-center text-cyan-400 text-sm mt-2">✓ Current hero video</p>
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <h4 className="text-2xl font-semibold text-white mb-4">
+                  {editingHeroVideoId ? 'Edit Hero Video' : 'Add New Hero Video'}
+                </h4>
+                
+                {/* Hero Video Form */}
+                <form onSubmit={handleHeroVideoSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                    <p className="text-yellow-200 text-sm font-semibold mb-2">💡 Tips for Hero Videos</p>
+                    <p className="text-yellow-100 text-xs">
+                      • Use MP4 format, H.264 codec<br/>
+                      • Keep video under 5 seconds for best results<br/>
+                      • Upload to Media Library first, then copy URL<br/>
+                      • Recommended resolution: 720x720 or smaller
+                    </p>
                   </div>
-                )}
+
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Video URL *</label>
+                    <input
+                      type="url"
+                      required
+                      value={heroVideoForm.url}
+                      onChange={(e) => setHeroVideoForm({...heroVideoForm, url: e.target.value})}
+                      placeholder="https://example.com/hero-video.mp4 or paste from Media Library"
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">Alt Text (Optional)</label>
+                    <input
+                      type="text"
+                      value={heroVideoForm.altText}
+                      onChange={(e) => setHeroVideoForm({...heroVideoForm, altText: e.target.value})}
+                      placeholder="Describe the video..."
+                      className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                    >
+                      {editingHeroVideoId ? '💾 Update Video' : '➕ Add Video'}
+                    </button>
+                    {editingHeroVideoId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingHeroVideoId(null);
+                          setHeroVideoForm({ url: '', altText: '' });
+                        }}
+                        className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                {/* Hero Videos List */}
+                <div className="space-y-3">
+                  <h4 className="text-xl font-semibold text-white">All Hero Videos ({allHeroVideos?.length || 0})</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {allHeroVideos?.map((video) => (
+                      <div key={video._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-40 object-cover"
+                        >
+                          <source src={video.url} type="video/mp4" />
+                        </video>
+                        {video.isActive && (
+                          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            ✓ Active
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                          {!video.isActive && (
+                            <button
+                              onClick={() => handleSetActiveHeroVideo(video._id)}
+                              className="w-full px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-sm"
+                            >
+                              ✓ Set Active
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              setHeroVideoForm({
+                                url: video.url,
+                                altText: video.altText || '',
+                              });
+                              setEditingHeroVideoId(video._id);
+                            }}
+                            className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteHeroVideo(video._id)}
+                            className="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-sm"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                        {video.altText && (
+                          <div className="p-2 bg-black/50">
+                            <p className="text-white text-xs truncate">{video.altText}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {allHeroVideos?.length === 0 && (
+                    <div className="text-center py-8 text-blue-200">
+                      <div className="text-4xl mb-2">🎥</div>
+                      <p>No hero videos yet. Add your first video above!</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
