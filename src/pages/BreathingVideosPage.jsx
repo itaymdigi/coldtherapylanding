@@ -208,16 +208,22 @@ const BreathingVideosPage = () => {
         </div>
 
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-3 justify-center mb-12">
+        <div className="flex flex-wrap gap-3 justify-center mb-12 relative z-10">
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🖱️ Category button clicked:', cat.id);
+                setSelectedCategory(cat.id);
+              }}
+              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 cursor-pointer ${
                 selectedCategory === cat.id
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white scale-110'
                   : 'bg-white/10 text-blue-200 hover:bg-white/20'
               }`}
+              style={{ pointerEvents: 'auto' }}
             >
               <span className="mr-2">{cat.emoji}</span>
               {cat.name}
