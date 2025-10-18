@@ -82,10 +82,10 @@ export default function LivePractice({ language = 'he' }) {
   };
 
   return (
-    <section id="live-practice" className="relative py-20 px-4 overflow-hidden">
+    <section id="live-practice" className="relative z-20 py-20 px-4 overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/50 to-black pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1),transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/50 to-black pointer-events-none -z-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1),transparent_50%)] pointer-events-none -z-10" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
