@@ -9,19 +9,26 @@ const BreathingVideosPage = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [userEmail, setUserEmail] = useState(''); // In real app, get from auth
 
-  // Helper function to ensure URL is in embed format
+  // Helper function to ensure URL is in embed format with sound enabled
   const ensureEmbedUrl = (url) => {
     if (!url) return url;
-    if (url.includes('/embed/')) return url;
+    
+    // If already an embed URL, ensure it doesn't have mute parameter
+    if (url.includes('/embed/')) {
+      // Remove mute parameter if present and ensure autoplay is enabled
+      let cleanUrl = url.replace(/[?&]mute=1/, '').replace(/[?&]muted=1/, '');
+      const separator = cleanUrl.includes('?') ? '&' : '?';
+      return `${cleanUrl}${separator}autoplay=1`;
+    }
     
     const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
     if (watchMatch) {
-      return `https://www.youtube.com/embed/${watchMatch[1]}`;
+      return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1`;
     }
     
     const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
     if (vimeoMatch && !url.includes('player.vimeo.com')) {
-      return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+      return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
     }
     
     return url;
@@ -244,7 +251,7 @@ const BreathingVideosPage = () => {
                     src={ensureEmbedUrl(selectedVideo.videoUrl)}
                     title={selectedVideo.title}
                     frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                   ></iframe>
                 </div>

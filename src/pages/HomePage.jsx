@@ -112,8 +112,8 @@ const HomePage = () => {
               <video
                 autoPlay
                 loop
-                muted
                 playsInline
+                controls
                 className="w-64 h-auto sm:w-80 md:w-96 lg:w-[500px] xl:w-[600px] max-w-full object-contain rounded-2xl shadow-2xl shadow-cyan-500/30 hover:scale-105 transition-transform duration-500"
               >
                 <source src={heroVideo} type="video/mp4" />
