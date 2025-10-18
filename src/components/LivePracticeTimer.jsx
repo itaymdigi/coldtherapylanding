@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Square, Timer, Thermometer, Heart } from 'lucide-react';
+import { Play, Pause, Square, Timer, Thermometer, Heart, Star } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 
@@ -11,6 +11,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   const [temperature, setTemperature] = useState('');
   const [notes, setNotes] = useState('');
   const [mood, setMood] = useState('');
+  const [rating, setRating] = useState(0);
   const [showSaveForm, setShowSaveForm] = useState(false);
 
   const intervalRef = useRef(null);
@@ -18,6 +19,13 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   const pausedTimeRef = useRef(0);
 
   const saveSessionMutation = useMutation(api.practiceSessions.saveSession);
+
+  const moodEmojis = {
+    excellent: '😄',
+    good: '🙂',
+    neutral: '😐',
+    challenging: '😰',
+  };
 
   const translations = {
     he: {
@@ -28,6 +36,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
       stop: 'עצור',
       temperature: 'טמפרטורת מים (°C)',
       mood: 'איך הרגשת?',
+      rating: 'דירוג האימון',
       notes: 'הערות',
       save: 'שמור אימון',
       cancel: 'ביטול',
@@ -47,6 +56,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
       stop: 'Stop',
       temperature: 'Water Temperature (°C)',
       mood: 'How did you feel?',
+      rating: 'Rate Your Session',
       notes: 'Notes',
       save: 'Save Session',
       cancel: 'Cancel',
@@ -173,6 +183,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
         setTemperature('');
         setNotes('');
         setMood('');
+        setRating(0);
         setShowSaveForm(false);
         
         if (onSessionSaved) {
@@ -191,6 +202,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
     setTemperature('');
     setNotes('');
     setMood('');
+    setRating(0);
     setShowSaveForm(false);
   };
 
@@ -289,13 +301,40 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
                 <button
                   key={m}
                   onClick={() => setMood(m)}
-                  className={`py-3 px-4 rounded-lg font-medium transition-all ${
+                  className={`py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
                     mood === m
-                      ? 'bg-cyan-500 text-white'
+                      ? 'bg-cyan-500 text-white scale-105'
                       : 'bg-white/10 text-white/70 hover:bg-white/20'
                   }`}
                 >
-                  {t[m]}
+                  <span className="text-2xl">{moodEmojis[m]}</span>
+                  <span>{t[m]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+              <Star size={18} />
+              {t.rating}
+            </label>
+            <div className="flex justify-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className="transition-all transform hover:scale-110"
+                  type="button"
+                >
+                  <Star
+                    size={32}
+                    className={`${
+                      star <= rating
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-white/30 hover:text-white/50'
+                    } transition-colors`}
+                  />
                 </button>
               ))}
             </div>
