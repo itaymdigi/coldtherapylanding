@@ -78,7 +78,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         onClose();
       }
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      console.error('Auth error:', err);
+      // Extract the actual error message from Convex errors
+      const errorMessage = err?.message || err?.toString() || 'An error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
