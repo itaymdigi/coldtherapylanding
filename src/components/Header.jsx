@@ -18,24 +18,24 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
-              <Link to="/" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.home}</Link>
-              <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
+            <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 rtl:space-x-reverse">
+              <Link to="/" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium text-base lg:text-lg px-2 py-1">{t.home}</Link>
+              <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1 text-base lg:text-lg px-2 py-1">
                 <span>🌬️</span> {t.breathingVideosMenu}
               </Link>
-              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
+              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1 text-base lg:text-lg px-2 py-1">
                 <span>🎓</span> {t.instructorTraining}
               </Link>
-              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.about}</Link>
-              <Link to="/#live-practice" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
+              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium text-base lg:text-lg px-2 py-1">{t.about}</Link>
+              <Link to="/#live-practice" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1 text-base lg:text-lg px-2 py-1">
                 <span>⏱️</span> {t.livePractice}
               </Link>
-              <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.packages}</button>
-              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.gallery}</Link>
-              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.contact}</Link>
+              <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium text-base lg:text-lg px-2 py-1">{t.packages}</button>
+              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium text-base lg:text-lg px-2 py-1">{t.gallery}</Link>
+              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium text-base lg:text-lg px-2 py-1">{t.contact}</Link>
               <button 
                 onClick={scrollToPackages}
-                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-base lg:text-lg"
               >
                 {t.bookNow}
               </button>
@@ -98,65 +98,65 @@ const Header = () => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-900/98 backdrop-blur-lg border-t border-cyan-400/10">
-            <div className="px-4 py-6 space-y-4">
+            <div className="px-4 py-6 space-y-3">
               <Link 
                 to="/" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.home}
               </Link>
               <Link 
                 to="/breathing-videos" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 🌬️ {t.breathingVideosMenu}
               </Link>
               <Link 
                 to="/instructor-training" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 🎓 {t.instructorTraining}
               </Link>
               <Link 
                 to="/#about" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.about}
               </Link>
               <Link 
                 to="/#live-practice" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 ⏱️ {t.livePractice}
               </Link>
               <button 
                 onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
-                className="block w-full text-start px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block w-full text-start px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.packages}
               </button>
               <Link 
                 to="/#gallery" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.gallery}
               </Link>
               <Link 
                 to="/#contact" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.contact}
               </Link>
               <button 
                 onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
-                className="block w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 text-center"
+                className="block w-full px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 text-center text-lg"
               >
                 {t.bookNow}
               </button>
