@@ -136,28 +136,32 @@ const AdminPanel = () => {
 
   const handleVideoSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted!', videoForm);
+    console.log('📝 Form submitted!', videoForm);
+    console.log('📝 Custom category field:', customCategory);
     
     try {
-      // Use custom category if provided
+      // Use custom category if provided, otherwise use dropdown selection
       const finalCategory = customCategory.trim() || videoForm.category;
       
-      console.log('Saving video with category:', finalCategory);
+      console.log('💾 Saving video with final category:', finalCategory);
+      console.log('💾 Video data:', { ...videoForm, category: finalCategory });
       
       if (editingVideoId) {
-        console.log('Updating video:', editingVideoId);
+        console.log('✏️ Updating video:', editingVideoId);
         await updateVideo({
           id: editingVideoId,
           ...videoForm,
           category: finalCategory,
         });
+        alert(`✅ Video updated successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}`);
       } else {
-        console.log('Adding new video...');
+        console.log('➕ Adding new video...');
         const result = await addVideo({
           ...videoForm,
           category: finalCategory,
         });
-        console.log('Video added successfully:', result);
+        console.log('✅ Video added successfully with ID:', result);
+        alert(`✅ Video added successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}\n\nThe new category will appear in the dropdown now!`);
       }
       
       // Reset form
@@ -174,9 +178,8 @@ const AdminPanel = () => {
       });
       setCustomCategory('');
       setEditingVideoId(null);
-      alert('✅ Video saved successfully! Check the list below or go to /breathing-videos page.');
     } catch (error) {
-      console.error('Error saving video:', error);
+      console.error('❌ Error saving video:', error);
       alert('❌ Failed to save video: ' + error.message);
     }
   };
@@ -815,15 +818,25 @@ const AdminPanel = () => {
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Custom Category (Optional)</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Custom Category (Optional)
+                      {customCategory && <span className="ml-2 text-cyan-400">✓ Will use: "{customCategory}"</span>}
+                    </label>
                     <input
                       type="text"
                       value={customCategory}
                       onChange={(e) => setCustomCategory(e.target.value)}
-                      placeholder="Enter custom category name..."
+                      placeholder="e.g., breathwork, meditation, relaxation..."
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">Leave empty to use selected category above</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      💡 Type a new category name here to create a custom category. Leave empty to use the dropdown selection above.
+                    </p>
+                    {customCategory && (
+                      <p className="text-cyan-400 text-xs mt-1 font-semibold">
+                        ✓ This video will be saved with category: "{customCategory}"
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -870,6 +883,19 @@ const AdminPanel = () => {
                     )}
                   </div>
                 </form>
+
+                {/* Debug Info */}
+                {videos && videos.length > 0 && (
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+                    <h5 className="text-blue-200 font-semibold mb-2">📊 Database Stats</h5>
+                    <div className="text-blue-100 text-sm space-y-1">
+                      <p>• Total Videos: {videos.length}</p>
+                      <p>• Categories: {uniqueCategories.join(', ') || 'None'}</p>
+                      <p>• Difficulties: {uniqueDifficulties.join(', ') || 'None'}</p>
+                      <p>• Premium Videos: {videos.filter(v => v.isPremium).length}</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Videos List */}
                 <div className="space-y-3">
