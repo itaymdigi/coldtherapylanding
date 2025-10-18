@@ -67,7 +67,24 @@ const AdminPanel = () => {
   const uniqueCategories = React.useMemo(() => {
     if (!videos) return [];
     const categories = [...new Set(videos.map(v => v.category))];
+    console.log('📊 Unique categories found:', categories);
     return categories.sort();
+  }, [videos]);
+
+  // Get unique difficulties from existing videos
+  const uniqueDifficulties = React.useMemo(() => {
+    if (!videos) return [];
+    const difficulties = [...new Set(videos.map(v => v.difficulty))];
+    console.log('📊 Unique difficulties found:', difficulties);
+    return difficulties.sort();
+  }, [videos]);
+
+  // Debug: Log videos data
+  React.useEffect(() => {
+    if (videos) {
+      console.log('🎬 Total videos loaded:', videos.length);
+      console.log('🎬 Videos data:', videos);
+    }
   }, [videos]);
   
   // Media library
@@ -753,9 +770,20 @@ const AdminPanel = () => {
                         onChange={(e) => setVideoForm({...videoForm, difficulty: e.target.value})}
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       >
+                        {/* Default difficulties */}
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
+                        
+                        {/* Additional difficulties from existing videos */}
+                        {uniqueDifficulties
+                          .filter(diff => !['beginner', 'intermediate', 'advanced'].includes(diff))
+                          .map(diff => (
+                            <option key={diff} value={diff}>
+                              {diff.charAt(0).toUpperCase() + diff.slice(1)}
+                            </option>
+                          ))
+                        }
                       </select>
                     </div>
 
