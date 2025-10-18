@@ -19,6 +19,7 @@ const HomePage = () => {
     setStatsClients,
     setStatsTemp,
     danPhoto,
+    heroVideo,
     scheduleImage,
     galleryImages,
     openFaq,
@@ -105,6 +106,22 @@ const HomePage = () => {
       {/* Hero Section */}
       <div id="home" className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-8 md:px-16 lg:px-24 pt-20">
         <div className="text-center space-y-4 sm:space-y-6 max-w-4xl mt-12 sm:mt-20">
+          {/* Hero Video */}
+          {heroVideo && (
+            <div className="mb-6 sm:mb-8 animate-fadeInUp flex justify-center">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-64 h-auto sm:w-80 md:w-96 lg:w-[500px] xl:w-[600px] max-w-full object-contain rounded-2xl shadow-2xl shadow-cyan-500/30 hover:scale-105 transition-transform duration-500"
+              >
+                <source src={heroVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )}
+          
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight px-2 animate-fadeInUp">
             {t.heroTitle}
             <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-gradient">

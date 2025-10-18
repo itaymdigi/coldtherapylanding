@@ -23,6 +23,13 @@ export default defineSchema({
     isActive: v.boolean(),
   }),
 
+  // Hero Video
+  heroVideo: defineTable({
+    url: v.string(),
+    isActive: v.boolean(),
+    altText: v.optional(v.string()),
+  }),
+
   // Contact Form Submissions
   contactSubmissions: defineTable({
     name: v.string(),

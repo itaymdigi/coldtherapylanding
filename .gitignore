@@ -122,3 +122,7 @@ convex/_generated
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Documentation files (auto-generated guides)
+*.md
+!README.md

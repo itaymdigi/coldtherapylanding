@@ -14,6 +14,7 @@ const AdminPanel = () => {
     scheduleImage,
     galleryImages,
     danPhoto,
+    heroVideo,
     handleImageUpload,
     handleLogin,
     handleAdminClose,
@@ -304,6 +305,12 @@ const AdminPanel = () => {
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'danPhoto' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 👤 Dan's Photo
+              </button>
+              <button 
+                onClick={() => setAdminSection('heroVideo')}
+                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'heroVideo' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
+              >
+                🎥 Hero Video
               </button>
             </div>
 
@@ -714,6 +721,37 @@ const AdminPanel = () => {
                 {danPhoto && (
                   <div className="mt-4">
                     <img src={danPhoto} alt="Dan Preview" className="w-full max-w-md mx-auto rounded-lg border-2 border-cyan-400/30" />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Hero Video Section */}
+            {adminSection === 'heroVideo' && (
+              <div className="space-y-4">
+                <h4 className="text-xl font-semibold text-white mb-4">🎥 Upload Hero Video</h4>
+                <p className="text-blue-200 text-sm mb-4">Upload a video to display in the hero section. Recommended: MP4 format, square aspect ratio (1:1), max 10MB.</p>
+                <input 
+                  type="file" 
+                  accept="video/mp4,video/webm"
+                  onChange={(e) => handleImageUpload(e, 'heroVideo')}
+                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 cursor-pointer"
+                />
+                {heroVideo && (
+                  <div className="mt-4">
+                    <div className="flex justify-center">
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-48 h-48 object-contain rounded-2xl border-2 border-cyan-400/30 shadow-xl shadow-cyan-500/20"
+                      >
+                        <source src={heroVideo} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                    <p className="text-center text-cyan-400 text-sm mt-2">✓ Current hero video</p>
                   </div>
                 )}
               </div>

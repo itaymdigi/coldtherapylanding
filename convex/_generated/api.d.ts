@@ -12,6 +12,7 @@ import type * as bookings from "../bookings.js";
 import type * as breathingVideos from "../breathingVideos.js";
 import type * as danPhoto from "../danPhoto.js";
 import type * as galleryImages from "../galleryImages.js";
+import type * as heroVideo from "../heroVideo.js";
 import type * as media from "../media.js";
 import type * as payments from "../payments.js";
 import type * as scheduleImages from "../scheduleImages.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   breathingVideos: typeof breathingVideos;
   danPhoto: typeof danPhoto;
   galleryImages: typeof galleryImages;
+  heroVideo: typeof heroVideo;
   media: typeof media;
   payments: typeof payments;
   scheduleImages: typeof scheduleImages;

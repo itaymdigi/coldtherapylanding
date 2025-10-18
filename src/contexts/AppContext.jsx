@@ -18,12 +18,14 @@ export const AppProvider = ({ children }) => {
   const convexGalleryImages = useQuery(api.galleryImages.getGalleryImages);
   const convexScheduleImage = useQuery(api.scheduleImages.getActiveScheduleImage);
   const convexDanPhoto = useQuery(api.danPhoto.getActiveDanPhoto);
+  const convexHeroVideo = useQuery(api.heroVideo.getActiveHeroVideo);
 
   // Convex mutations
   const addGalleryImage = useMutation(api.galleryImages.addGalleryImage);
   const updateGalleryImage = useMutation(api.galleryImages.updateGalleryImage);
   const updateScheduleImage = useMutation(api.scheduleImages.addScheduleImage);
   const updateDanPhotoMutation = useMutation(api.danPhoto.updateDanPhoto);
+  const uploadHeroVideoMutation = useMutation(api.heroVideo.uploadHeroVideo);
 
   // UI State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -59,6 +61,7 @@ export const AppProvider = ({ children }) => {
       ];
   const scheduleImage = convexScheduleImage?.url || null;
   const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
+  const heroVideo = convexHeroVideo?.url || '/dan_logo.mp4';
 
   // Mouse tracking for parallax effect
   useEffect(() => {
@@ -151,6 +154,13 @@ export const AppProvider = ({ children }) => {
               url: imageData
             });
             alert('✅ Dan\'s photo uploaded successfully!');
+          } else if (type === 'heroVideo') {
+            await uploadHeroVideoMutation({
+              url: imageData,
+              isActive: true,
+              altText: 'Hero video'
+            });
+            alert('✅ Hero video uploaded successfully!');
           }
         } catch (error) {
           console.error('Error uploading image:', error);
@@ -201,6 +211,7 @@ export const AppProvider = ({ children }) => {
     setAdminSection,
     galleryImages,
     danPhoto,
+    heroVideo,
     statsAnimated,
     setStatsAnimated,
     statsSessions,
