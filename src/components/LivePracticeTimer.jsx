@@ -201,15 +201,15 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 backdrop-blur-md rounded-3xl p-8 border border-cyan-500/30 shadow-2xl">
-      <div className="flex items-center justify-center gap-3 mb-8">
-        <Timer className="text-cyan-400" size={32} />
-        <h2 className="text-3xl font-bold text-white">{t.title}</h2>
+    <div className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 backdrop-blur-md rounded-3xl p-4 md:p-8 border border-cyan-500/30 shadow-2xl">
+      <div className="flex items-center justify-center gap-2 md:gap-3 mb-6 md:mb-8">
+        <Timer className="text-cyan-400" size={24} />
+        <h2 className="text-xl md:text-3xl font-bold text-white">{t.title}</h2>
       </div>
 
       {/* Big Timer Display */}
-      <div className="text-center mb-8">
-        <div className="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mb-4 font-mono tracking-wider">
+      <div className="text-center mb-6 md:mb-8">
+        <div className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mb-4 font-mono tracking-wider">
           {formatTime(time)}
         </div>
         {pauseCount > 0 && (
@@ -221,13 +221,13 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
 
       {/* Control Buttons */}
       {!showSaveForm && (
-        <div className="flex justify-center gap-4 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 md:mb-6">
           {!isRunning ? (
             <button
               onClick={handleStart}
-              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-4 px-8 rounded-full hover:from-green-600 hover:to-emerald-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full hover:from-green-600 hover:to-emerald-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm md:text-base"
             >
-              <Play size={24} />
+              <Play size={20} />
               {t.start}
             </button>
           ) : (
@@ -235,25 +235,25 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
               {!isPaused ? (
                 <button
                   onClick={handlePause}
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-4 px-8 rounded-full hover:from-yellow-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2"
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 md:py-3 px-4 md:px-6 rounded-full hover:from-yellow-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-xs md:text-sm"
                 >
-                  <Pause size={24} />
+                  <Pause size={18} />
                   {t.pause}
                 </button>
               ) : (
                 <button
                   onClick={handleResume}
-                  className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-4 px-8 rounded-full hover:from-blue-600 hover:to-cyan-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2"
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-2 md:py-3 px-4 md:px-6 rounded-full hover:from-blue-600 hover:to-cyan-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-xs md:text-sm"
                 >
-                  <Play size={24} />
+                  <Play size={18} />
                   {t.resume}
                 </button>
               )}
               <button
                 onClick={handleStop}
-                className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-4 px-8 rounded-full hover:from-red-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2"
+                className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full hover:from-red-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm md:text-base"
               >
-                <Square size={24} />
+                <Square size={20} />
                 {t.stop}
               </button>
             </>
