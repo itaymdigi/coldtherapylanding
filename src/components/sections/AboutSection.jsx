@@ -52,6 +52,18 @@ const AboutSection = () => {
               {t.aboutP2}
             </p>
 
+            {t.aboutP3 && (
+              <p className="text-base sm:text-lg text-blue-100 leading-relaxed">
+                {t.aboutP3}
+              </p>
+            )}
+
+            {t.aboutP4 && (
+              <p className="text-base sm:text-lg text-blue-100 leading-relaxed">
+                {t.aboutP4}
+              </p>
+            )}
+
             <div className="space-y-4 pt-4">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🎓</div>
