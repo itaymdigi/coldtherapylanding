@@ -111,7 +111,6 @@ const HomePage = () => {
             <div className="mb-6 sm:mb-8 animate-fadeInUp flex justify-center">
               <video
                 autoPlay
-                loop
                 playsInline
                 controls
                 className="w-64 h-auto sm:w-80 md:w-96 lg:w-[500px] xl:w-[600px] max-w-full object-contain rounded-2xl shadow-2xl shadow-cyan-500/30 hover:scale-105 transition-transform duration-500"
