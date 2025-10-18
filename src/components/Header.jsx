@@ -23,6 +23,9 @@ const Header = () => {
               <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
                 <span>🌬️</span> {t.breathingVideosMenu}
               </Link>
+              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
+                <span>🎓</span> {t.instructorTraining}
+              </Link>
               <a href="#about" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.about}</a>
               <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.packages}</button>
               <a href="#gallery" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.gallery}</a>
@@ -106,6 +109,13 @@ const Header = () => {
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
               >
                 🌬️ {t.breathingVideosMenu}
+              </Link>
+              <Link 
+                to="/instructor-training" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
+              >
+                🎓 {t.instructorTraining}
               </Link>
               <a 
                 href="#about" 

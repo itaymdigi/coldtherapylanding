@@ -12,9 +12,19 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 
+const InstructorTrainingLazyRouteImport = createFileRoute(
+  '/instructor-training',
+)()
 const BreathingVideosLazyRouteImport = createFileRoute('/breathing-videos')()
 const IndexLazyRouteImport = createFileRoute('/')()
 
+const InstructorTrainingLazyRoute = InstructorTrainingLazyRouteImport.update({
+  id: '/instructor-training',
+  path: '/instructor-training',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/instructor-training.lazy').then((d) => d.Route),
+)
 const BreathingVideosLazyRoute = BreathingVideosLazyRouteImport.update({
   id: '/breathing-videos',
   path: '/breathing-videos',
@@ -31,31 +41,42 @@ const IndexLazyRoute = IndexLazyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/breathing-videos'
+  fullPaths: '/' | '/breathing-videos' | '/instructor-training'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/breathing-videos'
-  id: '__root__' | '/' | '/breathing-videos'
+  to: '/' | '/breathing-videos' | '/instructor-training'
+  id: '__root__' | '/' | '/breathing-videos' | '/instructor-training'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute
+  InstructorTrainingLazyRoute: typeof InstructorTrainingLazyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/instructor-training': {
+      id: '/instructor-training'
+      path: '/instructor-training'
+      fullPath: '/instructor-training'
+      preLoaderRoute: typeof InstructorTrainingLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/breathing-videos': {
       id: '/breathing-videos'
       path: '/breathing-videos'
@@ -76,6 +97,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   BreathingVideosLazyRoute: BreathingVideosLazyRoute,
+  InstructorTrainingLazyRoute: InstructorTrainingLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
