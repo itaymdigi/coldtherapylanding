@@ -890,9 +890,11 @@ const AdminPanel = () => {
                     <h5 className="text-blue-200 font-semibold mb-2">📊 Database Stats</h5>
                     <div className="text-blue-100 text-sm space-y-1">
                       <p>• Total Videos: {videos.length}</p>
-                      <p>• Categories: {uniqueCategories.join(', ') || 'None'}</p>
+                      <p>• Categories Found: <span className="font-bold text-cyan-300">{uniqueCategories.length}</span></p>
+                      <p className="pl-4">→ {uniqueCategories.map(cat => `"${cat}"`).join(', ') || 'None'}</p>
                       <p>• Difficulties: {uniqueDifficulties.join(', ') || 'None'}</p>
                       <p>• Premium Videos: {videos.filter(v => v.isPremium).length}</p>
+                      <p className="text-yellow-300 mt-2">💡 These categories will appear in the dropdown above</p>
                     </div>
                   </div>
                 )}

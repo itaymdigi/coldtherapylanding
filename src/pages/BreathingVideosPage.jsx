@@ -44,7 +44,15 @@ const BreathingVideosPage = () => {
 
   const hasActiveSubscription = subscription?.status === "active";
 
-  const categories = [
+  // Get unique categories from all videos dynamically
+  const uniqueCategories = React.useMemo(() => {
+    if (!allVideos) return [];
+    const cats = [...new Set(allVideos.map(v => v.category))];
+    return cats.sort();
+  }, [allVideos]);
+
+  // Default categories with translations
+  const defaultCategories = [
     { id: 'all', name: t.allVideos, emoji: '🎬' },
     { id: 'wim-hof', name: t.categoryWimHof, emoji: '❄️' },
     { id: 'box-breathing', name: t.categoryBoxBreathing, emoji: '📦' },
@@ -52,6 +60,17 @@ const BreathingVideosPage = () => {
     { id: 'pranayama', name: t.categoryPranayama, emoji: '🧘' },
     { id: 'beginner', name: t.categoryBeginnerFriendly, emoji: '🌱' },
   ];
+
+  // Add custom categories from database
+  const customCategories = uniqueCategories
+    .filter(cat => !['wim-hof', 'box-breathing', '4-7-8', 'pranayama', 'beginner'].includes(cat))
+    .map(cat => ({
+      id: cat,
+      name: cat.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+      emoji: '🎯'
+    }));
+
+  const categories = [...defaultCategories, ...customCategories];
 
   const getFilteredVideos = () => {
     if (!allVideos) return [];
