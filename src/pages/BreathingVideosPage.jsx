@@ -75,10 +75,21 @@ const BreathingVideosPage = () => {
   const getFilteredVideos = () => {
     if (!allVideos) return [];
     if (selectedCategory === 'all') return allVideos;
-    return allVideos.filter(v => v.category === selectedCategory || v.difficulty === selectedCategory);
+    // Filter by category only
+    const filtered = allVideos.filter(v => v.category === selectedCategory);
+    console.log(`🔍 Filtering by category: "${selectedCategory}"`);
+    console.log(`📊 Found ${filtered.length} videos in this category`);
+    return filtered;
   };
 
   const filteredVideos = getFilteredVideos();
+
+  // Debug: Log when category changes
+  React.useEffect(() => {
+    console.log('🎯 Selected category changed to:', selectedCategory);
+    console.log('📹 Total videos available:', allVideos?.length || 0);
+    console.log('📹 Filtered videos:', filteredVideos.length);
+  }, [selectedCategory, allVideos]);
 
   const VideoCard = ({ video }) => {
     const isLocked = video.isPremium && !hasActiveSubscription;
@@ -229,10 +240,20 @@ const BreathingVideosPage = () => {
             <div className="text-blue-200 text-sm">Premium Videos</div>
           </div>
           <div className="bg-cyan-900/20 backdrop-blur-md p-6 rounded-2xl border border-cyan-400/30 text-center">
-            <div className="text-3xl font-bold text-purple-400 mb-1">5+</div>
+            <div className="text-3xl font-bold text-purple-400 mb-1">+{uniqueCategories.length}</div>
             <div className="text-blue-200 text-sm">Categories</div>
           </div>
         </div>
+
+        {/* Current Filter Info */}
+        {selectedCategory !== 'all' && (
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6 text-center">
+            <p className="text-blue-200">
+              Showing <span className="font-bold text-cyan-400">{filteredVideos.length}</span> video{filteredVideos.length !== 1 ? 's' : ''} in category: 
+              <span className="font-bold text-white ml-2">"{categories.find(c => c.id === selectedCategory)?.name}"</span>
+            </p>
+          </div>
+        )}
 
         {/* Videos Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
