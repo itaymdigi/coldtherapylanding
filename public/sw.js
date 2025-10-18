@@ -1,6 +1,6 @@
 // Service Worker for Cold Therapy PWA
-const CACHE_NAME = 'cold-therapy-v2';
-const RUNTIME_CACHE = 'cold-therapy-runtime-v2';
+const CACHE_NAME = 'cold-therapy-v3';
+const RUNTIME_CACHE = 'cold-therapy-runtime-v3';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [

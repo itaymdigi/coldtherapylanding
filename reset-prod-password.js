@@ -3,18 +3,33 @@ import { ConvexHttpClient } from "convex/browser";
 
 const client = new ConvexHttpClient("https://cheery-finch-992.convex.cloud");
 
-async function registerUser() {
+async function checkUser() {
   try {
-    const result = await client.mutation("auth:register", {
-      email: "itay@digi-monster.com",
-      password: "Coldislife123",
-      name: "איתי",
-      phone: "0523726767"
+    // First, let's try to register to see what happens
+    console.log("Trying to register again (should fail if user exists)...");
+    const registerResult = await client.mutation("auth:register", {
+      email: "test@test.com",
+      password: "Test123456",
+      name: "Test User",
+      phone: ""
     });
-    console.log("Success:", result);
+    console.log("Register result:", registerResult);
   } catch (error) {
-    console.error("Error:", error.message);
+    console.log("Register failed (expected if user exists):", error.message);
+  }
+  
+  try {
+    console.log("\nTesting login with test@test.com...");
+    const result = await client.mutation("auth:login", {
+      email: "test@test.com",
+      password: "Test123456"
+    });
+    console.log("Login Success:", result);
+  } catch (error) {
+    console.error("\nLogin Error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
   }
 }
 
-registerUser();
+checkUser();
