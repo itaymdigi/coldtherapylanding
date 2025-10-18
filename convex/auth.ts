@@ -170,3 +170,96 @@ export const logout = mutation({
     return { success: true };
   },
 });
+
+// Admin authentication
+// Note: In production, store admin password hash in environment variable
+const ADMIN_PASSWORD_HASH = hashPassword("Coldislife"); // TODO: Move to env variable
+
+export const adminLogin = mutation({
+  args: {
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Verify admin password
+    if (hashPassword(args.password) !== ADMIN_PASSWORD_HASH) {
+      throw new Error("Invalid admin password");
+    }
+
+    // Create admin session token
+    const token = generateToken();
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+    await ctx.db.insert("adminSessions", {
+      token,
+      createdAt: Date.now(),
+      expiresAt,
+      lastActivityAt: Date.now(),
+    });
+
+    return {
+      success: true,
+      token,
+      expiresAt,
+    };
+  },
+});
+
+export const verifyAdminToken = query({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("adminSessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      return { valid: false };
+    }
+
+    return {
+      valid: true,
+      expiresAt: session.expiresAt,
+    };
+  },
+});
+
+// Update admin session activity (separate mutation)
+export const updateAdminActivity = mutation({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("adminSessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (session && session.expiresAt > Date.now()) {
+      await ctx.db.patch(session._id, {
+        lastActivityAt: Date.now(),
+      });
+    }
+
+    return { success: true };
+  },
+});
+
+export const adminLogout = mutation({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("adminSessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (session) {
+      await ctx.db.delete(session._id);
+    }
+
+    return { success: true };
+  },
+});

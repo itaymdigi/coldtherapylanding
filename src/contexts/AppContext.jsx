@@ -180,17 +180,53 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const handleLogin = () => {
-    if (password === 'Coldislife') {
+  const adminLoginMutation = useMutation(api.auth.adminLogin);
+  const adminLogoutMutation = useMutation(api.auth.adminLogout);
+  const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+  const adminTokenVerification = useQuery(
+    api.auth.verifyAdminToken,
+    adminToken ? { token: adminToken } : 'skip'
+  );
+
+  // Auto-verify admin token on mount
+  useEffect(() => {
+    if (adminTokenVerification && adminTokenVerification.valid) {
       setIsAuthenticated(true);
-      setPassword('');
-    } else {
+    } else if (adminTokenVerification && !adminTokenVerification.valid) {
+      // Token expired or invalid
+      localStorage.removeItem('adminToken');
+      setIsAuthenticated(false);
+    }
+  }, [adminTokenVerification]);
+
+  const handleLogin = async () => {
+    try {
+      const result = await adminLoginMutation({ password });
+      if (result.success) {
+        // Store token in localStorage
+        localStorage.setItem('adminToken', result.token);
+        setIsAuthenticated(true);
+        setPassword('');
+      }
+    } catch (error) {
+      console.error('Admin login failed:', error);
       alert(t.wrongPassword);
       setPassword('');
     }
   };
 
-  const handleAdminClose = () => {
+  const handleAdminClose = async () => {
+    // Logout from server
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      try {
+        await adminLogoutMutation({ token });
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+      localStorage.removeItem('adminToken');
+    }
+    
     setShowAdmin(false);
     setIsAuthenticated(false);
     setPassword('');

@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation } from '@tanstack/react-router';
 import { useApp } from '../contexts/AppContext';
 import Header from './Header';
-import AdminPanel from './AdminPanel';
+import AdminPanelNew from './admin/AdminPanelNew';
 import Background from './Background';
 import InstallPrompt from './InstallPrompt';
+import ErrorBoundary from './ErrorBoundary';
 
 const Layout = () => {
   const { language, audioRef, isPlaying, showAdmin, t } = useApp();
@@ -31,7 +32,11 @@ const Layout = () => {
       </audio>
 
       {/* Admin Panel */}
-      {showAdmin && <AdminPanel />}
+      {showAdmin && (
+        <ErrorBoundary>
+          <AdminPanelNew />
+        </ErrorBoundary>
+      )}
 
       {/* PWA Install Prompt */}
       <InstallPrompt />
@@ -43,7 +48,9 @@ const Layout = () => {
       <Header />
 
       {/* Main Content */}
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
 
       {/* Footer */}
       <footer className="relative z-20 py-8 px-4 bg-gradient-to-t from-slate-900 to-transparent border-t border-cyan-400/10">

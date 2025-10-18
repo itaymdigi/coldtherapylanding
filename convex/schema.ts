@@ -153,4 +153,12 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_token", ["token"])
     .index("by_user", ["userId"]),
+
+  // Admin Sessions for admin panel authentication
+  adminSessions: defineTable({
+    token: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.number(),
+    lastActivityAt: v.number(),
+  }).index("by_token", ["token"]),
 });
