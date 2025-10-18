@@ -1,5 +1,5 @@
-import React from 'react';
-import { Outlet } from '@tanstack/react-router';
+import React, { useEffect } from 'react';
+import { Outlet, useLocation } from '@tanstack/react-router';
 import { useApp } from '../contexts/AppContext';
 import Header from './Header';
 import AdminPanel from './AdminPanel';
@@ -8,6 +8,20 @@ import InstallPrompt from './InstallPrompt';
 
 const Layout = () => {
   const { language, audioRef, isPlaying, showAdmin, t } = useApp();
+  const location = useLocation();
+
+  // Handle hash navigation
+  useEffect(() => {
+    if (location.hash) {
+      // Wait for page to render
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.hash, location.pathname]);
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden bg-gradient-to-br from-cyan-950 via-blue-950 to-slate-900 scroll-smooth" dir={language === 'he' ? 'rtl' : 'ltr'}>

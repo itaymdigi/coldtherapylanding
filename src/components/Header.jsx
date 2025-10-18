@@ -26,10 +26,10 @@ const Header = () => {
               <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium flex items-center gap-1">
                 <span>🎓</span> {t.instructorTraining}
               </Link>
-              <a href="#about" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.about}</a>
+              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.about}</Link>
               <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.packages}</button>
-              <a href="#gallery" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.gallery}</a>
-              <a href="#contact" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.contact}</a>
+              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.gallery}</Link>
+              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 transition-colors duration-300 font-medium">{t.contact}</Link>
               <button 
                 onClick={scrollToPackages}
                 className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
@@ -117,33 +117,33 @@ const Header = () => {
               >
                 🎓 {t.instructorTraining}
               </Link>
-              <a 
-                href="#about" 
+              <Link 
+                to="/#about" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
               >
                 {t.about}
-              </a>
+              </Link>
               <button 
                 onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
                 className="block w-full text-start px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
               >
                 {t.packages}
               </button>
-              <a 
-                href="#gallery" 
+              <Link 
+                to="/#gallery" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
               >
                 {t.gallery}
-              </a>
-              <a 
-                href="#contact" 
+              </Link>
+              <Link 
+                to="/#contact" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium"
               >
                 {t.contact}
-              </a>
+              </Link>
               <button 
                 onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
                 className="block w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 text-center"
