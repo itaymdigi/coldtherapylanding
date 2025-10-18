@@ -17,6 +17,7 @@ import type * as heroVideo from "../heroVideo.js";
 import type * as media from "../media.js";
 import type * as payments from "../payments.js";
 import type * as practiceSessions from "../practiceSessions.js";
+import type * as resetPassword from "../resetPassword.js";
 import type * as scheduleImages from "../scheduleImages.js";
 import type * as subscriptions from "../subscriptions.js";
 
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   media: typeof media;
   payments: typeof payments;
   practiceSessions: typeof practiceSessions;
+  resetPassword: typeof resetPassword;
   scheduleImages: typeof scheduleImages;
   subscriptions: typeof subscriptions;
 }>;

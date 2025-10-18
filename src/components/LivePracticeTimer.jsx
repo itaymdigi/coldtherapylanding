@@ -98,8 +98,8 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
         setTime((prevTime) => {
           const newTime = prevTime + 1;
           
-          // Announce every 30 seconds
-          if (newTime % 30 === 0) {
+          // Announce every 60 seconds (every minute)
+          if (newTime % 60 === 0 && newTime > 0) {
             announceTime(newTime);
           }
           
