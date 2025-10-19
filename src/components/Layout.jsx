@@ -5,6 +5,7 @@ import Header from './Header';
 import AdminPanelNew from './admin/AdminPanelNew';
 import Background from './Background';
 import InstallPrompt from './InstallPrompt';
+import AIChatWidget from './AIChatWidget';
 import ErrorBoundary from './ErrorBoundary';
 
 const Layout = () => {
@@ -40,6 +41,9 @@ const Layout = () => {
 
       {/* PWA Install Prompt */}
       <InstallPrompt />
+
+      {/* AI Chat Widget */}
+      <AIChatWidget />
 
       {/* 3D Background */}
       <Background />

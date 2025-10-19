@@ -55,6 +55,15 @@ const Header = () => {
               >
                 {isPlaying ? '🔇' : '🔊'}
               </button>
+              
+              {/* Admin Button */}
+              <button 
+                onClick={() => setShowAdmin(true)}
+                className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-lg"
+                title={t.adminButton}
+              >
+                🔐
+              </button>
             </nav>
 
             {/* Mobile Menu Button & Controls */}
@@ -73,6 +82,15 @@ const Header = () => {
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-base"
               >
                 {isPlaying ? '🔇' : '🔊'}
+              </button>
+              
+              {/* Admin Button Mobile */}
+              <button 
+                onClick={() => setShowAdmin(true)}
+                className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 transition-all duration-300 text-base"
+                title={t.adminButton}
+              >
+                🔐
               </button>
               
               {/* Hamburger Button */}
@@ -164,14 +182,6 @@ const Header = () => {
           </div>
         )}
       </header>
-
-      {/* Admin Button */}
-      <button 
-        onClick={() => setShowAdmin(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 bg-cyan-500/20 backdrop-blur-md px-4 py-2 sm:px-5 sm:py-3 rounded-full border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-110 transition-all duration-300 pointer-events-auto text-xs sm:text-sm font-semibold text-white"
-      >
-        🔐 {t.adminButton}
-      </button>
 
       {/* Sticky Mobile CTA */}
       <div className="fixed bottom-4 left-4 right-4 z-30 md:hidden pointer-events-none">
