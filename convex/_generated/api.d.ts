@@ -11,11 +11,10 @@
 import type * as auth from "../auth.js";
 import type * as bookings from "../bookings.js";
 import type * as breathingVideos from "../breathingVideos.js";
-import type * as chatbot from "../chatbot.js";
+import type * as chatbotKnowledge from "../chatbotKnowledge.js";
 import type * as danPhoto from "../danPhoto.js";
 import type * as galleryImages from "../galleryImages.js";
 import type * as heroVideo from "../heroVideo.js";
-import type * as http from "../http.js";
 import type * as media from "../media.js";
 import type * as payments from "../payments.js";
 import type * as practiceSessions from "../practiceSessions.js";
@@ -41,11 +40,10 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   bookings: typeof bookings;
   breathingVideos: typeof breathingVideos;
-  chatbot: typeof chatbot;
+  chatbotKnowledge: typeof chatbotKnowledge;
   danPhoto: typeof danPhoto;
   galleryImages: typeof galleryImages;
   heroVideo: typeof heroVideo;
-  http: typeof http;
   media: typeof media;
   payments: typeof payments;
   practiceSessions: typeof practiceSessions;
