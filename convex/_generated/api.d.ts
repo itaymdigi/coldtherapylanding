@@ -11,6 +11,7 @@
 import type * as auth from "../auth.js";
 import type * as bookings from "../bookings.js";
 import type * as breathingVideos from "../breathingVideos.js";
+import type * as chatbotBooking from "../chatbotBooking.js";
 import type * as chatbotKnowledge from "../chatbotKnowledge.js";
 import type * as danPhoto from "../danPhoto.js";
 import type * as galleryImages from "../galleryImages.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   bookings: typeof bookings;
   breathingVideos: typeof breathingVideos;
+  chatbotBooking: typeof chatbotBooking;
   chatbotKnowledge: typeof chatbotKnowledge;
   danPhoto: typeof danPhoto;
   galleryImages: typeof galleryImages;

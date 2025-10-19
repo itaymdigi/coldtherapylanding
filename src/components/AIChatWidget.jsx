@@ -15,8 +15,8 @@ const AIChatWidget = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // N8N webhook URL - replace with your actual webhook URL after activation
-  const N8N_WEBHOOK_URL = 'https://n8n.digiautomation.cloud/webhook/cold-therapy-chat';
+  // N8N webhook URL - Enhanced version with booking, email, and analytics
+  const N8N_WEBHOOK_URL = 'https://n8n.digiautomation.cloud/webhook/cold-therapy-chat-v2';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
