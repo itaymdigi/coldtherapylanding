@@ -6,7 +6,7 @@ const AIChatWidget = () => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'שלום! 👋 I\'m Dan\'s AI assistant. Ask me about ice baths, packages, or book a session!',
+      content: 'שלום! 👋 Hi! I\'m Dan\'s AI assistant.\n\nאני כאן לעזור לך עם:\n• מידע על אמבטיות קרח\n• חבילות ומחירים\n• קביעת פגישה\n\nI can help you with:\n• Ice bath information\n• Packages & pricing\n• Booking a session\n\nWrite in Hebrew or English! 🧊',
       timestamp: new Date()
     }
   ]);
@@ -47,6 +47,8 @@ const AIChatWidget = () => {
     setIsLoading(true);
 
     try {
+      console.log('Sending message to n8n:', N8N_WEBHOOK_URL);
+      
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: {
@@ -58,24 +60,36 @@ const AIChatWidget = () => {
         }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`Server error: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Response data:', data);
       
       const assistantMessage = {
         role: 'assistant',
-        content: data.response || 'Sorry, I couldn\'t process that. Please try again.',
+        content: data.response || data.message || 'Sorry, I couldn\'t process that. Please try again.',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Chat error details:', error);
+      
+      // Determine error message based on language of last user message
+      const isHebrew = /[\u0590-\u05FF]/.test(userMessage.content);
+      const errorContent = isHebrew 
+        ? 'סליחה, יש לי בעיה בחיבור. אנא נסה שוב או צור קשר ישירות.' 
+        : 'Sorry, I\'m having trouble connecting. Please try again or contact us directly.';
+      
       const errorMessage = {
         role: 'assistant',
-        content: 'Sorry, I\'m having trouble connecting. Please try again or contact us directly.',
+        content: errorContent,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
