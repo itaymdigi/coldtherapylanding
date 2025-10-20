@@ -50,14 +50,14 @@ export default function LivePractice({ language = 'he' }) {
       loginPrompt: 'התחבר כדי להתחיל לעקוב אחר האימונים שלך',
     },
     en: {
-      title: 'Live Practice',
-      subtitle: 'Track your progress and improve your performance',
+      title: 'Live Training',
+      subtitle: 'Track your progress and crush your goals',
       login: 'Login',
       logout: 'Logout',
       welcome: 'Welcome',
       timer: 'Timer',
       history: 'History',
-      loginPrompt: 'Login to start tracking your sessions',
+      loginPrompt: 'Login to start tracking your transformation',
     },
   };
 
