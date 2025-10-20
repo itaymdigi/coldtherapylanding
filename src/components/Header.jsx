@@ -19,23 +19,23 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1 rtl:gap-reverse">
-              <Link to="/" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.home}</Link>
-              <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold flex items-center gap-1 text-lg px-4 py-2 rounded-lg">
-                <span>🌬️</span> {t.breathingVideosMenu}
+              <Link to="/" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.home}</Link>
+              <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+                {t.breathingVideosMenu}
               </Link>
-              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold flex items-center gap-1 text-lg px-4 py-2 rounded-lg">
-                <span>🎓</span> {t.instructorTraining}
+              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+                {t.instructorTraining}
               </Link>
-              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.about}</Link>
-              <Link to="/live-practice" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold flex items-center gap-1 text-lg px-4 py-2 rounded-lg">
-                <span>⏱️</span> {t.livePractice}
+              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.about}</Link>
+              <Link to="/live-practice" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+                {t.livePractice}
               </Link>
-              <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.packages}</button>
-              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.gallery}</Link>
-              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-semibold text-lg px-4 py-2 rounded-lg">{t.contact}</Link>
+              <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.packages}</button>
+              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.gallery}</Link>
+              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.contact}</Link>
               <button 
                 onClick={scrollToPackages}
-                className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-lg ml-2"
+                className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-base ml-2"
               >
                 {t.bookNow}
               </button>
