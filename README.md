@@ -1,24 +1,70 @@
+# Cold Therapy Landing Page
 
-<a href="https://www.youtube.com/watch?v=vXHDfrFMoog&list=PL67b5wgxuUtAzzyFFMZ8W3w_XV4jJfH-8" target="_blank">
-  <img src="./thumbnail.png" alt="Thumbnail"/>
-</a>
+A modern, bilingual (Hebrew/English) Progressive Web App for Dan's Cold Therapy business.
 
+## 🚀 Quick Start
 
-## Description:
-## Want to build a modern, interactive 3D website using React, TailwindCSS, and Spline? In this step-by-step tutorial, I'll show you how to integrate a 3D model into your website for a sleek, immersive experience! 🌐✨
+```bash
+# Install dependencies
+npm install
 
-## 🔥 What You’ll Learn:
-## ✅ How to create and customize 3D models in Spline
-## ✅ How to embed 3D models in a website 
-## ✅ Adding smooth animations & interactivity
-## ✅ Creating a responsive and modern 3D landing page
-## ✅ Best practices for performance optimization
+# Start development server
+npm run dev
 
-## This tutorial is perfect for beginners and advanced developers looking to add 3D effects to their web projects! 🎨💡
+# Deploy Convex backend
+npx convex deploy
+```
 
+## 📚 Documentation
+
+**All project documentation is located in the `/docs` folder.**
+
+👉 **Start here:** [Documentation Index](/docs/INDEX.md)
+
+### Key Documents
+- **[Project Summary](/docs/PROJECT_SUMMARY.md)** - Complete project overview
+- **[PWA Guide](/docs/PWA_GUIDE.md)** - Progressive Web App features
+- **[AI Chatbot Setup](/docs/AI_CHATBOT_SETUP.md)** - Chatbot implementation
+- **[Convex Integration](/docs/CONVEX_INTEGRATION.md)** - Backend setup
+
+## 🎯 Features
+
+- ✅ **Progressive Web App** - Installable on all platforms
+- ✅ **AI Chatbot** - Customer support powered by OpenAI
+- ✅ **Bilingual** - Full Hebrew/English support
+- ✅ **Admin Dashboard** - Content management system
+- ✅ **Booking System** - Real-time session bookings
+- ✅ **Photo Gallery** - Dynamic image management
+- ✅ **Breathing Videos** - Educational content library
+- ✅ **Live Practice** - Live session scheduling
+- ✅ **SEO Optimized** - Search engine ready
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React + Vite + TailwindCSS
+- **Backend:** Convex (real-time database)
+- **AI:** n8n + OpenAI GPT-4o-mini
+- **Deployment:** Vercel
+- **PWA:** Service Workers + Web App Manifest
+
+## 📦 Project Structure
+
+```
+/src
+  /components     - React components
+  /contexts       - React contexts
+  /data          - Static data & translations
+/convex          - Backend functions
+/public          - Static assets
+/docs            - 📚 All documentation
+```
+
+## 🔗 Links
+
+- **Production:** [Your Vercel URL]
+- **Convex Dashboard:** https://cheery-finch-992.convex.cloud
+- **n8n Workflow:** https://n8n.digiautomation.cloud
 
 ---
-## Watch the full tutorial on YouTub
-<a href="https://www.youtube.com/watch?v=vXHDfrFMoog&list=PL67b5wgxuUtAzzyFFMZ8W3w_XV4jJfH-8">
-  <img src="./youtube.png" alt="youtube"/>
-</a>
+
+For detailed documentation, see the [/docs](/docs) folder.
