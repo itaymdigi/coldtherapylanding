@@ -1,13 +1,10 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Get all media files
 export const getAllMedia = query({
   handler: async (ctx) => {
-    return await ctx.db
-      .query("media")
-      .order("desc")
-      .collect();
+    return await ctx.db.query('media').order('desc').collect();
   },
 });
 
@@ -16,16 +13,16 @@ export const getMediaByType = query({
   args: { fileType: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
-      .query("media")
-      .filter((q) => q.eq(q.field("fileType"), args.fileType))
-      .order("desc")
+      .query('media')
+      .filter((q) => q.eq(q.field('fileType'), args.fileType))
+      .order('desc')
       .collect();
   },
 });
 
 // Get media by ID
 export const getMediaById = query({
-  args: { id: v.id("media") },
+  args: { id: v.id('media') },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
@@ -45,7 +42,7 @@ export const uploadMedia = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const mediaId = await ctx.db.insert("media", {
+    const mediaId = await ctx.db.insert('media', {
       fileName: args.fileName,
       fileType: args.fileType,
       mimeType: args.mimeType,
@@ -64,7 +61,7 @@ export const uploadMedia = mutation({
 // Update media
 export const updateMedia = mutation({
   args: {
-    id: v.id("media"),
+    id: v.id('media'),
     fileName: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     description: v.optional(v.string()),
@@ -77,7 +74,7 @@ export const updateMedia = mutation({
 
 // Delete media
 export const deleteMedia = mutation({
-  args: { id: v.id("media") },
+  args: { id: v.id('media') },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
@@ -87,13 +84,14 @@ export const deleteMedia = mutation({
 export const searchMedia = query({
   args: { searchTerm: v.string() },
   handler: async (ctx, args) => {
-    const allMedia = await ctx.db.query("media").collect();
+    const allMedia = await ctx.db.query('media').collect();
     const searchLower = args.searchTerm.toLowerCase();
-    
-    return allMedia.filter(media => 
-      media.fileName.toLowerCase().includes(searchLower) ||
-      media.description?.toLowerCase().includes(searchLower) ||
-      media.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+
+    return allMedia.filter(
+      (media) =>
+        media.fileName.toLowerCase().includes(searchLower) ||
+        media.description?.toLowerCase().includes(searchLower) ||
+        media.tags?.some((tag) => tag.toLowerCase().includes(searchLower))
     );
   },
 });

@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { v } from 'convex/values';
+import { mutation, query } from './_generated/server';
 
 // Save a completed practice session
 export const saveSession = mutation({
@@ -14,31 +14,29 @@ export const saveSession = mutation({
   handler: async (ctx, args) => {
     // Verify token
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!sessionToken || sessionToken.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired token");
+      throw new Error('Invalid or expired token');
     }
 
     const user = await ctx.db.get(sessionToken.userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     // Check if this is a personal best
     const previousSessions = await ctx.db
-      .query("practiceSessions")
-      .withIndex("by_user", (q) => q.eq("userId", sessionToken.userId))
+      .query('practiceSessions')
+      .withIndex('by_user', (q) => q.eq('userId', sessionToken.userId))
       .collect();
 
-    const isPersonalBest = previousSessions.every(
-      (session) => session.duration < args.duration
-    );
+    const isPersonalBest = previousSessions.every((session) => session.duration < args.duration);
 
     // Create session record
-    const sessionId = await ctx.db.insert("practiceSessions", {
+    const sessionId = await ctx.db.insert('practiceSessions', {
       userId: sessionToken.userId,
       duration: args.duration,
       temperature: args.temperature,
@@ -72,8 +70,8 @@ export const getUserSessions = query({
   handler: async (ctx, args) => {
     // Verify token
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!sessionToken || sessionToken.expiresAt < Date.now()) {
@@ -82,9 +80,9 @@ export const getUserSessions = query({
 
     // Get sessions
     const sessions = await ctx.db
-      .query("practiceSessions")
-      .withIndex("by_user_completed", (q) => q.eq("userId", sessionToken.userId))
-      .order("desc")
+      .query('practiceSessions')
+      .withIndex('by_user_completed', (q) => q.eq('userId', sessionToken.userId))
+      .order('desc')
       .take(args.limit || 50);
 
     return sessions;
@@ -99,8 +97,8 @@ export const getUserStats = query({
   handler: async (ctx, args) => {
     // Verify token
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!sessionToken || sessionToken.expiresAt < Date.now()) {
@@ -114,22 +112,18 @@ export const getUserStats = query({
 
     // Get all sessions
     const sessions = await ctx.db
-      .query("practiceSessions")
-      .withIndex("by_user", (q) => q.eq("userId", sessionToken.userId))
+      .query('practiceSessions')
+      .withIndex('by_user', (q) => q.eq('userId', sessionToken.userId))
       .collect();
 
     // Calculate stats
     const longestSession = Math.max(...sessions.map((s) => s.duration), 0);
     const averageSession =
-      sessions.length > 0
-        ? sessions.reduce((sum, s) => sum + s.duration, 0) / sessions.length
-        : 0;
+      sessions.length > 0 ? sessions.reduce((sum, s) => sum + s.duration, 0) / sessions.length : 0;
 
     // Get last 7 days sessions
     const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const recentSessions = sessions.filter(
-      (s) => s.completedAt > sevenDaysAgo
-    );
+    const recentSessions = sessions.filter((s) => s.completedAt > sevenDaysAgo);
 
     // Get current streak
     let streak = 0;
@@ -137,9 +131,7 @@ export const getUserStats = query({
     today.setHours(0, 0, 0, 0);
     let checkDate = today.getTime();
 
-    const sortedSessions = [...sessions].sort(
-      (a, b) => b.completedAt - a.completedAt
-    );
+    const sortedSessions = [...sessions].sort((a, b) => b.completedAt - a.completedAt);
 
     for (let i = 0; i < 30; i++) {
       const dayStart = checkDate - i * 24 * 60 * 60 * 1000;
@@ -173,32 +165,32 @@ export const getUserStats = query({
 export const deleteSession = mutation({
   args: {
     token: v.string(),
-    sessionId: v.id("practiceSessions"),
+    sessionId: v.id('practiceSessions'),
   },
   handler: async (ctx, args) => {
     // Verify token
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!sessionToken || sessionToken.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired token");
+      throw new Error('Invalid or expired token');
     }
 
     const session = await ctx.db.get(args.sessionId);
     if (!session) {
-      throw new Error("Session not found");
+      throw new Error('Session not found');
     }
 
     // Verify ownership
     if (session.userId !== sessionToken.userId) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     const user = await ctx.db.get(sessionToken.userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     // Update user stats

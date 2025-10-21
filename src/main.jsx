@@ -1,25 +1,25 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { ConvexProvider, ConvexReactClient } from 'convex/react'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import './index.css';
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
+import { routeTree } from './routeTree.gen';
 
 // Create a new router instance
-const router = createRouter({ routeTree })
+const router = createRouter({ routeTree });
 
 // Initialize Convex client
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL || 'http://localhost:3210')
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL || 'http://localhost:3210');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ConvexProvider client={convex}>
       <RouterProvider router={router} />
     </ConvexProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
 
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
@@ -28,7 +28,7 @@ if ('serviceWorker' in navigator) {
       .register('/sw.js')
       .then((registration) => {
         console.log('✅ Service Worker registered successfully:', registration.scope);
-        
+
         // Check for updates
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;

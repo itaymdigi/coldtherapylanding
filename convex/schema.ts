@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from 'convex/server';
+import { v } from 'convex/values';
 
 export default defineSchema({
   // Gallery Images
@@ -100,7 +100,7 @@ export default defineSchema({
   // User Progress/Watch History
   videoProgress: defineTable({
     userId: v.string(),
-    videoId: v.id("breathingVideos"),
+    videoId: v.id('breathingVideos'),
     progress: v.number(), // percentage watched
     completed: v.boolean(),
     lastWatchedAt: v.number(),
@@ -130,11 +130,11 @@ export default defineSchema({
     lastLoginAt: v.optional(v.number()),
     totalSessions: v.number(),
     totalDuration: v.number(), // in seconds
-  }).index("by_email", ["email"]),
+  }).index('by_email', ['email']),
 
   // Practice Sessions
   practiceSessions: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     duration: v.number(), // in seconds
     temperature: v.optional(v.number()), // water temperature in Celsius
     notes: v.optional(v.string()),
@@ -142,17 +142,19 @@ export default defineSchema({
     completedAt: v.number(),
     pauseCount: v.number(), // how many times user paused
     personalBest: v.boolean(), // is this a personal record
-  }).index("by_user", ["userId"])
-    .index("by_user_completed", ["userId", "completedAt"]),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_completed', ['userId', 'completedAt']),
 
   // Session Tokens for authentication
   sessionTokens: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     token: v.string(),
     expiresAt: v.number(),
     createdAt: v.number(),
-  }).index("by_token", ["token"])
-    .index("by_user", ["userId"]),
+  })
+    .index('by_token', ['token'])
+    .index('by_user', ['userId']),
 
   // Admin Sessions for admin panel authentication
   adminSessions: defineTable({
@@ -160,5 +162,5 @@ export default defineSchema({
     createdAt: v.number(),
     expiresAt: v.number(),
     lastActivityAt: v.number(),
-  }).index("by_token", ["token"]),
+  }).index('by_token', ['token']),
 });

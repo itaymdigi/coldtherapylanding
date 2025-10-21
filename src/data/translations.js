@@ -12,21 +12,26 @@ export const translations = {
     instructorTraining: 'Instructor Training',
     heroTitle: 'Unleash Your',
     heroSubtitle: 'Ultimate Potential',
-    heroDescription: 'Master the ancient art of cold therapy and breathwork. Supercharge your immune system, crush stress, and become unstoppable.',
+    heroDescription:
+      'Master the ancient art of cold therapy and breathwork. Supercharge your immune system, crush stress, and become unstoppable.',
     viewPackages: 'Explore Packages',
     bookNow: 'Start Your Journey',
     benefitIceBath: 'Ice Bath Mastery',
-    benefitIceBathDesc: 'Plunge into transformation. Crush inflammation, accelerate recovery, and unlock razor-sharp mental clarity',
+    benefitIceBathDesc:
+      'Plunge into transformation. Crush inflammation, accelerate recovery, and unlock razor-sharp mental clarity',
     benefitBreathing: 'Power Breathing',
-    benefitBreathingDesc: 'Harness ancient breathwork techniques to obliterate stress, skyrocket your energy, and elevate your life',
+    benefitBreathingDesc:
+      'Harness ancient breathwork techniques to obliterate stress, skyrocket your energy, and elevate your life',
     benefitGuided: 'Expert Guidance',
-    benefitGuidedDesc: 'Train with certified professionals who combine cold exposure and breathwork for maximum results and total safety',
+    benefitGuidedDesc:
+      'Train with certified professionals who combine cold exposure and breathwork for maximum results and total safety',
     packagesTitle: 'Choose Your Path',
     packagesSubtitle: 'Select the perfect plan to unlock your ultimate potential',
     package1Title: 'Starter Pack',
     package1Price: '700',
     package1Feature1: '10 powerful sessions - valid for 3 months',
-    package1Feature2: 'Full access: Ice bath, sauna, hot/cold showers, massage chair, premium herbal tea & more',
+    package1Feature2:
+      'Full access: Ice bath, sauna, hot/cold showers, massage chair, premium herbal tea & more',
     package1Feature3: 'Expert-led breathing & cold therapy workshops',
     package2Title: '6-Month Elite Access',
     package2Subtitle: 'Most Popular',
@@ -34,7 +39,8 @@ export const translations = {
     package2PriceNote: 'Only 250 ₪/month',
     package2Feature1: 'UNLIMITED access to all premium facilities',
     package2Feature2: 'Exclusive cold therapy workshops & masterclasses',
-    package2Feature3: 'Complete experience: Ice bath, sauna, hot/cold contrast therapy, massage chair, premium teas & more',
+    package2Feature3:
+      'Complete experience: Ice bath, sauna, hot/cold contrast therapy, massage chair, premium teas & more',
     package2Feature4: 'Personal 1-on-1 training sessions',
     package2Feature5: 'Private ice pool rental privileges',
     package3Title: 'All-Access Monthly',
@@ -43,7 +49,8 @@ export const translations = {
     package3PriceNote: 'per month',
     package3Feature1: 'UNLIMITED access - train as much as you want',
     package3Feature2: 'Join exclusive cold therapy workshops',
-    package3Feature3: 'Full premium experience: Ice bath, sauna, contrast therapy, massage chair, herbal teas, workshops & personal training',
+    package3Feature3:
+      'Full premium experience: Ice bath, sauna, contrast therapy, massage chair, herbal teas, workshops & personal training',
     popular: 'POPULAR',
     mostPopular: 'Most Popular',
     bestValue: 'Best Value',
@@ -54,17 +61,22 @@ export const translations = {
     statsClients: 'Happy Clients',
     statsTemp: 'Average Temp',
     aboutTitle: 'Meet Dan Hayat',
-    aboutP1: 'My name is Dan Hayat, and for the past 7 years I have been working in the fields of therapy and coaching. I went through a significant journey and learned many tools in the mental and physiological worlds, and maintained a super successful clinic. In my training I am a Master NLP and therapist in Pranayama and circular breathing.',
-    aboutP2: 'A little over two years ago, I found the missing piece in my professional puzzle, I was exposed to cold medicine and the phenomenal benefits of ice bath immersion - and from there the rest is history. My life changed from end to end at levels I didn\'t believe were possible. Suddenly I started experiencing sensations I didn\'t know were possible to experience. Suddenly I felt alive!',
-    aboutP3: 'I gained extensive experience in the field, thousands of people went through hundreds of workshops with me, I worked with diverse audiences and developed proven and healing models that combine unique breathing practice, and a combination of cold shock through ice bath immersion and heat shock through sauna/hot tub. Practices that simply make people feel good and bring a huge smile to their faces.',
-    aboutP4: 'My main goal has always been and will be to spread the tools that changed my life, to as many people as possible. And I wake up with absolute obsession, 7 days a week, to take part in a tremendous revolution in the worlds of natural health and wellness. Welcome to Cold Therapy.',
+    aboutP1:
+      'My name is Dan Hayat, and for the past 7 years I have been working in the fields of therapy and coaching. I went through a significant journey and learned many tools in the mental and physiological worlds, and maintained a super successful clinic. In my training I am a Master NLP and therapist in Pranayama and circular breathing.',
+    aboutP2:
+      "A little over two years ago, I found the missing piece in my professional puzzle, I was exposed to cold medicine and the phenomenal benefits of ice bath immersion - and from there the rest is history. My life changed from end to end at levels I didn't believe were possible. Suddenly I started experiencing sensations I didn't know were possible to experience. Suddenly I felt alive!",
+    aboutP3:
+      'I gained extensive experience in the field, thousands of people went through hundreds of workshops with me, I worked with diverse audiences and developed proven and healing models that combine unique breathing practice, and a combination of cold shock through ice bath immersion and heat shock through sauna/hot tub. Practices that simply make people feel good and bring a huge smile to their faces.',
+    aboutP4:
+      'My main goal has always been and will be to spread the tools that changed my life, to as many people as possible. And I wake up with absolute obsession, 7 days a week, to take part in a tremendous revolution in the worlds of natural health and wellness. Welcome to Cold Therapy.',
     aboutCert: 'Certified Expert',
     aboutCertDesc: 'Wim Hof Method Instructor & Cryotherapy Specialist',
     aboutExp: '10+ Years Experience',
     aboutExpDesc: 'Helping clients achieve peak performance and wellness',
     aboutPassion: 'Passionate About Wellness',
     aboutPassionDesc: 'Dedicated to transforming lives through cold therapy',
-    aboutQuote: '"Cold therapy isn\'t just about enduring the cold—it\'s about discovering your inner strength and unlocking your body\'s natural healing potential."',
+    aboutQuote:
+      "\"Cold therapy isn't just about enduring the cold—it's about discovering your inner strength and unlocking your body's natural healing potential.\"",
     videoTitle: 'Witness The Transformation',
     videoSubtitle: 'See real people unlock their potential through cold therapy',
     videoComingSoon: 'More Transformation Stories Coming Soon',
@@ -74,15 +86,20 @@ export const translations = {
     faqTitle: 'Frequently Asked Questions',
     faqSubtitle: 'Everything you need to know about cold therapy',
     faq1Q: 'What is cold therapy?',
-    faq1A: 'Cold therapy (cryotherapy) is an ancient practice that exposes your body to extreme cold for powerful therapeutic benefits. Our ice bath sessions crush inflammation, accelerate recovery, sharpen mental clarity, and supercharge your immune system.',
+    faq1A:
+      'Cold therapy (cryotherapy) is an ancient practice that exposes your body to extreme cold for powerful therapeutic benefits. Our ice bath sessions crush inflammation, accelerate recovery, sharpen mental clarity, and supercharge your immune system.',
     faq2Q: 'Is it safe for beginners?',
-    faq2A: 'Absolutely! Every session is personally guided by Dan, a certified expert who ensures your safety and success. We start gradually and build your cold tolerance step by step. You\'ll also master proven breathing techniques that make the experience transformative.',
+    faq2A:
+      "Absolutely! Every session is personally guided by Dan, a certified expert who ensures your safety and success. We start gradually and build your cold tolerance step by step. You'll also master proven breathing techniques that make the experience transformative.",
     faq3Q: 'What should I bring?',
-    faq3A: 'Just bring yourself, a swimsuit, and your courage! We provide premium towels, robes, and all amenities. Arrive 10 minutes early for your first session to complete a quick health check - then get ready to transform.',
+    faq3A:
+      'Just bring yourself, a swimsuit, and your courage! We provide premium towels, robes, and all amenities. Arrive 10 minutes early for your first session to complete a quick health check - then get ready to transform.',
     faq4Q: 'How long is each session?',
-    faq4A: 'Each powerful session runs 30-45 minutes total, including preparation, the ice bath experience (10-15 minutes), breathwork exercises, and recovery. Your cold exposure time is customized to your level and goals.',
+    faq4A:
+      'Each powerful session runs 30-45 minutes total, including preparation, the ice bath experience (10-15 minutes), breathwork exercises, and recovery. Your cold exposure time is customized to your level and goals.',
     faq5Q: 'What are the main benefits?',
-    faq5A: 'Cold therapy delivers game-changing benefits: crushed inflammation, rapid muscle recovery, enhanced circulation, bulletproof immune system, deep sleep, unshakeable mental resilience, stress obliteration, and natural mood elevation through endorphin release.',
+    faq5A:
+      'Cold therapy delivers game-changing benefits: crushed inflammation, rapid muscle recovery, enhanced circulation, bulletproof immune system, deep sleep, unshakeable mental resilience, stress obliteration, and natural mood elevation through endorphin release.',
     galleryTitle: 'The Experience',
     gallerySubtitle: 'Step inside our transformative cold therapy sessions',
     galleryInstagram: 'Join our community on Instagram for daily inspiration',
@@ -102,13 +119,17 @@ export const translations = {
     whyIceBathTitle: 'Why Ice Bath Therapy?',
     whyIceBathSubtitle: 'Unlock the transformative power of cold water immersion',
     whyBenefit1Title: 'Conquer Stress',
-    whyBenefit1Desc: 'Master stress and train your nervous system to thrive under pressure through ice bath immersion',
+    whyBenefit1Desc:
+      'Master stress and train your nervous system to thrive under pressure through ice bath immersion',
     whyBenefit2Title: 'Supercharge Immunity',
-    whyBenefit2Desc: 'Build an unstoppable immune system, optimize circulation, reduce heart strain, and develop elite cold resistance',
+    whyBenefit2Desc:
+      'Build an unstoppable immune system, optimize circulation, reduce heart strain, and develop elite cold resistance',
     whyBenefit3Title: 'Rapid Recovery',
-    whyBenefit3Desc: 'Heal injuries faster, crush inflammation, and skyrocket dopamine production by 250% above baseline!',
+    whyBenefit3Desc:
+      'Heal injuries faster, crush inflammation, and skyrocket dopamine production by 250% above baseline!',
     whyBenefit4Title: 'Mental Dominance',
-    whyBenefit4Desc: 'Elevate your mindset, build unshakeable confidence, and sharpen your decision-making abilities in all areas of life',
+    whyBenefit4Desc:
+      'Elevate your mindset, build unshakeable confidence, and sharpen your decision-making abilities in all areas of life',
     ourClientsTitle: 'Our Clients',
     ourClientsSubtitle: 'Trusted by leading organizations',
     clientEnterprise: 'Enterprise',
@@ -122,20 +143,29 @@ export const translations = {
     contactLocationLabel: 'Location',
     followUs: 'Follow Us',
     instructorTitle: 'Become a Certified Cold Therapy Instructor',
-    instructorP1: 'Over 12,000 people have transformed through our workshops. Millions more worldwide are discovering this ancient practice. We\'re witnessing a health revolution unlike anything humanity has ever experienced.',
-    instructorP2: 'What was once reserved for elite athletes, ancient warriors, and longevity researchers is now accessible to everyone. The secrets of resilience and peak performance are spreading to the masses.',
-    instructorP3: 'Ice baths are no longer underground - they\'re conquering the mainstream. This is your moment!',
-    instructorP4: 'Join the revolution. Master the practice. Build a thriving career helping people heal and transform. Earn a meaningful living doing work that opens hearts and brings massive smiles to people\'s faces.',
-    instructorP5: 'Our proven protocols combine powerful breathwork with controlled cold and heat exposure. You\'ll learn to guide people into total release and help them discover that true well-being comes from within.',
-    instructorP6: 'Master the ability to feel unstoppable - no matter what life throws at you. Learn to thrive in controlled stress situations and build unshakeable mental and physiological resilience.',
-    instructorP7: 'Our method teaches you to enter Fight or Flight states intentionally, then create absolute calm in the most intense moments. Connect to the deep intelligence within you - that inner voice you\'ve forgotten exists. Realize you are beyond this body, beyond this world.',
+    instructorP1:
+      "Over 12,000 people have transformed through our workshops. Millions more worldwide are discovering this ancient practice. We're witnessing a health revolution unlike anything humanity has ever experienced.",
+    instructorP2:
+      'What was once reserved for elite athletes, ancient warriors, and longevity researchers is now accessible to everyone. The secrets of resilience and peak performance are spreading to the masses.',
+    instructorP3:
+      "Ice baths are no longer underground - they're conquering the mainstream. This is your moment!",
+    instructorP4:
+      "Join the revolution. Master the practice. Build a thriving career helping people heal and transform. Earn a meaningful living doing work that opens hearts and brings massive smiles to people's faces.",
+    instructorP5:
+      "Our proven protocols combine powerful breathwork with controlled cold and heat exposure. You'll learn to guide people into total release and help them discover that true well-being comes from within.",
+    instructorP6:
+      'Master the ability to feel unstoppable - no matter what life throws at you. Learn to thrive in controlled stress situations and build unshakeable mental and physiological resilience.',
+    instructorP7:
+      "Our method teaches you to enter Fight or Flight states intentionally, then create absolute calm in the most intense moments. Connect to the deep intelligence within you - that inner voice you've forgotten exists. Realize you are beyond this body, beyond this world.",
     instructorP8: 'Discover the state of mind where nothing can stop you.',
-    instructorP9: 'We\'ll teach you everything. Zero secrets. Complete transparency.',
-    instructorP10: 'Learn to hold transformative healing spaces using our proven protocols. Master the business side too - how to build your brand, attract clients, and create a thriving professional identity.',
-    instructorP11: 'This field is exploding. Demand is skyrocketing. NOW is the perfect time to become a certified instructor.',
+    instructorP9: "We'll teach you everything. Zero secrets. Complete transparency.",
+    instructorP10:
+      'Learn to hold transformative healing spaces using our proven protocols. Master the business side too - how to build your brand, attract clients, and create a thriving professional identity.',
+    instructorP11:
+      'This field is exploding. Demand is skyrocketing. NOW is the perfect time to become a certified instructor.',
     footer: '© 2025 Cold Therapy by Dan Hayat. All rights reserved.',
     footerTagline: 'Unleash your potential through the power of cold and breath',
-    
+
     // Breathing Videos Section
     breathingVideosTitle: 'Master Your Breath',
     breathingVideosSubtitle: 'Transform your life with expert-led breathwork training',
@@ -159,7 +189,7 @@ export const translations = {
     categoryPranayama: 'Pranayama',
     categoryBeginnerFriendly: 'Beginner Friendly',
     noVideosFound: 'No videos found in this category',
-    
+
     // Admin Panel - Videos
     adminVideosTab: 'Videos',
     adminAddVideo: 'Add New Video',
@@ -184,7 +214,7 @@ export const translations = {
     adminVideoDelete: 'Delete',
     adminNoVideos: 'No videos yet. Add your first video above!',
     adminVideoDraft: 'Draft',
-    adminVideoPremiumBadge: 'Premium'
+    adminVideoPremiumBadge: 'Premium',
   },
   he: {
     logo: 'טיפול בקור',
@@ -199,21 +229,25 @@ export const translations = {
     instructorTraining: 'הכשרת מדריכים',
     heroTitle: 'שנה את',
     heroSubtitle: 'הגוף והנפש שלך',
-    heroDescription: 'חווה את כוח הטיפול בקור ותרגילי הנשימה. חזק את המערכת החיסונית, הפחת מתח ושחרר את הפוטנציאל המלא שלך.',
+    heroDescription:
+      'חווה את כוח הטיפול בקור ותרגילי הנשימה. חזק את המערכת החיסונית, הפחת מתח ושחרר את הפוטנציאל המלא שלך.',
     viewPackages: 'צפה בחבילות',
     bookNow: 'הזמן עכשיו',
     benefitIceBath: 'טיפול באמבט קרח',
     benefitIceBathDesc: 'טבול במים קרים להפחתת דלקות, שיפור ההתאוששות והגברת הבהירות המנטלית',
     benefitBreathing: 'טכניקות נשימה',
-    benefitBreathingDesc: 'שלוט בשיטות נשימה עוצמתיות להפחתת מתח, הגברת אנרגיה ושיפור הרווחה הכללית',
+    benefitBreathingDesc:
+      'שלוט בשיטות נשימה עוצמתיות להפחתת מתח, הגברת אנרגיה ושיפור הרווחה הכללית',
     benefitGuided: 'סשנים מודרכים',
-    benefitGuidedDesc: 'סשנים בהנחיית מומחים המשלבים חשיפה לקור ותרגילי נשימה לתוצאות מקסימליות ובטיחות',
+    benefitGuidedDesc:
+      'סשנים בהנחיית מומחים המשלבים חשיפה לקור ותרגילי נשימה לתוצאות מקסימליות ובטיחות',
     packagesTitle: 'בחר את החבילה שלך',
     packagesSubtitle: 'בחר את התוכנית המושלמת למסע הבריאות שלך',
     package1Title: 'כרטיסיה - 10 כניסות',
     package1Price: '700',
     package1Feature1: '10 כניסות בתוקף למשך 3 חודשים מתאריך הרכישה',
-    package1Feature2: 'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד',
+    package1Feature2:
+      'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד',
     package1Feature3: 'סדנאות נשימה וטיפול בקור בבריכת הקרח',
     package2Title: 'מנוי חופשי-חודשי / 6 חודשים',
     package2Subtitle: 'הכי פופולרי',
@@ -221,7 +255,8 @@ export const translations = {
     package2PriceNote: '250 ₪/חודש',
     package2Feature1: 'כניסה חופשית לכל הפעילויות ללא הגבלה',
     package2Feature2: 'סדנאות טיפול בקור בבריכת הקרח',
-    package2Feature3: 'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד. כולל גם סדנאות טיפול בקור בבריכת הקרח ואימונים אישיים',
+    package2Feature3:
+      'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד. כולל גם סדנאות טיפול בקור בבריכת הקרח ואימונים אישיים',
     package2Feature4: 'אימונים אישיים',
     package2Feature5: 'השכרת בריכת הקרח',
     package3Title: 'מנוי חופשי-חודשי',
@@ -230,7 +265,8 @@ export const translations = {
     package3PriceNote: 'לחודש',
     package3Feature1: 'כניסה חופשית לכל הפעילויות ללא הגבלה',
     package3Feature2: 'סדנאות טיפול בקור בבריכת הקרח',
-    package3Feature3: 'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד. כולל גם סדנאות טיפול בקור בבריכת הקרח ואימונים אישיים',
+    package3Feature3:
+      'הכניסה כוללת: כניסה, מגבת, סאונה, מקלחות חמות/קרות, כיסא עיסוי, תה צמחים ועוד. כולל גם סדנאות טיפול בקור בבריכת הקרח ואימונים אישיים',
     popular: 'פופולרי',
     mostPopular: 'הכי פופולרי',
     bestValue: 'הצעות שלנו',
@@ -241,17 +277,22 @@ export const translations = {
     statsClients: 'לקוחות מרוצים',
     statsTemp: 'טמפרטורה ממוצעת',
     aboutTitle: 'הכר את דן חייט',
-    aboutP1: 'קוראים לי דן חייט, וב-7 השנים האחרונות אני מתעסק בעולמות הטיפול והאימון. עברתי דרך משמעותית ולמדתי כלים רבים בעולמות המנטאליים והפיזיולוגים, ותחזקתי קליניקה סופר מצליחה. בהכשרתי אני Master NLP ומטפל בפראניאמה ונשימה מעגלית.',
-    aboutP2: 'לפני קצת יותר משנתיים, מצאתי את החתיכה החסרה בפאזל המקצועי שלי, נחשפתי לרפואת הקור וליתרונות הפנומנאליים של טבילה במי קרח - ומשם השאר היסטוריה. החיים שלי השתנו מקצה לקצה ברמות שלא האמנתי שאפשריות. פתאום התחלתי לחוות תחושות שלא ידעתי שאפשר לחוות. פתאום הרגשתי חי!',
-    aboutP3: 'צברתי ניסיון רב בשטח, עברו אצלי אלפי אנשים במאות סדנאות, עבדתי עם קהלים מגוונים ופיתחתי מודלים מוכחים ומרפאים, שמשלבים תרגול נשימה ייחודי, ושילוב של שוק קור באמצעות טבילה במי קרח ושל שוק חום במאצעות סאונה/האט-טאב. תרגולים שפשוט עושים טוב לאנשים ומעלים להם חיוך ענק על הפנים.',
-    aboutP4: 'המטרה המרכזית שלי תמיד הייתה ותהיה להפיץ את הכלים ששינו את חיי, הלאה לכמה שיותר אנשים. ואני מתעורר באובססיביות מוחלטת, 7 ימים בשבוע, לקחת חלק במהפכה אדירה בעולמות הבריאות הטבעית והוולנס. ברוכים הבאים ל-Cold Therapy.',
+    aboutP1:
+      'קוראים לי דן חייט, וב-7 השנים האחרונות אני מתעסק בעולמות הטיפול והאימון. עברתי דרך משמעותית ולמדתי כלים רבים בעולמות המנטאליים והפיזיולוגים, ותחזקתי קליניקה סופר מצליחה. בהכשרתי אני Master NLP ומטפל בפראניאמה ונשימה מעגלית.',
+    aboutP2:
+      'לפני קצת יותר משנתיים, מצאתי את החתיכה החסרה בפאזל המקצועי שלי, נחשפתי לרפואת הקור וליתרונות הפנומנאליים של טבילה במי קרח - ומשם השאר היסטוריה. החיים שלי השתנו מקצה לקצה ברמות שלא האמנתי שאפשריות. פתאום התחלתי לחוות תחושות שלא ידעתי שאפשר לחוות. פתאום הרגשתי חי!',
+    aboutP3:
+      'צברתי ניסיון רב בשטח, עברו אצלי אלפי אנשים במאות סדנאות, עבדתי עם קהלים מגוונים ופיתחתי מודלים מוכחים ומרפאים, שמשלבים תרגול נשימה ייחודי, ושילוב של שוק קור באמצעות טבילה במי קרח ושל שוק חום במאצעות סאונה/האט-טאב. תרגולים שפשוט עושים טוב לאנשים ומעלים להם חיוך ענק על הפנים.',
+    aboutP4:
+      'המטרה המרכזית שלי תמיד הייתה ותהיה להפיץ את הכלים ששינו את חיי, הלאה לכמה שיותר אנשים. ואני מתעורר באובססיביות מוחלטת, 7 ימים בשבוע, לקחת חלק במהפכה אדירה בעולמות הבריאות הטבעית והוולנס. ברוכים הבאים ל-Cold Therapy.',
     aboutCert: 'מומחה מוסמך',
     aboutCertDesc: 'מדריך שיטת וים הוף ומומחה קריותרפיה',
     aboutExp: 'למעלה מ-10 שנות ניסיון',
     aboutExpDesc: 'עוזר ללקוחות להשיג ביצועים ובריאות מיטביים',
     aboutPassion: 'נלהב מבריאות',
     aboutPassionDesc: 'מוקדש לשינוי חיים באמצעות טיפול בקור',
-    aboutQuote: '"טיפול בקור אינו רק על סבילות הקור - זה על גילוי הכוח הפנימי שלך ושחרור פוטנציאל הריפוי הטבעי של הגוף."',
+    aboutQuote:
+      '"טיפול בקור אינו רק על סבילות הקור - זה על גילוי הכוח הפנימי שלך ושחרור פוטנציאל הריפוי הטבעי של הגוף."',
     videoTitle: 'ראה טיפול בקור בפעולה',
     videoSubtitle: 'צפה כיצד הסשנים שלנו משנים חיים',
     videoComingSoon: 'סרטונים נוספים בקרוב',
@@ -261,15 +302,20 @@ export const translations = {
     faqTitle: 'שאלות נפוצות',
     faqSubtitle: 'כל מה שצריך לדעת על טיפול בקור',
     faq1Q: 'מה זה טיפול בקור?',
-    faq1A: 'טיפול בקור, המכונה גם קריותרפיה, כולל חשיפת הגוף לטמפרטורות קרות במיוחד לצורכי טיפול. סשני אמבט הקרח שלנו עוזרים להפחית דלקות, לשפר התאוששות, להגביר בהירות מנטלית ולחזק את המערכת החיסונית.',
+    faq1A:
+      'טיפול בקור, המכונה גם קריותרפיה, כולל חשיפת הגוף לטמפרטורות קרות במיוחד לצורכי טיפול. סשני אמבט הקרח שלנו עוזרים להפחית דלקות, לשפר התאוששות, להגביר בהירות מנטלית ולחזק את המערכת החיסונית.',
     faq2Q: 'האם זה בטוח למתחילים?',
-    faq2A: 'בהחלט! הסשנים שלנו מודרכים על ידי אנשי מקצוע מנוסים המבטיחים את הבטיחות והנוחות שלך. אנו מתחילים עם משכים קצרים יותר ובונים בהדרגה את הסבילות שלך. אנו גם מלמדים טכניקות נשימה נכונות כדי לעזור לך לנהל את החשיפה לקור ביעילות.',
+    faq2A:
+      'בהחלט! הסשנים שלנו מודרכים על ידי אנשי מקצוע מנוסים המבטיחים את הבטיחות והנוחות שלך. אנו מתחילים עם משכים קצרים יותר ובונים בהדרגה את הסבילות שלך. אנו גם מלמדים טכניקות נשימה נכונות כדי לעזור לך לנהל את החשיפה לקור ביעילות.',
     faq3Q: 'מה להביא?',
-    faq3A: 'פשוט תביא את עצמך ובגדים נוחים! אנו מספקים מגבות, חלוקים וכל האביזרים הדרושים. אנו ממליצים ללבוש בגד ים לסשן אמבט הקרח. הגע 10 דקות מוקדם לסשן הראשון שלך כדי למלא שאלון בריאות קצר.',
+    faq3A:
+      'פשוט תביא את עצמך ובגדים נוחים! אנו מספקים מגבות, חלוקים וכל האביזרים הדרושים. אנו ממליצים ללבוש בגד ים לסשן אמבט הקרח. הגע 10 דקות מוקדם לסשן הראשון שלך כדי למלא שאלון בריאות קצר.',
     faq4Q: 'כמה זמן נמשך כל סשן?',
-    faq4A: 'כל סשן נמשך בערך 30-45 דקות בסך הכל, כולל הכנה, אמבט הקרח (בדרך כלל 10-15 דקות), תרגילי נשימה ותקופת התחממות. זמן החשיפה לקור בפועל משתנה בהתאם לרמת הניסיון והנוחות שלך.',
+    faq4A:
+      'כל סשן נמשך בערך 30-45 דקות בסך הכל, כולל הכנה, אמבט הקרח (בדרך כלל 10-15 דקות), תרגילי נשימה ותקופת התחממות. זמן החשיפה לקור בפועל משתנה בהתאם לרמת הניסיון והנוחות שלך.',
     faq5Q: 'מהם היתרונות העיקריים?',
-    faq5A: 'טיפול בקור מציע יתרונות רבים כולל הפחתת דלקות, התאוששות שרירים מהירה יותר, שיפור זרימת הדם, שיפור תפקוד חיסוני, איכות שינה טובה יותר, עמידות מנטלית מוגברת, הפחתת מתח ומצב רוח מוגבר באמצעות שחרור אנדורפינים.',
+    faq5A:
+      'טיפול בקור מציע יתרונות רבים כולל הפחתת דלקות, התאוששות שרירים מהירה יותר, שיפור זרימת הדם, שיפור תפקוד חיסוני, איכות שינה טובה יותר, עמידות מנטלית מוגברת, הפחתת מתח ומצב רוח מוגבר באמצעות שחרור אנדורפינים.',
     galleryTitle: 'גלריית חוויות',
     gallerySubtitle: 'ראו כיצד נראים סשני הטיפול בקור שלנו',
     galleryInstagram: 'עקבו אחרינו באינסטגרם לעדכונים נוספים',
@@ -289,13 +335,17 @@ export const translations = {
     whyIceBathTitle: 'למה דווקא אמבטיית קרח?',
     whyIceBathSubtitle: 'גלה את היתרונות העוצמתיים של טבילה במי קרח',
     whyBenefit1Title: 'התמודדות',
-    whyBenefit1Desc: 'התמודדות יעילה עם סטרס ואימון מערכת העצבים להוציא אותו החוצה ע"י טבילה במי קרח',
+    whyBenefit1Desc:
+      'התמודדות יעילה עם סטרס ואימון מערכת העצבים להוציא אותו החוצה ע"י טבילה במי קרח',
     whyBenefit2Title: 'חיזוק המערכת החיסונית',
-    whyBenefit2Desc: 'חיזוק המערכת החיסונית, מערכת הדם תוך הורדת עומס מהלב והגברת עמידות לקור ע"י בריכת קרח',
+    whyBenefit2Desc:
+      'חיזוק המערכת החיסונית, מערכת הדם תוך הורדת עומס מהלב והגברת עמידות לקור ע"י בריכת קרח',
     whyBenefit3Title: 'התאוששות מהירה מפציעות',
-    whyBenefit3Desc: 'התאוששות מהירה מפציעות, האצת תהליכים אנטי דלקטיים והגברת ייצור דופמין (פי 250% מהנורמה!)',
+    whyBenefit3Desc:
+      'התאוששות מהירה מפציעות, האצת תהליכים אנטי דלקטיים והגברת ייצור דופמין (פי 250% מהנורמה!)',
     whyBenefit4Title: 'שיפור המצב המנטאלי',
-    whyBenefit4Desc: 'שיפור המצב המנטאלי וחיזוק תחושת מסוגלות תוך שיפור ביכולת קבלת החלטות בחיים ע"י אמבטיית קרח',
+    whyBenefit4Desc:
+      'שיפור המצב המנטאלי וחיזוק תחושת מסוגלות תוך שיפור ביכולת קבלת החלטות בחיים ע"י אמבטיית קרח',
     ourClientsTitle: 'בין לקוחותינו',
     ourClientsSubtitle: 'מהימנים על ידי ארגונים מובילים',
     clientEnterprise: 'ארגונים',
@@ -309,20 +359,28 @@ export const translations = {
     contactLocationLabel: 'מיקום',
     followUs: 'עקבו אחרינו',
     instructorTitle: 'הכשרת מדריכים בשיטה שלנו',
-    instructorP1: 'אחרי מעל ל-12,000 אנשים שעברו אצלנו בסדנאות, ועוד מיליונים שמתרגלים שיטות דומות ברחבי העולם, אנחנו יודעים להגיד בוודאות שאנחנו בעיצומה של מהפכה בריאותית ברמות שהאנושות עוד לא הכירה.',
-    instructorP2: 'ההמונים לאט לאט נחשפים לכלים שהיו שמורים בעיקר לספורטאי על, תרבויות עתיקות וקבוצות של אנשים שחוקרים את מדע אריכות הימים והחוסן.',
+    instructorP1:
+      'אחרי מעל ל-12,000 אנשים שעברו אצלנו בסדנאות, ועוד מיליונים שמתרגלים שיטות דומות ברחבי העולם, אנחנו יודעים להגיד בוודאות שאנחנו בעיצומה של מהפכה בריאותית ברמות שהאנושות עוד לא הכירה.',
+    instructorP2:
+      'ההמונים לאט לאט נחשפים לכלים שהיו שמורים בעיקר לספורטאי על, תרבויות עתיקות וקבוצות של אנשים שחוקרים את מדע אריכות הימים והחוסן.',
     instructorP3: 'היום, זו זכות גדולה שאמבטיות קרח הן טרנדיות, וכובשות את המיינסטרים!',
-    instructorP4: 'יש לנו הזדמנות לקחת את התרגול לרמה הבאה, ולהתחיל להפיץ אותו הלאה לאנשים, וגם להתפרנס מזה. להתפרנס בכבוד מתרגול שמביא הרבה ריפוי לעולם, ולא פחות חשוב מזה, פותח לבבות ומעלה לאנשים חיוך ענק על הפנים.',
-    instructorP5: 'פיתחנו מודלים ופרוטוקולים משלבים תהליכי נשימה, ביחד עם חשיפה מבוקרת לקור וחום, על מנת להעביר אנשים חוויה של שחרור טוטאלי, וחיבור עמוק להבנה שההרגשה הטובה שלנו לא תלויה בדבר.',
-    instructorP6: 'יש לנו את היכולת להרגיש טוב, לא משנה כמה המציאות בחוץ נושכת ושוחקת, וכל מה שעלינו לעשות הוא להסכים לחוות את עצמנו במצבי דחק מבוקרים, על מנת לייצר חוסן מנטאלי ופיזיולוגי שלא ניתן לערער.',
-    instructorP7: 'השיטה שלנו שמה דגש על כניסה למצבים של Fight or Flight, על מנת ללמוד לייצר רגיעה מוחלטת במצבים האינטנסיביים ביותר, ובכך עוזרת לנו להתחבר לאינטיליגנציה עמוקה שנמצאת עמוק בתוכנו. מעין קול פנימי שכבר שכחנו שקיים. ידיעה שאנחנו מעל הגוף הזה, מעל העולם הזה.',
+    instructorP4:
+      'יש לנו הזדמנות לקחת את התרגול לרמה הבאה, ולהתחיל להפיץ אותו הלאה לאנשים, וגם להתפרנס מזה. להתפרנס בכבוד מתרגול שמביא הרבה ריפוי לעולם, ולא פחות חשוב מזה, פותח לבבות ומעלה לאנשים חיוך ענק על הפנים.',
+    instructorP5:
+      'פיתחנו מודלים ופרוטוקולים משלבים תהליכי נשימה, ביחד עם חשיפה מבוקרת לקור וחום, על מנת להעביר אנשים חוויה של שחרור טוטאלי, וחיבור עמוק להבנה שההרגשה הטובה שלנו לא תלויה בדבר.',
+    instructorP6:
+      'יש לנו את היכולת להרגיש טוב, לא משנה כמה המציאות בחוץ נושכת ושוחקת, וכל מה שעלינו לעשות הוא להסכים לחוות את עצמנו במצבי דחק מבוקרים, על מנת לייצר חוסן מנטאלי ופיזיולוגי שלא ניתן לערער.',
+    instructorP7:
+      'השיטה שלנו שמה דגש על כניסה למצבים של Fight or Flight, על מנת ללמוד לייצר רגיעה מוחלטת במצבים האינטנסיביים ביותר, ובכך עוזרת לנו להתחבר לאינטיליגנציה עמוקה שנמצאת עמוק בתוכנו. מעין קול פנימי שכבר שכחנו שקיים. ידיעה שאנחנו מעל הגוף הזה, מעל העולם הזה.',
     instructorP8: 'אנחנו לומדים להתחבר לסטייט אוף מיינד שבו אי אפשר לעצור אותנו.',
     instructorP9: 'ואנחנו הולכים ללמד אתכם הכל. בלי סודות.',
-    instructorP10: 'אנחנו הולכים ללמד אתכם כיצד להחזיק מרחבים מרפאים, באמצעות פרוטוקולים של נשימה וחשיפה לקור וחום, וגם איך להתפרנס מזה ולבנות את הזהות המקצועית שלכם.',
-    instructorP11: 'התחום רק בתחילת דרכו, הביקוש רק הולך לעלות, ועכשיו זה הזמן המדויק ביותר להיכנס.',
+    instructorP10:
+      'אנחנו הולכים ללמד אתכם כיצד להחזיק מרחבים מרפאים, באמצעות פרוטוקולים של נשימה וחשיפה לקור וחום, וגם איך להתפרנס מזה ולבנות את הזהות המקצועית שלכם.',
+    instructorP11:
+      'התחום רק בתחילת דרכו, הביקוש רק הולך לעלות, ועכשיו זה הזמן המדויק ביותר להיכנס.',
     footer: '© 2025 טיפול בקור מאת דן חיאט. כל הזכויות שמורות.',
     footerTagline: 'שנה את חייך באמצעות כוח הקור והנשימה',
-    
+
     // Breathing Videos Section
     breathingVideosTitle: 'סרטוני נשימה מודרכים',
     breathingVideosSubtitle: 'שלוט בטכניקות נשימה עם מדריכי וידאו מומחים',
@@ -346,7 +404,7 @@ export const translations = {
     categoryPranayama: 'פראנאיאמה',
     categoryBeginnerFriendly: 'ידידותי למתחילים',
     noVideosFound: 'לא נמצאו סרטונים בקטגוריה זו',
-    
+
     // Admin Panel - Videos
     adminVideosTab: 'סרטונים',
     adminAddVideo: 'הוסף סרטון חדש',
@@ -371,6 +429,6 @@ export const translations = {
     adminVideoDelete: 'מחק',
     adminNoVideos: 'אין עדיין סרטונים. הוסף את הסרטון הראשון שלך למעלה!',
     adminVideoDraft: 'טיוטה',
-    adminVideoPremiumBadge: 'פרימיום'
-  }
+    adminVideoPremiumBadge: 'פרימיום',
+  },
 };

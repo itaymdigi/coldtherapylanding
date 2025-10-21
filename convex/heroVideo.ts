@@ -1,12 +1,12 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Get active hero video
 export const getActiveHeroVideo = query({
   handler: async (ctx) => {
     const videos = await ctx.db
-      .query("heroVideo")
-      .filter((q) => q.eq(q.field("isActive"), true))
+      .query('heroVideo')
+      .filter((q) => q.eq(q.field('isActive'), true))
       .collect();
     return videos[0] || null;
   },
@@ -15,7 +15,7 @@ export const getActiveHeroVideo = query({
 // Get all hero videos
 export const getAllHeroVideos = query({
   handler: async (ctx) => {
-    return await ctx.db.query("heroVideo").collect();
+    return await ctx.db.query('heroVideo').collect();
   },
 });
 
@@ -29,13 +29,13 @@ export const uploadHeroVideo = mutation({
   handler: async (ctx, args) => {
     // If this video is set to active, deactivate all others
     if (args.isActive) {
-      const existingVideos = await ctx.db.query("heroVideo").collect();
+      const existingVideos = await ctx.db.query('heroVideo').collect();
       for (const video of existingVideos) {
         await ctx.db.patch(video._id, { isActive: false });
       }
     }
 
-    const videoId = await ctx.db.insert("heroVideo", {
+    const videoId = await ctx.db.insert('heroVideo', {
       url: args.url,
       altText: args.altText,
       isActive: args.isActive,
@@ -47,7 +47,7 @@ export const uploadHeroVideo = mutation({
 // Update hero video
 export const updateHeroVideo = mutation({
   args: {
-    id: v.id("heroVideo"),
+    id: v.id('heroVideo'),
     url: v.optional(v.string()),
     altText: v.optional(v.string()),
     isActive: v.optional(v.boolean()),
@@ -57,7 +57,7 @@ export const updateHeroVideo = mutation({
 
     // If setting this video to active, deactivate all others
     if (updates.isActive) {
-      const existingVideos = await ctx.db.query("heroVideo").collect();
+      const existingVideos = await ctx.db.query('heroVideo').collect();
       for (const video of existingVideos) {
         if (video._id !== id) {
           await ctx.db.patch(video._id, { isActive: false });
@@ -71,7 +71,7 @@ export const updateHeroVideo = mutation({
 
 // Delete hero video
 export const deleteHeroVideo = mutation({
-  args: { id: v.id("heroVideo") },
+  args: { id: v.id('heroVideo') },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },

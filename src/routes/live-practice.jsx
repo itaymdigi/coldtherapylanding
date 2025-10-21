@@ -19,16 +19,13 @@ function LivePracticePage() {
   const [activeTab, setActiveTab] = useState('timer');
   const [language, setLanguage] = useState('he');
 
-  const verifiedUser = useQuery(
-    api.auth.verifyToken,
-    token ? { token } : 'skip'
-  );
+  const verifiedUser = useQuery(api.auth.verifyToken, token ? { token } : 'skip');
 
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
     const storedLanguage = localStorage.getItem('language') || 'he';
-    
+
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -99,7 +96,7 @@ function LivePracticePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Back to Home */}
-            <Link 
+            <Link
               to="/"
               className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-semibold"
             >
@@ -114,7 +111,7 @@ function LivePracticePage() {
 
             {/* Language Toggle & Auth */}
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => {
                   const newLang = language === 'en' ? 'he' : 'en';
                   setLanguage(newLang);
@@ -156,7 +153,9 @@ function LivePracticePage() {
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center gap-2 text-white/90 mb-2">
                   <User size={20} className="text-cyan-400" />
-                  <span className="text-lg">{t.welcome}, <span className="font-bold text-cyan-400">{user.name}</span></span>
+                  <span className="text-lg">
+                    {t.welcome}, <span className="font-bold text-cyan-400">{user.name}</span>
+                  </span>
                 </div>
                 <p className="text-white/60 text-sm">{t.subtitle}</p>
               </div>

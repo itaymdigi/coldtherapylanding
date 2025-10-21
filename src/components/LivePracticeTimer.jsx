@@ -86,7 +86,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   const announceTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (language === 'he') {
       if (remainingSeconds === 0) {
         speak(`${minutes} דקות`, 'he-IL');
@@ -107,12 +107,12 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
       intervalRef.current = setInterval(() => {
         setTime((prevTime) => {
           const newTime = prevTime + 1;
-          
+
           // Announce every 60 seconds (every minute)
           if (newTime % 60 === 0 && newTime > 0) {
             announceTime(newTime);
           }
-          
+
           return newTime;
         });
       }, 1000);
@@ -133,7 +133,10 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
     setIsRunning(true);
     setIsPaused(false);
     startTimeRef.current = Date.now();
-    speak(language === 'he' ? 'האימון מתחיל' : 'Session starting', language === 'he' ? 'he-IL' : 'en-US');
+    speak(
+      language === 'he' ? 'האימון מתחיל' : 'Session starting',
+      language === 'he' ? 'he-IL' : 'en-US'
+    );
   };
 
   const handlePause = () => {
@@ -151,8 +154,11 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   const handleStop = () => {
     setIsRunning(false);
     setIsPaused(false);
-    speak(language === 'he' ? 'האימון הסתיים' : 'Session complete', language === 'he' ? 'he-IL' : 'en-US');
-    
+    speak(
+      language === 'he' ? 'האימון הסתיים' : 'Session complete',
+      language === 'he' ? 'he-IL' : 'en-US'
+    );
+
     if (time > 0) {
       setShowSaveForm(true);
     }
@@ -176,7 +182,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
             language === 'he' ? 'he-IL' : 'en-US'
           );
         }
-        
+
         // Reset
         setTime(0);
         setPauseCount(0);
@@ -185,7 +191,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
         setMood('');
         setRating(0);
         setShowSaveForm(false);
-        
+
         if (onSessionSaved) {
           onSessionSaved(result);
         }
@@ -341,9 +347,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">
-              {t.notes}
-            </label>
+            <label className="block text-white/90 mb-2 text-sm font-medium">{t.notes}</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

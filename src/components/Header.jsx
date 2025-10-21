@@ -3,7 +3,17 @@ import { Link } from '@tanstack/react-router';
 import { useApp } from '../contexts/AppContext';
 
 const Header = () => {
-  const { t, language, setLanguage, toggleMusic, isPlaying, mobileMenuOpen, setMobileMenuOpen, scrollToPackages, setShowAdmin } = useApp();
+  const {
+    t,
+    language,
+    setLanguage,
+    toggleMusic,
+    isPlaying,
+    mobileMenuOpen,
+    setMobileMenuOpen,
+    scrollToPackages,
+    setShowAdmin,
+  } = useApp();
 
   return (
     <>
@@ -19,45 +29,79 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1 rtl:gap-reverse">
-              <Link to="/" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.home}</Link>
-              <Link to="/breathing-videos" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+              <Link
+                to="/"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t.home}
+              </Link>
+              <Link
+                to="/breathing-videos"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
                 {t.breathingVideosMenu}
               </Link>
-              <Link to="/instructor-training" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+              <Link
+                to="/instructor-training"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
                 {t.instructorTraining}
               </Link>
-              <Link to="/#about" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.about}</Link>
-              <Link to="/live-practice" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">
+              <Link
+                to="/#about"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t.about}
+              </Link>
+              <Link
+                to="/live-practice"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
                 {t.livePractice}
               </Link>
-              <button onClick={scrollToPackages} className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.packages}</button>
-              <Link to="/#gallery" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.gallery}</Link>
-              <Link to="/#contact" className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg">{t.contact}</Link>
-              <button 
+              <button
+                onClick={scrollToPackages}
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t.packages}
+              </button>
+              <Link
+                to="/#gallery"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t.gallery}
+              </Link>
+              <Link
+                to="/#contact"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t.contact}
+              </Link>
+              <button
                 onClick={scrollToPackages}
                 className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-base ml-2"
               >
                 {t.bookNow}
               </button>
-              
+
               {/* Language Toggle */}
-              <button 
+              <button
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-sm font-semibold text-white"
               >
                 {language === 'en' ? '🇮🇱' : '🇺🇸'}
               </button>
-              
+
               {/* Music Toggle */}
-              <button 
+              <button
                 onClick={toggleMusic}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-lg"
               >
                 {isPlaying ? '🔇' : '🔊'}
               </button>
-              
+
               {/* Admin Button */}
-              <button 
+              <button
                 onClick={() => setShowAdmin(true)}
                 className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-lg"
                 title={t.adminButton}
@@ -69,43 +113,53 @@ const Header = () => {
             {/* Mobile Menu Button & Controls */}
             <div className="md:hidden flex items-center gap-2">
               {/* Language Toggle Mobile */}
-              <button 
+              <button
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-xs"
               >
                 {language === 'en' ? '🇮🇱' : '🇺🇸'}
               </button>
-              
+
               {/* Music Toggle Mobile */}
-              <button 
+              <button
                 onClick={toggleMusic}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-base"
               >
                 {isPlaying ? '🔇' : '🔊'}
               </button>
-              
+
               {/* Admin Button Mobile */}
-              <button 
+              <button
                 onClick={() => setShowAdmin(true)}
                 className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 transition-all duration-300 text-base"
                 title={t.adminButton}
               >
                 🔐
               </button>
-              
+
               {/* Hamburger Button */}
-              <button 
+              <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 rounded-lg text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 ) : (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 )}
               </button>
@@ -117,63 +171,69 @@ const Header = () => {
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-900/98 backdrop-blur-lg border-t border-cyan-400/10">
             <div className="px-4 py-6 space-y-3">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.home}
               </Link>
-              <Link 
-                to="/breathing-videos" 
+              <Link
+                to="/breathing-videos"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 🌬️ {t.breathingVideosMenu}
               </Link>
-              <Link 
-                to="/instructor-training" 
+              <Link
+                to="/instructor-training"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 🎓 {t.instructorTraining}
               </Link>
-              <Link 
-                to="/#about" 
+              <Link
+                to="/#about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.about}
               </Link>
-              <Link 
-                to="/live-practice" 
+              <Link
+                to="/live-practice"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 ⏱️ {t.livePractice}
               </Link>
-              <button 
-                onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
+              <button
+                onClick={() => {
+                  scrollToPackages();
+                  setMobileMenuOpen(false);
+                }}
                 className="block w-full text-start px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.packages}
               </button>
-              <Link 
-                to="/#gallery" 
+              <Link
+                to="/#gallery"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.gallery}
               </Link>
-              <Link 
-                to="/#contact" 
+              <Link
+                to="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.contact}
               </Link>
-              <button 
-                onClick={() => { scrollToPackages(); setMobileMenuOpen(false); }}
+              <button
+                onClick={() => {
+                  scrollToPackages();
+                  setMobileMenuOpen(false);
+                }}
                 className="block w-full px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 text-center text-lg"
               >
                 {t.bookNow}
@@ -185,7 +245,7 @@ const Header = () => {
 
       {/* Sticky Mobile CTA */}
       <div className="fixed bottom-4 left-4 right-4 z-30 md:hidden pointer-events-none">
-        <button 
+        <button
           onClick={scrollToPackages}
           className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 pointer-events-auto"
         >

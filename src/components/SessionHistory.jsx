@@ -1,10 +1,22 @@
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-import { Trophy, Clock, Thermometer, Calendar, Trash2, TrendingUp, Award, Flame } from 'lucide-react';
+import {
+  Trophy,
+  Clock,
+  Thermometer,
+  Calendar,
+  Trash2,
+  TrendingUp,
+  Award,
+  Flame,
+} from 'lucide-react';
 import { useState } from 'react';
 
 export default function SessionHistory({ token, language = 'he' }) {
-  const sessions = useQuery(api.practiceSessions.getUserSessions, { token, limit: 20 });
+  const sessions = useQuery(api.practiceSessions.getUserSessions, {
+    token,
+    limit: 20,
+  });
   const stats = useQuery(api.practiceSessions.getUserStats, { token });
   const deleteSessionMutation = useMutation(api.practiceSessions.deleteSession);
   const [deletingId, setDeletingId] = useState(null);
@@ -139,7 +151,9 @@ export default function SessionHistory({ token, language = 'he' }) {
               <Clock className="text-purple-400" size={20} />
               <div className="text-white/70 text-sm">{t.totalTime}</div>
             </div>
-            <div className="text-3xl font-bold text-white">{formatDuration(stats.totalDuration)}</div>
+            <div className="text-3xl font-bold text-white">
+              {formatDuration(stats.totalDuration)}
+            </div>
           </div>
 
           <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-xl p-4 border border-green-500/30">
@@ -147,7 +161,9 @@ export default function SessionHistory({ token, language = 'he' }) {
               <Trophy className="text-green-400" size={20} />
               <div className="text-white/70 text-sm">{t.longestSession}</div>
             </div>
-            <div className="text-3xl font-bold text-white">{formatDuration(stats.longestSession)}</div>
+            <div className="text-3xl font-bold text-white">
+              {formatDuration(stats.longestSession)}
+            </div>
           </div>
 
           <div className="bg-gradient-to-br from-orange-500/20 to-yellow-500/20 backdrop-blur-sm rounded-xl p-4 border border-orange-500/30">
@@ -155,7 +171,9 @@ export default function SessionHistory({ token, language = 'he' }) {
               <Clock className="text-orange-400" size={20} />
               <div className="text-white/70 text-sm">{t.averageSession}</div>
             </div>
-            <div className="text-3xl font-bold text-white">{formatDuration(stats.averageSession)}</div>
+            <div className="text-3xl font-bold text-white">
+              {formatDuration(stats.averageSession)}
+            </div>
           </div>
 
           <div className="bg-gradient-to-br from-red-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-4 border border-red-500/30">
@@ -184,7 +202,7 @@ export default function SessionHistory({ token, language = 'he' }) {
           <Calendar className="text-cyan-400" size={28} />
           {t.recentSessions}
         </h3>
-        
+
         {sessions.length === 0 ? (
           <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 text-center text-white/70">
             {t.noSessions}
@@ -205,14 +223,14 @@ export default function SessionHistory({ token, language = 'he' }) {
                           {formatDuration(session.duration)}
                         </span>
                       </div>
-                      
+
                       {session.personalBest && (
                         <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full text-xs font-bold border border-yellow-500/30 flex items-center gap-1">
                           <Trophy size={14} />
                           {t.personalBest}
                         </span>
                       )}
-                      
+
                       <span className="text-white/50 text-sm">
                         {formatDate(session.completedAt)}
                       </span>
@@ -225,13 +243,13 @@ export default function SessionHistory({ token, language = 'he' }) {
                           {session.temperature}°C
                         </div>
                       )}
-                      
+
                       {session.mood && (
                         <div className="flex items-center gap-1 text-white/70">
                           {getMoodEmoji(session.mood)} {t[session.mood]}
                         </div>
                       )}
-                      
+
                       {session.pauseCount > 0 && (
                         <div className="text-white/50">
                           {t.pauses}: {session.pauseCount}

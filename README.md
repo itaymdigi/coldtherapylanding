@@ -22,6 +22,7 @@ npx convex deploy
 👉 **Start here:** [Documentation Index](/docs/INDEX.md)
 
 ### Key Documents
+
 - **[Project Summary](/docs/PROJECT_SUMMARY.md)** - Complete project overview
 - **[PWA Guide](/docs/PWA_GUIDE.md)** - Progressive Web App features
 - **[AI Chatbot Setup](/docs/AI_CHATBOT_SETUP.md)** - Chatbot implementation

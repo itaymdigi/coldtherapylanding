@@ -29,7 +29,7 @@ const AdminGallery = () => {
         });
         alert('✅ Gallery image added successfully!');
       }
-      
+
       // Reset form
       setGalleryForm({ url: '', altText: '' });
       setEditingGalleryId(null);
@@ -56,7 +56,7 @@ const AdminGallery = () => {
       <h4 className="text-2xl font-semibold text-white mb-4">
         {editingGalleryId ? 'Edit Gallery Image' : 'Add New Gallery Image'}
       </h4>
-      
+
       {/* Gallery Form */}
       <form onSubmit={handleGallerySubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
         <div>
@@ -65,7 +65,7 @@ const AdminGallery = () => {
             type="url"
             required
             value={galleryForm.url}
-            onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
+            onChange={(e) => setGalleryForm({ ...galleryForm, url: e.target.value })}
             placeholder="https://example.com/image.jpg"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
@@ -76,7 +76,7 @@ const AdminGallery = () => {
           <input
             type="text"
             value={galleryForm.altText}
-            onChange={(e) => setGalleryForm({...galleryForm, altText: e.target.value})}
+            onChange={(e) => setGalleryForm({ ...galleryForm, altText: e.target.value })}
             placeholder="Description for accessibility"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
@@ -106,12 +106,14 @@ const AdminGallery = () => {
 
       {/* Gallery Images Grid */}
       <div className="space-y-3">
-        <h4 className="text-xl font-semibold text-white">Gallery Images ({allGalleryImages?.length || 0})</h4>
+        <h4 className="text-xl font-semibold text-white">
+          Gallery Images ({allGalleryImages?.length || 0})
+        </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {allGalleryImages?.map((image) => (
             <div key={image._id} className="relative group">
-              <img 
-                src={image.url} 
+              <img
+                src={image.url}
                 alt={image.altText || 'Gallery image'}
                 className="w-full h-40 object-cover rounded-lg border-2 border-cyan-400/30"
               />

@@ -8,115 +8,100 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as LivePracticeRouteImport } from './routes/live-practice'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as LivePracticeRouteImport } from './routes/live-practice';
 
-const InstructorTrainingLazyRouteImport = createFileRoute(
-  '/instructor-training',
-)()
-const BreathingVideosLazyRouteImport = createFileRoute('/breathing-videos')()
-const IndexLazyRouteImport = createFileRoute('/')()
+const InstructorTrainingLazyRouteImport = createFileRoute('/instructor-training')();
+const BreathingVideosLazyRouteImport = createFileRoute('/breathing-videos')();
+const IndexLazyRouteImport = createFileRoute('/')();
 
 const InstructorTrainingLazyRoute = InstructorTrainingLazyRouteImport.update({
   id: '/instructor-training',
   path: '/instructor-training',
   getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/instructor-training.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/instructor-training.lazy').then((d) => d.Route));
 const BreathingVideosLazyRoute = BreathingVideosLazyRouteImport.update({
   id: '/breathing-videos',
   path: '/breathing-videos',
   getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/breathing-videos.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/breathing-videos.lazy').then((d) => d.Route));
 const LivePracticeRoute = LivePracticeRouteImport.update({
   id: '/live-practice',
   path: '/live-practice',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/live-practice': typeof LivePracticeRoute
-  '/breathing-videos': typeof BreathingVideosLazyRoute
-  '/instructor-training': typeof InstructorTrainingLazyRoute
+  '/': typeof IndexLazyRoute;
+  '/live-practice': typeof LivePracticeRoute;
+  '/breathing-videos': typeof BreathingVideosLazyRoute;
+  '/instructor-training': typeof InstructorTrainingLazyRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/live-practice': typeof LivePracticeRoute
-  '/breathing-videos': typeof BreathingVideosLazyRoute
-  '/instructor-training': typeof InstructorTrainingLazyRoute
+  '/': typeof IndexLazyRoute;
+  '/live-practice': typeof LivePracticeRoute;
+  '/breathing-videos': typeof BreathingVideosLazyRoute;
+  '/instructor-training': typeof InstructorTrainingLazyRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexLazyRoute
-  '/live-practice': typeof LivePracticeRoute
-  '/breathing-videos': typeof BreathingVideosLazyRoute
-  '/instructor-training': typeof InstructorTrainingLazyRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexLazyRoute;
+  '/live-practice': typeof LivePracticeRoute;
+  '/breathing-videos': typeof BreathingVideosLazyRoute;
+  '/instructor-training': typeof InstructorTrainingLazyRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/live-practice'
-    | '/breathing-videos'
-    | '/instructor-training'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/live-practice' | '/breathing-videos' | '/instructor-training'
-  id:
-    | '__root__'
-    | '/'
-    | '/live-practice'
-    | '/breathing-videos'
-    | '/instructor-training'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: '/' | '/live-practice' | '/breathing-videos' | '/instructor-training';
+  fileRoutesByTo: FileRoutesByTo;
+  to: '/' | '/live-practice' | '/breathing-videos' | '/instructor-training';
+  id: '__root__' | '/' | '/live-practice' | '/breathing-videos' | '/instructor-training';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  LivePracticeRoute: typeof LivePracticeRoute
-  BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute
-  InstructorTrainingLazyRoute: typeof InstructorTrainingLazyRoute
+  IndexLazyRoute: typeof IndexLazyRoute;
+  LivePracticeRoute: typeof LivePracticeRoute;
+  BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute;
+  InstructorTrainingLazyRoute: typeof InstructorTrainingLazyRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/instructor-training': {
-      id: '/instructor-training'
-      path: '/instructor-training'
-      fullPath: '/instructor-training'
-      preLoaderRoute: typeof InstructorTrainingLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/instructor-training';
+      path: '/instructor-training';
+      fullPath: '/instructor-training';
+      preLoaderRoute: typeof InstructorTrainingLazyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/breathing-videos': {
-      id: '/breathing-videos'
-      path: '/breathing-videos'
-      fullPath: '/breathing-videos'
-      preLoaderRoute: typeof BreathingVideosLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/breathing-videos';
+      path: '/breathing-videos';
+      fullPath: '/breathing-videos';
+      preLoaderRoute: typeof BreathingVideosLazyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/live-practice': {
-      id: '/live-practice'
-      path: '/live-practice'
-      fullPath: '/live-practice'
-      preLoaderRoute: typeof LivePracticeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/live-practice';
+      path: '/live-practice';
+      fullPath: '/live-practice';
+      preLoaderRoute: typeof LivePracticeRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexLazyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -125,7 +110,7 @@ const rootRouteChildren: RootRouteChildren = {
   LivePracticeRoute: LivePracticeRoute,
   BreathingVideosLazyRoute: BreathingVideosLazyRoute,
   InstructorTrainingLazyRoute: InstructorTrainingLazyRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

@@ -6,9 +6,10 @@ const AIChatWidget = () => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'שלום! 👋 Hi! I\'m Dan\'s AI assistant.\n\nאני כאן לעזור לך עם:\n• מידע על אמבטיות קרח\n• חבילות ומחירים\n• קביעת פגישה\n\nI can help you with:\n• Ice bath information\n• Packages & pricing\n• Booking a session\n\nWrite in Hebrew or English! 🧊',
-      timestamp: new Date()
-    }
+      content:
+        "שלום! 👋 Hi! I'm Dan's AI assistant.\n\nאני כאן לעזור לך עם:\n• מידע על אמבטיות קרח\n• חבילות ומחירים\n• קביעת פגישה\n\nI can help you with:\n• Ice bath information\n• Packages & pricing\n• Booking a session\n\nWrite in Hebrew or English! 🧊",
+      timestamp: new Date(),
+    },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,16 +40,16 @@ const AIChatWidget = () => {
     const userMessage = {
       role: 'user',
       content: input.trim(),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
       console.log('Sending message to n8n:', N8N_WEBHOOK_URL);
-      
+
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: {
@@ -56,7 +57,7 @@ const AIChatWidget = () => {
         },
         body: JSON.stringify({
           message: userMessage.content,
-          sessionId: localStorage.getItem('chatSessionId') || generateSessionId()
+          sessionId: localStorage.getItem('chatSessionId') || generateSessionId(),
         }),
       });
 
@@ -70,29 +71,30 @@ const AIChatWidget = () => {
 
       const data = await response.json();
       console.log('Response data:', data);
-      
+
       const assistantMessage = {
         role: 'assistant',
-        content: data.response || data.message || 'Sorry, I couldn\'t process that. Please try again.',
-        timestamp: new Date()
+        content:
+          data.response || data.message || "Sorry, I couldn't process that. Please try again.",
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error details:', error);
-      
+
       // Determine error message based on language of last user message
       const isHebrew = /[\u0590-\u05FF]/.test(userMessage.content);
-      const errorContent = isHebrew 
-        ? 'סליחה, יש לי בעיה בחיבור. אנא נסה שוב או צור קשר ישירות.' 
-        : 'Sorry, I\'m having trouble connecting. Please try again or contact us directly.';
-      
+      const errorContent = isHebrew
+        ? 'סליחה, יש לי בעיה בחיבור. אנא נסה שוב או צור קשר ישירות.'
+        : "Sorry, I'm having trouble connecting. Please try again or contact us directly.";
+
       const errorMessage = {
         role: 'assistant',
         content: errorContent,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +107,10 @@ const AIChatWidget = () => {
   };
 
   const formatTime = (date) => {
-    return date.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('he-IL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -114,17 +119,13 @@ const AIChatWidget = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 ${
-          isOpen 
-            ? 'bg-red-500 hover:bg-red-600' 
+          isOpen
+            ? 'bg-red-500 hover:bg-red-600'
             : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
         } text-white`}
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
-        {isOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <MessageCircle className="w-6 h-6" />
-        )}
+        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>
 
       {/* Chat Window */}
@@ -164,15 +165,17 @@ const AIChatWidget = () => {
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  <p className={`text-xs mt-1 ${
-                    message.role === 'user' ? 'text-white/70' : 'text-gray-500'
-                  }`}>
+                  <p
+                    className={`text-xs mt-1 ${
+                      message.role === 'user' ? 'text-white/70' : 'text-gray-500'
+                    }`}
+                  >
                     {formatTime(message.timestamp)}
                   </p>
                 </div>
               </div>
             ))}
-            
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-200">
@@ -180,7 +183,7 @@ const AIChatWidget = () => {
                 </div>
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
 

@@ -14,15 +14,15 @@ const InstallPrompt = () => {
       description: 'התקן את Cold Therapy במכשיר שלך לגישה מהירה וחוויה טובה יותר',
       install: 'התקן עכשיו',
       later: 'אולי מאוחר יותר',
-      installed: 'האפליקציה מותקנת ✓'
+      installed: 'האפליקציה מותקנת ✓',
     },
     en: {
       title: 'Install App',
       description: 'Install Cold Therapy on your device for quick access and better experience',
       install: 'Install Now',
       later: 'Maybe Later',
-      installed: 'App Installed ✓'
-    }
+      installed: 'App Installed ✓',
+    },
   };
 
   const t = translations[language];
@@ -38,7 +38,7 @@ const InstallPrompt = () => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      
+
       // Show prompt after 3 seconds
       setTimeout(() => {
         const dismissed = localStorage.getItem('pwa-install-dismissed');
@@ -89,11 +89,14 @@ const InstallPrompt = () => {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('pwa-install-dismissed', 'true');
-    
+
     // Show again after 7 days
-    setTimeout(() => {
-      localStorage.removeItem('pwa-install-dismissed');
-    }, 7 * 24 * 60 * 60 * 1000);
+    setTimeout(
+      () => {
+        localStorage.removeItem('pwa-install-dismissed');
+      },
+      7 * 24 * 60 * 60 * 1000
+    );
   };
 
   // Don't show if already installed or no prompt available
@@ -123,12 +126,8 @@ const InstallPrompt = () => {
 
             {/* Text */}
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-white mb-1">
-                {t.title}
-              </h3>
-              <p className="text-sm text-cyan-200 mb-4">
-                {t.description}
-              </p>
+              <h3 className="text-lg font-bold text-white mb-1">{t.title}</h3>
+              <p className="text-sm text-cyan-200 mb-4">{t.description}</p>
 
               {/* Buttons */}
               <div className="flex gap-3">

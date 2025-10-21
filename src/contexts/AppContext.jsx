@@ -44,7 +44,7 @@ export const AppProvider = ({ children }) => {
   const [statsClients, setStatsClients] = useState(0);
   const [statsTemp, setStatsTemp] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Refs
   const audioRef = useRef(null);
   const packagesRef = useRef(null);
@@ -53,12 +53,18 @@ export const AppProvider = ({ children }) => {
   const t = translations[language];
 
   // Fallback data with defaults
-  const galleryImages = (convexGalleryImages && convexGalleryImages.length > 0) 
-    ? convexGalleryImages.map(img => img.url)
-    : [
-        '/gallery1.jpg', '/gallery2.jpg', '/gallery3.jpg', '/gallery4.jpg',
-        '/gallery5.jpg', '/gallery6.jpg', '/gallery7.jpg'
-      ];
+  const galleryImages =
+    convexGalleryImages && convexGalleryImages.length > 0
+      ? convexGalleryImages.map((img) => img.url)
+      : [
+          '/gallery1.jpg',
+          '/gallery2.jpg',
+          '/gallery3.jpg',
+          '/gallery4.jpg',
+          '/gallery5.jpg',
+          '/gallery6.jpg',
+          '/gallery7.jpg',
+        ];
   const scheduleImage = convexScheduleImage?.url || null;
   const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
   const heroVideo = convexHeroVideo?.url || '/dan_logo.mp4';
@@ -68,12 +74,12 @@ export const AppProvider = ({ children }) => {
     const handleMouseMove = (e) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
+        y: (e.clientY / window.innerHeight) * 100,
       });
     };
-    
+
     window.addEventListener('mousemove', handleMouseMove);
-    
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
@@ -83,7 +89,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const handleScroll = () => {
       const reveals = document.querySelectorAll('.scroll-reveal');
-      reveals.forEach(element => {
+      reveals.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
         const elementVisible = 150;
         if (elementTop < window.innerHeight - elementVisible) {
@@ -91,10 +97,10 @@ export const AppProvider = ({ children }) => {
         }
       });
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Initial check
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -114,7 +120,10 @@ export const AppProvider = ({ children }) => {
   const scrollToPackages = () => {
     setShowPackages(true);
     setTimeout(() => {
-      packagesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      packagesRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     }, 100);
   };
 
@@ -125,21 +134,23 @@ export const AppProvider = ({ children }) => {
       if (type === 'heroVideo') {
         const maxSize = 800 * 1024; // 800KB to be safe (base64 encoding increases size by ~33%)
         if (file.size > maxSize) {
-          alert(`❌ Video file is too large (${(file.size / 1024).toFixed(0)}KB). Please use a video smaller than 800KB.\n\nTip: Compress your video or use a shorter clip.`);
+          alert(
+            `❌ Video file is too large (${(file.size / 1024).toFixed(0)}KB). Please use a video smaller than 800KB.\n\nTip: Compress your video or use a shorter clip.`
+          );
           return;
         }
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = async () => {
         const imageData = reader.result;
-        
+
         try {
           if (type === 'schedule') {
             await updateScheduleImage({
               url: imageData,
               title: 'Event Schedule',
-              description: 'Current event schedule'
+              description: 'Current event schedule',
             });
             alert('✅ Schedule image uploaded successfully!');
           } else if (type === 'gallery' && index !== null) {
@@ -148,26 +159,26 @@ export const AppProvider = ({ children }) => {
               await updateGalleryImage({
                 id: existingImage._id,
                 url: imageData,
-                order: index
+                order: index,
               });
             } else {
               await addGalleryImage({
                 url: imageData,
                 order: index,
-                altText: `Gallery image ${index + 1}`
+                altText: `Gallery image ${index + 1}`,
               });
             }
             alert('✅ Gallery image uploaded successfully!');
           } else if (type === 'danPhoto') {
             await updateDanPhotoMutation({
-              url: imageData
+              url: imageData,
             });
-            alert('✅ Dan\'s photo uploaded successfully!');
+            alert("✅ Dan's photo uploaded successfully!");
           } else if (type === 'heroVideo') {
             await uploadHeroVideoMutation({
               url: imageData,
               isActive: true,
-              altText: 'Hero video'
+              altText: 'Hero video',
             });
             alert('✅ Hero video uploaded successfully!');
           }
@@ -226,7 +237,7 @@ export const AppProvider = ({ children }) => {
       }
       localStorage.removeItem('adminToken');
     }
-    
+
     setShowAdmin(false);
     setIsAuthenticated(false);
     setPassword('');

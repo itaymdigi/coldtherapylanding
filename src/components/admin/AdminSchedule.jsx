@@ -3,10 +3,10 @@ import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
 const AdminSchedule = () => {
-  const [scheduleForm, setScheduleForm] = useState({ 
-    url: '', 
-    title: '', 
-    description: '' 
+  const [scheduleForm, setScheduleForm] = useState({
+    url: '',
+    title: '',
+    description: '',
   });
   const [editingScheduleId, setEditingScheduleId] = useState(null);
 
@@ -33,7 +33,7 @@ const AdminSchedule = () => {
         });
         alert('✅ Schedule added successfully!');
       }
-      
+
       // Reset form
       setScheduleForm({ url: '', title: '', description: '' });
       setEditingScheduleId(null);
@@ -70,7 +70,7 @@ const AdminSchedule = () => {
       <h4 className="text-2xl font-semibold text-white mb-4">
         {editingScheduleId ? 'Edit Schedule' : 'Add New Schedule'}
       </h4>
-      
+
       {/* Schedule Form */}
       <form onSubmit={handleScheduleSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
         <div>
@@ -79,11 +79,13 @@ const AdminSchedule = () => {
             type="url"
             required
             value={scheduleForm.url}
-            onChange={(e) => setScheduleForm({...scheduleForm, url: e.target.value})}
+            onChange={(e) => setScheduleForm({ ...scheduleForm, url: e.target.value })}
             placeholder="https://example.com/schedule.jpg"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
-          <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+          <p className="text-blue-300 text-xs mt-1">
+            💡 Tip: Upload to Media Library first, then copy URL
+          </p>
         </div>
 
         <div>
@@ -92,17 +94,19 @@ const AdminSchedule = () => {
             type="text"
             required
             value={scheduleForm.title}
-            onChange={(e) => setScheduleForm({...scheduleForm, title: e.target.value})}
+            onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
             placeholder="e.g., Weekly Schedule"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
         </div>
 
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Description (Optional)</label>
+          <label className="block text-white text-sm font-semibold mb-2">
+            Description (Optional)
+          </label>
           <textarea
             value={scheduleForm.description}
-            onChange={(e) => setScheduleForm({...scheduleForm, description: e.target.value})}
+            onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
             placeholder="Additional details..."
             rows="2"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
@@ -133,21 +137,32 @@ const AdminSchedule = () => {
 
       {/* Schedules List */}
       <div className="space-y-3">
-        <h4 className="text-xl font-semibold text-white">All Schedules ({allScheduleImages?.length || 0})</h4>
+        <h4 className="text-xl font-semibold text-white">
+          All Schedules ({allScheduleImages?.length || 0})
+        </h4>
         {allScheduleImages?.map((schedule) => (
-          <div key={schedule._id} className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+          <div
+            key={schedule._id}
+            className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+          >
             <div className="flex gap-4">
-              <img 
-                src={schedule.url} 
+              <img
+                src={schedule.url}
                 alt={schedule.title}
                 className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-400/30"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <h5 className="text-white font-semibold">{schedule.title}</h5>
-                  {schedule.isActive && <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">✓ Active</span>}
+                  {schedule.isActive && (
+                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                      ✓ Active
+                    </span>
+                  )}
                 </div>
-                {schedule.description && <p className="text-blue-200 text-sm mb-2">{schedule.description}</p>}
+                {schedule.description && (
+                  <p className="text-blue-200 text-sm mb-2">{schedule.description}</p>
+                )}
                 <div className="flex gap-2 mt-3">
                   {!schedule.isActive && (
                     <button

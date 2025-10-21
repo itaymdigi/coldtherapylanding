@@ -26,10 +26,16 @@ const Layout = () => {
   }, [location.hash, location.pathname]);
 
   return (
-    <div className="relative w-full min-h-screen overflow-x-hidden bg-gradient-to-br from-cyan-950 via-blue-950 to-slate-900 scroll-smooth" dir={language === 'he' ? 'rtl' : 'ltr'}>
+    <div
+      className="relative w-full min-h-screen overflow-x-hidden bg-gradient-to-br from-cyan-950 via-blue-950 to-slate-900 scroll-smooth"
+      dir={language === 'he' ? 'rtl' : 'ltr'}
+    >
       {/* Background Music */}
       <audio ref={audioRef} loop>
-        <source src="https://www.bensound.com/bensound-music/bensound-relaxing.mp3" type="audio/mpeg" />
+        <source
+          src="https://www.bensound.com/bensound-music/bensound-relaxing.mp3"
+          type="audio/mpeg"
+        />
       </audio>
 
       {/* Admin Panel */}

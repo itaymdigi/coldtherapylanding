@@ -1,13 +1,10 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Get all bookings
 export const getAllBookings = query({
   handler: async (ctx) => {
-    return await ctx.db
-      .query("bookings")
-      .order("desc")
-      .collect();
+    return await ctx.db.query('bookings').order('desc').collect();
   },
 });
 
@@ -16,9 +13,9 @@ export const getBookingsByStatus = query({
   args: { status: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
-      .query("bookings")
-      .filter((q) => q.eq(q.field("status"), args.status))
-      .order("desc")
+      .query('bookings')
+      .filter((q) => q.eq(q.field('status'), args.status))
+      .order('desc')
       .collect();
   },
 });
@@ -32,12 +29,12 @@ export const createBooking = mutation({
     customerPhone: v.string(),
   },
   handler: async (ctx, args) => {
-    const bookingId = await ctx.db.insert("bookings", {
+    const bookingId = await ctx.db.insert('bookings', {
       packageType: args.packageType,
       customerName: args.customerName,
       customerEmail: args.customerEmail,
       customerPhone: args.customerPhone,
-      status: "pending",
+      status: 'pending',
       bookedAt: Date.now(),
     });
     return bookingId;
@@ -47,7 +44,7 @@ export const createBooking = mutation({
 // Update booking status
 export const updateBookingStatus = mutation({
   args: {
-    id: v.id("bookings"),
+    id: v.id('bookings'),
     status: v.string(),
   },
   handler: async (ctx, args) => {
@@ -57,7 +54,7 @@ export const updateBookingStatus = mutation({
 
 // Delete a booking
 export const deleteBooking = mutation({
-  args: { id: v.id("bookings") },
+  args: { id: v.id('bookings') },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },

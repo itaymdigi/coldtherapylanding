@@ -1,13 +1,13 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Get all published videos (free + premium)
 export const getAllVideos = query({
   handler: async (ctx) => {
     return await ctx.db
-      .query("breathingVideos")
-      .filter((q) => q.eq(q.field("isPublished"), true))
-      .order("asc")
+      .query('breathingVideos')
+      .filter((q) => q.eq(q.field('isPublished'), true))
+      .order('asc')
       .collect();
   },
 });
@@ -16,14 +16,9 @@ export const getAllVideos = query({
 export const getFreeVideos = query({
   handler: async (ctx) => {
     return await ctx.db
-      .query("breathingVideos")
-      .filter((q) => 
-        q.and(
-          q.eq(q.field("isPublished"), true),
-          q.eq(q.field("isPremium"), false)
-        )
-      )
-      .order("asc")
+      .query('breathingVideos')
+      .filter((q) => q.and(q.eq(q.field('isPublished'), true), q.eq(q.field('isPremium'), false)))
+      .order('asc')
       .collect();
   },
 });
@@ -32,21 +27,16 @@ export const getFreeVideos = query({
 export const getPremiumVideos = query({
   handler: async (ctx) => {
     return await ctx.db
-      .query("breathingVideos")
-      .filter((q) => 
-        q.and(
-          q.eq(q.field("isPublished"), true),
-          q.eq(q.field("isPremium"), true)
-        )
-      )
-      .order("asc")
+      .query('breathingVideos')
+      .filter((q) => q.and(q.eq(q.field('isPublished'), true), q.eq(q.field('isPremium'), true)))
+      .order('asc')
       .collect();
   },
 });
 
 // Get video by ID
 export const getVideoById = query({
-  args: { id: v.id("breathingVideos") },
+  args: { id: v.id('breathingVideos') },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
@@ -57,12 +47,9 @@ export const getVideosByCategory = query({
   args: { category: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
-      .query("breathingVideos")
-      .filter((q) => 
-        q.and(
-          q.eq(q.field("isPublished"), true),
-          q.eq(q.field("category"), args.category)
-        )
+      .query('breathingVideos')
+      .filter((q) =>
+        q.and(q.eq(q.field('isPublished'), true), q.eq(q.field('category'), args.category))
       )
       .collect();
   },
@@ -82,7 +69,7 @@ export const addVideo = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
-    const videoId = await ctx.db.insert("breathingVideos", {
+    const videoId = await ctx.db.insert('breathingVideos', {
       ...args,
       isPublished: true, // Auto-publish videos
       views: 0,
@@ -95,7 +82,7 @@ export const addVideo = mutation({
 // Update video
 export const updateVideo = mutation({
   args: {
-    id: v.id("breathingVideos"),
+    id: v.id('breathingVideos'),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     videoUrl: v.optional(v.string()),
@@ -115,7 +102,7 @@ export const updateVideo = mutation({
 
 // Increment video views
 export const incrementViews = mutation({
-  args: { id: v.id("breathingVideos") },
+  args: { id: v.id('breathingVideos') },
   handler: async (ctx, args) => {
     const video = await ctx.db.get(args.id);
     if (video) {
@@ -126,7 +113,7 @@ export const incrementViews = mutation({
 
 // Delete video
 export const deleteVideo = mutation({
-  args: { id: v.id("breathingVideos") },
+  args: { id: v.id('breathingVideos') },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },

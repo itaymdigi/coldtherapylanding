@@ -13,16 +13,13 @@ export default function LivePractice({ language = 'he' }) {
   const [activeTab, setActiveTab] = useState('timer'); // 'timer' or 'history'
 
   // Verify token on mount
-  const verifiedUser = useQuery(
-    api.auth.verifyToken,
-    token ? { token } : 'skip'
-  );
+  const verifiedUser = useQuery(api.auth.verifyToken, token ? { token } : 'skip');
 
   useEffect(() => {
     // Check for stored token
     const storedToken = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
-    
+
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));

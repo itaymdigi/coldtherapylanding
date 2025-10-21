@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Create a booking via chatbot
 export const createChatbotBooking = mutation({
@@ -11,18 +11,18 @@ export const createChatbotBooking = mutation({
   },
   handler: async (ctx, args) => {
     // Validate package type
-    const validPackages = ["10-entries", "6-months", "monthly"];
+    const validPackages = ['10-entries', '6-months', 'monthly'];
     if (!validPackages.includes(args.packageType)) {
-      throw new Error(`Invalid package type. Must be one of: ${validPackages.join(", ")}`);
+      throw new Error(`Invalid package type. Must be one of: ${validPackages.join(', ')}`);
     }
 
     // Create the booking
-    const bookingId = await ctx.db.insert("bookings", {
+    const bookingId = await ctx.db.insert('bookings', {
       packageType: args.packageType,
       customerName: args.customerName,
       customerEmail: args.customerEmail,
       customerPhone: args.customerPhone,
-      status: "pending",
+      status: 'pending',
       bookedAt: Date.now(),
     });
 

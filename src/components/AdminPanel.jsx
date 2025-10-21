@@ -23,22 +23,22 @@ const AdminPanel = () => {
   // Helper function to convert YouTube URLs to embed format
   const convertToEmbedUrl = (url) => {
     if (!url) return url;
-    
+
     // Already an embed URL
     if (url.includes('/embed/')) return url;
-    
+
     // Convert youtube.com/watch?v=VIDEO_ID to youtube.com/embed/VIDEO_ID
     const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
     if (watchMatch) {
       return `https://www.youtube.com/embed/${watchMatch[1]}`;
     }
-    
+
     // Convert vimeo.com/VIDEO_ID to player.vimeo.com/video/VIDEO_ID
     const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
     if (vimeoMatch && !url.includes('player.vimeo.com')) {
       return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
     }
-    
+
     return url;
   };
 
@@ -66,7 +66,7 @@ const AdminPanel = () => {
   // Get unique categories from existing videos
   const uniqueCategories = React.useMemo(() => {
     if (!videos) return [];
-    const categories = [...new Set(videos.map(v => v.category))];
+    const categories = [...new Set(videos.map((v) => v.category))];
     console.log('📊 Unique categories found:', categories);
     return categories.sort();
   }, [videos]);
@@ -74,7 +74,7 @@ const AdminPanel = () => {
   // Get unique difficulties from existing videos
   const uniqueDifficulties = React.useMemo(() => {
     if (!videos) return [];
-    const difficulties = [...new Set(videos.map(v => v.difficulty))];
+    const difficulties = [...new Set(videos.map((v) => v.difficulty))];
     console.log('📊 Unique difficulties found:', difficulties);
     return difficulties.sort();
   }, [videos]);
@@ -86,7 +86,7 @@ const AdminPanel = () => {
       console.log('🎬 Videos data:', videos);
     }
   }, [videos]);
-  
+
   // Media library
   const allMedia = useQuery(api.media.getAllMedia);
   const uploadMedia = useMutation(api.media.uploadMedia);
@@ -114,7 +114,7 @@ const AdminPanel = () => {
   const uploadHeroVideo = useMutation(api.heroVideo.uploadHeroVideo);
   const updateHeroVideo = useMutation(api.heroVideo.updateHeroVideo);
   const deleteHeroVideo = useMutation(api.heroVideo.deleteHeroVideo);
-  
+
   // Media upload state
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [mediaFilter, setMediaFilter] = useState('all'); // 'all', 'image', 'video'
@@ -124,7 +124,11 @@ const AdminPanel = () => {
   const [editingGalleryId, setEditingGalleryId] = useState(null);
 
   // Schedule state
-  const [scheduleForm, setScheduleForm] = useState({ url: '', title: '', description: '' });
+  const [scheduleForm, setScheduleForm] = useState({
+    url: '',
+    title: '',
+    description: '',
+  });
   const [editingScheduleId, setEditingScheduleId] = useState(null);
 
   // Dan Photo state
@@ -138,14 +142,14 @@ const AdminPanel = () => {
     e.preventDefault();
     console.log('📝 Form submitted!', videoForm);
     console.log('📝 Custom category field:', customCategory);
-    
+
     try {
       // Use custom category if provided, otherwise use dropdown selection
       const finalCategory = customCategory.trim() || videoForm.category;
-      
+
       console.log('💾 Saving video with final category:', finalCategory);
       console.log('💾 Video data:', { ...videoForm, category: finalCategory });
-      
+
       if (editingVideoId) {
         console.log('✏️ Updating video:', editingVideoId);
         await updateVideo({
@@ -153,7 +157,9 @@ const AdminPanel = () => {
           ...videoForm,
           category: finalCategory,
         });
-        alert(`✅ Video updated successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}`);
+        alert(
+          `✅ Video updated successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}`
+        );
       } else {
         console.log('➕ Adding new video...');
         const result = await addVideo({
@@ -161,9 +167,11 @@ const AdminPanel = () => {
           category: finalCategory,
         });
         console.log('✅ Video added successfully with ID:', result);
-        alert(`✅ Video added successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}\n\nThe new category will appear in the dropdown now!`);
+        alert(
+          `✅ Video added successfully!\nCategory: ${finalCategory}\nPremium: ${videoForm.isPremium ? 'Yes' : 'No'}\n\nThe new category will appear in the dropdown now!`
+        );
       }
-      
+
       // Reset form
       setVideoForm({
         title: '',
@@ -220,7 +228,9 @@ const AdminPanel = () => {
     const MAX_SIZE = 2 * 1024 * 1024; // 2MB
     for (let file of files) {
       if (file.size > MAX_SIZE) {
-        alert(`❌ File "${file.name}" is too large. Maximum size is 2MB.\n\nTip: Compress images before uploading or use smaller files.`);
+        alert(
+          `❌ File "${file.name}" is too large. Maximum size is 2MB.\n\nTip: Compress images before uploading or use smaller files.`
+        );
         return;
       }
     }
@@ -228,21 +238,21 @@ const AdminPanel = () => {
     setUploadingMedia(true);
     let successCount = 0;
     let failCount = 0;
-    
+
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const reader = new FileReader();
-        
+
         try {
           await new Promise((resolve, reject) => {
             reader.onloadend = async () => {
               try {
                 const fileData = reader.result;
                 const fileType = file.type.startsWith('image/') ? 'image' : 'video';
-                
+
                 console.log(`Uploading ${file.name} (${(file.size / 1024).toFixed(1)}KB)...`);
-                
+
                 await uploadMedia({
                   fileName: file.name,
                   fileType: fileType,
@@ -253,7 +263,7 @@ const AdminPanel = () => {
                   tags: [],
                   description: '',
                 });
-                
+
                 successCount++;
                 console.log(`✅ ${file.name} uploaded successfully`);
                 resolve();
@@ -263,7 +273,7 @@ const AdminPanel = () => {
                 reject(error);
               }
             };
-            
+
             reader.onerror = () => {
               failCount++;
               reject(new Error(`Failed to read ${file.name}`));
@@ -275,9 +285,11 @@ const AdminPanel = () => {
           // Continue with next file
         }
       }
-      
+
       if (successCount > 0) {
-        alert(`✅ ${successCount} file(s) uploaded successfully!${failCount > 0 ? ` (${failCount} failed)` : ''}`);
+        alert(
+          `✅ ${successCount} file(s) uploaded successfully!${failCount > 0 ? ` (${failCount} failed)` : ''}`
+        );
       } else {
         alert('❌ All uploads failed. Files may be too large or invalid.');
       }
@@ -305,7 +317,7 @@ const AdminPanel = () => {
   const getFilteredMedia = () => {
     if (!allMedia) return [];
     if (mediaFilter === 'all') return allMedia;
-    return allMedia.filter(m => m.fileType === mediaFilter);
+    return allMedia.filter((m) => m.fileType === mediaFilter);
   };
 
   const formatFileSize = (bytes) => {
@@ -419,10 +431,10 @@ const AdminPanel = () => {
     e.preventDefault();
     try {
       await addDanPhoto({ url: danPhotoUrl });
-      alert('✅ Dan\'s photo uploaded!');
+      alert("✅ Dan's photo uploaded!");
       setDanPhotoUrl('');
     } catch (error) {
-      console.error('Error uploading Dan\'s photo:', error);
+      console.error("Error uploading Dan's photo:", error);
       alert('❌ Failed to upload photo: ' + error.message);
     }
   };
@@ -489,12 +501,18 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-auto p-4 overflow-y-auto" onClick={handleAdminClose}>
-      <div className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl border-2 border-cyan-400/50 max-w-4xl w-full my-8" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-auto p-4 overflow-y-auto"
+      onClick={handleAdminClose}
+    >
+      <div
+        className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl border-2 border-cyan-400/50 max-w-4xl w-full my-8"
+        onClick={(e) => e.stopPropagation()}
+      >
         {!isAuthenticated ? (
           <>
             <h3 className="text-2xl font-bold text-white mb-6 text-center">🔐 Admin Login</h3>
-            <input 
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -502,7 +520,7 @@ const AdminPanel = () => {
               placeholder={t.enterPassword}
               className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400 mb-4"
             />
-            <button 
+            <button
               onClick={handleLogin}
               className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
             >
@@ -512,40 +530,40 @@ const AdminPanel = () => {
         ) : (
           <>
             <h3 className="text-3xl font-bold text-white mb-6 text-center">⚙️ Admin Panel</h3>
-            
+
             {/* Section Tabs */}
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-              <button 
+              <button
                 onClick={() => setAdminSection('media')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'media' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 📁 Media Library
               </button>
-              <button 
+              <button
                 onClick={() => setAdminSection('videos')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'videos' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 🎬 Videos
               </button>
-              <button 
+              <button
                 onClick={() => setAdminSection('schedule')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'schedule' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 📅 Schedule
               </button>
-              <button 
+              <button
                 onClick={() => setAdminSection('gallery')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'gallery' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 🖼️ Gallery
               </button>
-              <button 
+              <button
                 onClick={() => setAdminSection('danPhoto')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'danPhoto' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
                 👤 Dan's Photo
               </button>
-              <button 
+              <button
                 onClick={() => setAdminSection('heroVideo')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${adminSection === 'heroVideo' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200 hover:bg-white/20'}`}
               >
@@ -557,7 +575,7 @@ const AdminPanel = () => {
             {adminSection === 'media' && (
               <div className="space-y-6 max-h-[70vh] overflow-y-auto">
                 <h4 className="text-2xl font-semibold text-white mb-4">📁 Media Library</h4>
-                
+
                 {/* Upload Section */}
                 <div className="bg-white/5 p-6 rounded-2xl border-2 border-dashed border-cyan-400/30 hover:border-cyan-400 transition-all">
                   <label className="cursor-pointer block text-center">
@@ -574,18 +592,14 @@ const AdminPanel = () => {
                       <h5 className="text-white font-bold text-xl mb-2">
                         {uploadingMedia ? 'Uploading...' : 'Upload Media Files'}
                       </h5>
-                      <p className="text-blue-200 mb-4">
-                        Click to browse or drag and drop
-                      </p>
+                      <p className="text-blue-200 mb-4">Click to browse or drag and drop</p>
                       <p className="text-blue-300 text-sm">
                         Supports: Images (JPG, PNG, GIF) and Videos (MP4, MOV, etc.)
                       </p>
                       <p className="text-yellow-400 text-sm mt-2">
                         ⚠️ Maximum file size: 2MB per file
                       </p>
-                      <p className="text-cyan-400 text-sm mt-1">
-                        📱 Works on mobile and desktop!
-                      </p>
+                      <p className="text-cyan-400 text-sm mt-1">📱 Works on mobile and desktop!</p>
                     </div>
                   </label>
                 </div>
@@ -602,25 +616,28 @@ const AdminPanel = () => {
                     onClick={() => setMediaFilter('image')}
                     className={`px-4 py-2 rounded-full font-semibold transition-all ${mediaFilter === 'image' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200'}`}
                   >
-                    🖼️ Images ({allMedia?.filter(m => m.fileType === 'image').length || 0})
+                    🖼️ Images ({allMedia?.filter((m) => m.fileType === 'image').length || 0})
                   </button>
                   <button
                     onClick={() => setMediaFilter('video')}
                     className={`px-4 py-2 rounded-full font-semibold transition-all ${mediaFilter === 'video' ? 'bg-cyan-500 text-white' : 'bg-white/10 text-blue-200'}`}
                   >
-                    🎥 Videos ({allMedia?.filter(m => m.fileType === 'video').length || 0})
+                    🎥 Videos ({allMedia?.filter((m) => m.fileType === 'video').length || 0})
                   </button>
                 </div>
 
                 {/* Media Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {getFilteredMedia().map((media) => (
-                    <div key={media._id} className="bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400 transition-all group">
+                    <div
+                      key={media._id}
+                      className="bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400 transition-all group"
+                    >
                       {/* Preview */}
                       <div className="aspect-square bg-slate-800 relative">
                         {media.fileType === 'image' ? (
-                          <img 
-                            src={media.url} 
+                          <img
+                            src={media.url}
                             alt={media.fileName}
                             className="w-full h-full object-cover"
                           />
@@ -629,7 +646,7 @@ const AdminPanel = () => {
                             <div className="text-4xl">🎥</div>
                           </div>
                         )}
-                        
+
                         {/* Delete Button */}
                         <button
                           onClick={() => handleDeleteMedia(media._id)}
@@ -649,15 +666,16 @@ const AdminPanel = () => {
                           📋 Copy URL
                         </button>
                       </div>
-                      
+
                       {/* Info */}
                       <div className="p-3">
-                        <p className="text-white text-sm font-semibold truncate" title={media.fileName}>
+                        <p
+                          className="text-white text-sm font-semibold truncate"
+                          title={media.fileName}
+                        >
                           {media.fileName}
                         </p>
-                        <p className="text-blue-300 text-xs">
-                          {formatFileSize(media.fileSize)}
-                        </p>
+                        <p className="text-blue-300 text-xs">{formatFileSize(media.fileSize)}</p>
                         <p className="text-blue-400 text-xs">
                           {new Date(media.uploadedAt).toLocaleDateString()}
                         </p>
@@ -682,27 +700,36 @@ const AdminPanel = () => {
                 <h4 className="text-2xl font-semibold text-white mb-4">
                   {editingVideoId ? 'Edit Video' : 'Add New Video'}
                 </h4>
-                
+
                 {/* Video Form */}
                 <form onSubmit={handleVideoSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Video Title *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Video Title *
+                    </label>
                     <input
                       type="text"
                       required
                       value={videoForm.title}
-                      onChange={(e) => setVideoForm({...videoForm, title: e.target.value})}
+                      onChange={(e) => setVideoForm({ ...videoForm, title: e.target.value })}
                       placeholder="e.g., Wim Hof Breathing - Beginner"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Description *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Description *
+                    </label>
                     <textarea
                       required
                       value={videoForm.description}
-                      onChange={(e) => setVideoForm({...videoForm, description: e.target.value})}
+                      onChange={(e) =>
+                        setVideoForm({
+                          ...videoForm,
+                          description: e.target.value,
+                        })
+                      }
                       placeholder="Describe the breathing technique..."
                       rows="3"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
@@ -710,30 +737,45 @@ const AdminPanel = () => {
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Video URL (YouTube/Vimeo) *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Video URL (YouTube/Vimeo) *
+                    </label>
                     <input
                       type="url"
                       required
                       value={videoForm.videoUrl}
-                      onChange={(e) => setVideoForm({...videoForm, videoUrl: e.target.value})}
+                      onChange={(e) => setVideoForm({ ...videoForm, videoUrl: e.target.value })}
                       onBlur={(e) => {
                         const convertedUrl = convertToEmbedUrl(e.target.value);
                         if (convertedUrl !== e.target.value) {
-                          setVideoForm({...videoForm, videoUrl: convertedUrl});
+                          setVideoForm({
+                            ...videoForm,
+                            videoUrl: convertedUrl,
+                          });
                         }
                       }}
                       placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">Paste any YouTube or Vimeo URL - it will be automatically converted to embed format</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      Paste any YouTube or Vimeo URL - it will be automatically converted to embed
+                      format
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Thumbnail URL (optional)</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Thumbnail URL (optional)
+                    </label>
                     <input
                       type="url"
                       value={videoForm.thumbnailUrl}
-                      onChange={(e) => setVideoForm({...videoForm, thumbnailUrl: e.target.value})}
+                      onChange={(e) =>
+                        setVideoForm({
+                          ...videoForm,
+                          thumbnailUrl: e.target.value,
+                        })
+                      }
                       placeholder="https://example.com/thumbnail.jpg"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
@@ -741,13 +783,20 @@ const AdminPanel = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-white text-sm font-semibold mb-2">Duration (minutes) *</label>
+                      <label className="block text-white text-sm font-semibold mb-2">
+                        Duration (minutes) *
+                      </label>
                       <input
                         type="number"
                         required
                         min="1"
                         value={videoForm.duration}
-                        onChange={(e) => setVideoForm({...videoForm, duration: parseInt(e.target.value)})}
+                        onChange={(e) =>
+                          setVideoForm({
+                            ...videoForm,
+                            duration: parseInt(e.target.value),
+                          })
+                        }
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       />
                     </div>
@@ -759,7 +808,12 @@ const AdminPanel = () => {
                         required
                         min="1"
                         value={videoForm.order}
-                        onChange={(e) => setVideoForm({...videoForm, order: parseInt(e.target.value)})}
+                        onChange={(e) =>
+                          setVideoForm({
+                            ...videoForm,
+                            order: parseInt(e.target.value),
+                          })
+                        }
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       />
                     </div>
@@ -767,34 +821,49 @@ const AdminPanel = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-white text-sm font-semibold mb-2">Difficulty *</label>
+                      <label className="block text-white text-sm font-semibold mb-2">
+                        Difficulty *
+                      </label>
                       <select
                         value={videoForm.difficulty}
-                        onChange={(e) => setVideoForm({...videoForm, difficulty: e.target.value})}
+                        onChange={(e) =>
+                          setVideoForm({
+                            ...videoForm,
+                            difficulty: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       >
                         {/* Default difficulties */}
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
-                        
+
                         {/* Additional difficulties from existing videos */}
                         {uniqueDifficulties
-                          .filter(diff => !['beginner', 'intermediate', 'advanced'].includes(diff))
-                          .map(diff => (
+                          .filter(
+                            (diff) => !['beginner', 'intermediate', 'advanced'].includes(diff)
+                          )
+                          .map((diff) => (
                             <option key={diff} value={diff}>
                               {diff.charAt(0).toUpperCase() + diff.slice(1)}
                             </option>
-                          ))
-                        }
+                          ))}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-white text-sm font-semibold mb-2">Category *</label>
+                      <label className="block text-white text-sm font-semibold mb-2">
+                        Category *
+                      </label>
                       <select
                         value={videoForm.category}
-                        onChange={(e) => setVideoForm({...videoForm, category: e.target.value})}
+                        onChange={(e) =>
+                          setVideoForm({
+                            ...videoForm,
+                            category: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                       >
                         {/* Default categories */}
@@ -803,16 +872,27 @@ const AdminPanel = () => {
                         <option value="4-7-8">4-7-8 Technique</option>
                         <option value="pranayama">Pranayama</option>
                         <option value="beginner">Beginner Friendly</option>
-                        
+
                         {/* Additional categories from existing videos */}
                         {uniqueCategories
-                          .filter(cat => !['wim-hof', 'box-breathing', '4-7-8', 'pranayama', 'beginner'].includes(cat))
-                          .map(cat => (
+                          .filter(
+                            (cat) =>
+                              ![
+                                'wim-hof',
+                                'box-breathing',
+                                '4-7-8',
+                                'pranayama',
+                                'beginner',
+                              ].includes(cat)
+                          )
+                          .map((cat) => (
                             <option key={cat} value={cat}>
-                              {cat.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                              {cat
+                                .split('-')
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ')}
                             </option>
-                          ))
-                        }
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -820,7 +900,9 @@ const AdminPanel = () => {
                   <div>
                     <label className="block text-white text-sm font-semibold mb-2">
                       Custom Category (Optional)
-                      {customCategory && <span className="ml-2 text-cyan-400">✓ Will use: "{customCategory}"</span>}
+                      {customCategory && (
+                        <span className="ml-2 text-cyan-400">✓ Will use: "{customCategory}"</span>
+                      )}
                     </label>
                     <input
                       type="text"
@@ -830,7 +912,8 @@ const AdminPanel = () => {
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
                     <p className="text-blue-300 text-xs mt-1">
-                      💡 Type a new category name here to create a custom category. Leave empty to use the dropdown selection above.
+                      💡 Type a new category name here to create a custom category. Leave empty to
+                      use the dropdown selection above.
                     </p>
                     {customCategory && (
                       <p className="text-cyan-400 text-xs mt-1 font-semibold">
@@ -844,7 +927,12 @@ const AdminPanel = () => {
                       type="checkbox"
                       id="isPremium"
                       checked={videoForm.isPremium}
-                      onChange={(e) => setVideoForm({...videoForm, isPremium: e.target.checked})}
+                      onChange={(e) =>
+                        setVideoForm({
+                          ...videoForm,
+                          isPremium: e.target.checked,
+                        })
+                      }
                       className="w-5 h-5 rounded border-cyan-400/30 bg-white/10"
                     />
                     <label htmlFor="isPremium" className="text-white font-semibold">
@@ -890,33 +978,61 @@ const AdminPanel = () => {
                     <h5 className="text-blue-200 font-semibold mb-2">📊 Database Stats</h5>
                     <div className="text-blue-100 text-sm space-y-1">
                       <p>• Total Videos: {videos.length}</p>
-                      <p>• Categories Found: <span className="font-bold text-cyan-300">{uniqueCategories.length}</span></p>
-                      <p className="pl-4">→ {uniqueCategories.map(cat => `"${cat}"`).join(', ') || 'None'}</p>
+                      <p>
+                        • Categories Found:{' '}
+                        <span className="font-bold text-cyan-300">{uniqueCategories.length}</span>
+                      </p>
+                      <p className="pl-4">
+                        → {uniqueCategories.map((cat) => `"${cat}"`).join(', ') || 'None'}
+                      </p>
                       <p>• Difficulties: {uniqueDifficulties.join(', ') || 'None'}</p>
-                      <p>• Premium Videos: {videos.filter(v => v.isPremium).length}</p>
-                      <p className="text-yellow-300 mt-2">💡 These categories will appear in the dropdown above</p>
+                      <p>• Premium Videos: {videos.filter((v) => v.isPremium).length}</p>
+                      <p className="text-yellow-300 mt-2">
+                        💡 These categories will appear in the dropdown above
+                      </p>
                     </div>
                   </div>
                 )}
 
                 {/* Videos List */}
                 <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white">Existing Videos ({videos?.length || 0})</h4>
+                  <h4 className="text-xl font-semibold text-white">
+                    Existing Videos ({videos?.length || 0})
+                  </h4>
                   {videos?.map((video) => (
-                    <div key={video._id} className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                    <div
+                      key={video._id}
+                      className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+                    >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h5 className="text-white font-semibold">{video.title}</h5>
-                            {video.isPremium && <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">👑 Premium</span>}
-                            {!video.isPublished && <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">📝 Draft</span>}
+                            {video.isPremium && (
+                              <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
+                                👑 Premium
+                              </span>
+                            )}
+                            {!video.isPublished && (
+                              <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">
+                                📝 Draft
+                              </span>
+                            )}
                           </div>
                           <p className="text-blue-200 text-sm mb-2">{video.description}</p>
                           <div className="flex flex-wrap gap-2 text-xs">
-                            <span className="bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded-full">{video.duration} min</span>
-                            <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full capitalize">{video.difficulty}</span>
-                            <span className="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">{video.category}</span>
-                            <span className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full">👁️ {video.views} views</span>
+                            <span className="bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded-full">
+                              {video.duration} min
+                            </span>
+                            <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full capitalize">
+                              {video.difficulty}
+                            </span>
+                            <span className="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
+                              {video.category}
+                            </span>
+                            <span className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                              👁️ {video.views} views
+                            </span>
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -952,20 +1068,32 @@ const AdminPanel = () => {
                 <h4 className="text-2xl font-semibold text-white mb-4">
                   {editingScheduleId ? 'Edit Schedule' : 'Add New Schedule'}
                 </h4>
-                
+
                 {/* Schedule Form */}
-                <form onSubmit={handleScheduleSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                <form
+                  onSubmit={handleScheduleSubmit}
+                  className="space-y-4 bg-white/5 p-6 rounded-2xl"
+                >
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Image URL *
+                    </label>
                     <input
                       type="url"
                       required
                       value={scheduleForm.url}
-                      onChange={(e) => setScheduleForm({...scheduleForm, url: e.target.value})}
+                      onChange={(e) =>
+                        setScheduleForm({
+                          ...scheduleForm,
+                          url: e.target.value,
+                        })
+                      }
                       placeholder="https://example.com/schedule.jpg or paste from Media Library"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      💡 Tip: Upload to Media Library first, then copy URL
+                    </p>
                   </div>
 
                   <div>
@@ -974,17 +1102,29 @@ const AdminPanel = () => {
                       type="text"
                       required
                       value={scheduleForm.title}
-                      onChange={(e) => setScheduleForm({...scheduleForm, title: e.target.value})}
+                      onChange={(e) =>
+                        setScheduleForm({
+                          ...scheduleForm,
+                          title: e.target.value,
+                        })
+                      }
                       placeholder="e.g., Weekly Schedule"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Description (Optional)</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Description (Optional)
+                    </label>
                     <textarea
                       value={scheduleForm.description}
-                      onChange={(e) => setScheduleForm({...scheduleForm, description: e.target.value})}
+                      onChange={(e) =>
+                        setScheduleForm({
+                          ...scheduleForm,
+                          description: e.target.value,
+                        })
+                      }
                       placeholder="Additional details..."
                       rows="2"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
@@ -1003,7 +1143,11 @@ const AdminPanel = () => {
                         type="button"
                         onClick={() => {
                           setEditingScheduleId(null);
-                          setScheduleForm({ url: '', title: '', description: '' });
+                          setScheduleForm({
+                            url: '',
+                            title: '',
+                            description: '',
+                          });
                         }}
                         className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
                       >
@@ -1015,21 +1159,32 @@ const AdminPanel = () => {
 
                 {/* Schedules List */}
                 <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white">All Schedules ({allScheduleImages?.length || 0})</h4>
+                  <h4 className="text-xl font-semibold text-white">
+                    All Schedules ({allScheduleImages?.length || 0})
+                  </h4>
                   {allScheduleImages?.map((schedule) => (
-                    <div key={schedule._id} className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
+                    <div
+                      key={schedule._id}
+                      className="bg-white/5 p-4 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+                    >
                       <div className="flex gap-4">
-                        <img 
-                          src={schedule.url} 
+                        <img
+                          src={schedule.url}
                           alt={schedule.title}
                           className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-400/30"
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h5 className="text-white font-semibold">{schedule.title}</h5>
-                            {schedule.isActive && <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">✓ Active</span>}
+                            {schedule.isActive && (
+                              <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                                ✓ Active
+                              </span>
+                            )}
                           </div>
-                          {schedule.description && <p className="text-blue-200 text-sm mb-2">{schedule.description}</p>}
+                          {schedule.description && (
+                            <p className="text-blue-200 text-sm mb-2">{schedule.description}</p>
+                          )}
                           <div className="flex gap-2 mt-3">
                             {!schedule.isActive && (
                               <button
@@ -1079,28 +1234,42 @@ const AdminPanel = () => {
                 <h4 className="text-2xl font-semibold text-white mb-4">
                   {editingGalleryId ? 'Edit Gallery Image' : 'Add New Gallery Image'}
                 </h4>
-                
+
                 {/* Gallery Form */}
-                <form onSubmit={handleGallerySubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                <form
+                  onSubmit={handleGallerySubmit}
+                  className="space-y-4 bg-white/5 p-6 rounded-2xl"
+                >
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Image URL *
+                    </label>
                     <input
                       type="url"
                       required
                       value={galleryForm.url}
-                      onChange={(e) => setGalleryForm({...galleryForm, url: e.target.value})}
+                      onChange={(e) => setGalleryForm({ ...galleryForm, url: e.target.value })}
                       placeholder="https://example.com/image.jpg or paste from Media Library"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      💡 Tip: Upload to Media Library first, then copy URL
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Alt Text (Optional)</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Alt Text (Optional)
+                    </label>
                     <input
                       type="text"
                       value={galleryForm.altText}
-                      onChange={(e) => setGalleryForm({...galleryForm, altText: e.target.value})}
+                      onChange={(e) =>
+                        setGalleryForm({
+                          ...galleryForm,
+                          altText: e.target.value,
+                        })
+                      }
                       placeholder="Describe the image..."
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
@@ -1130,12 +1299,17 @@ const AdminPanel = () => {
 
                 {/* Gallery Images Grid */}
                 <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white">All Gallery Images ({allGalleryImages?.length || 0})</h4>
+                  <h4 className="text-xl font-semibold text-white">
+                    All Gallery Images ({allGalleryImages?.length || 0})
+                  </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {allGalleryImages?.map((image) => (
-                      <div key={image._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
-                        <img 
-                          src={image.url} 
+                      <div
+                        key={image._id}
+                        className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+                      >
+                        <img
+                          src={image.url}
                           alt={image.altText || 'Gallery image'}
                           className="w-full h-40 object-cover"
                         />
@@ -1184,11 +1358,16 @@ const AdminPanel = () => {
             {adminSection === 'danPhoto' && (
               <div className="space-y-6 max-h-[70vh] overflow-y-auto">
                 <h4 className="text-2xl font-semibold text-white mb-4">Add Dan's Photo</h4>
-                
+
                 {/* Dan Photo Form */}
-                <form onSubmit={handleDanPhotoSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                <form
+                  onSubmit={handleDanPhotoSubmit}
+                  className="space-y-4 bg-white/5 p-6 rounded-2xl"
+                >
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Photo URL *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Photo URL *
+                    </label>
                     <input
                       type="url"
                       required
@@ -1197,7 +1376,9 @@ const AdminPanel = () => {
                       placeholder="https://example.com/dan-photo.jpg or paste from Media Library"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      💡 Tip: Upload to Media Library first, then copy URL
+                    </p>
                   </div>
 
                   <button
@@ -1210,12 +1391,17 @@ const AdminPanel = () => {
 
                 {/* Dan Photos List */}
                 <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white">All Dan's Photos ({allDanPhotos?.length || 0})</h4>
+                  <h4 className="text-xl font-semibold text-white">
+                    All Dan's Photos ({allDanPhotos?.length || 0})
+                  </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {allDanPhotos?.map((photo) => (
-                      <div key={photo._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
-                        <img 
-                          src={photo.url} 
+                      <div
+                        key={photo._id}
+                        className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+                      >
+                        <img
+                          src={photo.url}
                           alt="Dan's photo"
                           className="w-full h-48 object-cover"
                         />
@@ -1251,38 +1437,59 @@ const AdminPanel = () => {
                 <h4 className="text-2xl font-semibold text-white mb-4">
                   {editingHeroVideoId ? 'Edit Hero Video' : 'Add New Hero Video'}
                 </h4>
-                
+
                 {/* Hero Video Form */}
-                <form onSubmit={handleHeroVideoSubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
+                <form
+                  onSubmit={handleHeroVideoSubmit}
+                  className="space-y-4 bg-white/5 p-6 rounded-2xl"
+                >
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                    <p className="text-yellow-200 text-sm font-semibold mb-2">💡 Tips for Hero Videos</p>
+                    <p className="text-yellow-200 text-sm font-semibold mb-2">
+                      💡 Tips for Hero Videos
+                    </p>
                     <p className="text-yellow-100 text-xs">
-                      • Use MP4 format, H.264 codec<br/>
-                      • Keep video under 5 seconds for best results<br/>
-                      • Upload to Media Library first, then copy URL<br/>
-                      • Recommended resolution: 720x720 or smaller
+                      • Use MP4 format, H.264 codec
+                      <br />• Keep video under 5 seconds for best results
+                      <br />• Upload to Media Library first, then copy URL
+                      <br />• Recommended resolution: 720x720 or smaller
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Video URL *</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Video URL *
+                    </label>
                     <input
                       type="url"
                       required
                       value={heroVideoForm.url}
-                      onChange={(e) => setHeroVideoForm({...heroVideoForm, url: e.target.value})}
+                      onChange={(e) =>
+                        setHeroVideoForm({
+                          ...heroVideoForm,
+                          url: e.target.value,
+                        })
+                      }
                       placeholder="https://example.com/hero-video.mp4 or paste from Media Library"
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
-                    <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      💡 Tip: Upload to Media Library first, then copy URL
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Alt Text (Optional)</label>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Alt Text (Optional)
+                    </label>
                     <input
                       type="text"
                       value={heroVideoForm.altText}
-                      onChange={(e) => setHeroVideoForm({...heroVideoForm, altText: e.target.value})}
+                      onChange={(e) =>
+                        setHeroVideoForm({
+                          ...heroVideoForm,
+                          altText: e.target.value,
+                        })
+                      }
                       placeholder="Describe the video..."
                       className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                     />
@@ -1312,17 +1519,16 @@ const AdminPanel = () => {
 
                 {/* Hero Videos List */}
                 <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white">All Hero Videos ({allHeroVideos?.length || 0})</h4>
+                  <h4 className="text-xl font-semibold text-white">
+                    All Hero Videos ({allHeroVideos?.length || 0})
+                  </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {allHeroVideos?.map((video) => (
-                      <div key={video._id} className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all">
-                        <video
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-full h-40 object-cover"
-                        >
+                      <div
+                        key={video._id}
+                        className="relative group bg-white/5 rounded-xl overflow-hidden border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+                      >
+                        <video autoPlay loop muted playsInline className="w-full h-40 object-cover">
                           <source src={video.url} type="video/mp4" />
                         </video>
                         {video.isActive && (
@@ -1376,7 +1582,7 @@ const AdminPanel = () => {
               </div>
             )}
 
-            <button 
+            <button
               onClick={handleAdminClose}
               className="mt-6 w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
             >

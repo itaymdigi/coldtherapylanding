@@ -23,10 +23,10 @@ const AdminDanPhoto = () => {
         url: danPhotoUrl,
         isActive: false,
       });
-      alert('✅ Dan\'s photo added successfully!');
+      alert("✅ Dan's photo added successfully!");
       setDanPhotoUrl('');
     } catch (error) {
-      console.error('Error adding Dan\'s photo:', error);
+      console.error("Error adding Dan's photo:", error);
       alert('❌ Failed to add photo: ' + error.message);
     }
   };
@@ -56,7 +56,7 @@ const AdminDanPhoto = () => {
   return (
     <div className="space-y-6 max-h-[70vh] overflow-y-auto">
       <h4 className="text-2xl font-semibold text-white mb-4">Add Dan's Photo</h4>
-      
+
       {/* Dan Photo Form */}
       <form onSubmit={handleAddDanPhoto} className="space-y-4 bg-white/5 p-6 rounded-2xl">
         <div>
@@ -69,7 +69,9 @@ const AdminDanPhoto = () => {
             placeholder="https://example.com/dan-photo.jpg"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
-          <p className="text-blue-300 text-xs mt-1">💡 Tip: Upload to Media Library first, then copy URL</p>
+          <p className="text-blue-300 text-xs mt-1">
+            💡 Tip: Upload to Media Library first, then copy URL
+          </p>
         </div>
 
         <button
@@ -82,12 +84,14 @@ const AdminDanPhoto = () => {
 
       {/* Dan Photos List */}
       <div className="space-y-3">
-        <h4 className="text-xl font-semibold text-white">All Photos ({allDanPhotos?.length || 0})</h4>
+        <h4 className="text-xl font-semibold text-white">
+          All Photos ({allDanPhotos?.length || 0})
+        </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {allDanPhotos?.map((photo) => (
             <div key={photo._id} className="relative group">
-              <img 
-                src={photo.url} 
+              <img
+                src={photo.url}
                 alt="Dan Hayat"
                 className="w-full h-48 object-cover rounded-lg border-2 border-cyan-400/30"
               />

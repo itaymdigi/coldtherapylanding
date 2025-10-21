@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { v } from 'convex/values';
+import { mutation, query } from './_generated/server';
 
 // Simple hash function (in production, use bcrypt or similar)
 function hashPassword(password: string): string {
@@ -7,7 +7,7 @@ function hashPassword(password: string): string {
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
     const char = password.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return hash.toString(36);
@@ -28,16 +28,16 @@ export const register = mutation({
   handler: async (ctx, args) => {
     // Check if user already exists
     const existingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .query('users')
+      .withIndex('by_email', (q) => q.eq('email', args.email))
       .first();
 
     if (existingUser) {
-      throw new Error("User with this email already exists");
+      throw new Error('User with this email already exists');
     }
 
     // Create new user
-    const userId = await ctx.db.insert("users", {
+    const userId = await ctx.db.insert('users', {
       email: args.email,
       name: args.name,
       phone: args.phone,
@@ -49,7 +49,7 @@ export const register = mutation({
 
     // Create session token
     const token = generateToken();
-    await ctx.db.insert("sessionTokens", {
+    await ctx.db.insert('sessionTokens', {
       userId,
       token,
       expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
@@ -78,17 +78,17 @@ export const login = mutation({
   handler: async (ctx, args) => {
     // Find user
     const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .query('users')
+      .withIndex('by_email', (q) => q.eq('email', args.email))
       .first();
 
     if (!user) {
-      throw new Error("Invalid email or password");
+      throw new Error('Invalid email or password');
     }
 
     // Verify password
     if (user.passwordHash !== hashPassword(args.password)) {
-      throw new Error("Invalid email or password");
+      throw new Error('Invalid email or password');
     }
 
     // Update last login
@@ -98,7 +98,7 @@ export const login = mutation({
 
     // Create new session token
     const token = generateToken();
-    await ctx.db.insert("sessionTokens", {
+    await ctx.db.insert('sessionTokens', {
       userId: user._id,
       token,
       expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
@@ -127,8 +127,8 @@ export const verifyToken = query({
   },
   handler: async (ctx, args) => {
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!sessionToken || sessionToken.expiresAt < Date.now()) {
@@ -159,8 +159,8 @@ export const logout = mutation({
   },
   handler: async (ctx, args) => {
     const sessionToken = await ctx.db
-      .query("sessionTokens")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('sessionTokens')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (sessionToken) {
@@ -173,7 +173,7 @@ export const logout = mutation({
 
 // Admin authentication
 // Note: In production, store admin password hash in environment variable
-const ADMIN_PASSWORD_HASH = hashPassword("Coldislife"); // TODO: Move to env variable
+const ADMIN_PASSWORD_HASH = hashPassword('Coldislife'); // TODO: Move to env variable
 
 export const adminLogin = mutation({
   args: {
@@ -182,14 +182,14 @@ export const adminLogin = mutation({
   handler: async (ctx, args) => {
     // Verify admin password
     if (hashPassword(args.password) !== ADMIN_PASSWORD_HASH) {
-      throw new Error("Invalid admin password");
+      throw new Error('Invalid admin password');
     }
 
     // Create admin session token
     const token = generateToken();
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
-    await ctx.db.insert("adminSessions", {
+    await ctx.db.insert('adminSessions', {
       token,
       createdAt: Date.now(),
       expiresAt,
@@ -210,8 +210,8 @@ export const verifyAdminToken = query({
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
-      .query("adminSessions")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('adminSessions')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (!session || session.expiresAt < Date.now()) {
@@ -232,8 +232,8 @@ export const updateAdminActivity = mutation({
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
-      .query("adminSessions")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('adminSessions')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (session && session.expiresAt > Date.now()) {
@@ -252,8 +252,8 @@ export const adminLogout = mutation({
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
-      .query("adminSessions")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .query('adminSessions')
+      .withIndex('by_token', (q) => q.eq('token', args.token))
       .first();
 
     if (session) {

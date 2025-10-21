@@ -113,9 +113,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="block text-white/90 mb-2 text-sm font-medium">
-                {t.name}
-              </label>
+              <label className="block text-white/90 mb-2 text-sm font-medium">{t.name}</label>
               <input
                 type="text"
                 name="name"
@@ -129,9 +127,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           )}
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">
-              {t.email}
-            </label>
+            <label className="block text-white/90 mb-2 text-sm font-medium">{t.email}</label>
             <input
               type="email"
               name="email"
@@ -144,12 +140,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">
-              {t.password}
-            </label>
+            <label className="block text-white/90 mb-2 text-sm font-medium">{t.password}</label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -170,9 +164,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
 
           {!isLogin && (
             <div>
-              <label className="block text-white/90 mb-2 text-sm font-medium">
-                {t.phone}
-              </label>
+              <label className="block text-white/90 mb-2 text-sm font-medium">{t.phone}</label>
               <input
                 type="tel"
                 name="phone"
