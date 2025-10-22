@@ -6,28 +6,63 @@ import { useFileStorage, formatFileSize } from '../../hooks/useFileStorage';
 
 // Component to display image from Convex storage
 const StorageImage = ({ storageId, alt, className }) => {
-  const imageUrl = useQuery(api.fileStorage.getFileUrl, storageId ? { storageId } : 'skip');
+  // Check if it's already a full URL or data URI
+  const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
   
+  // Only query Convex if it's a storage ID (not a URL)
+  const imageUrl = useQuery(
+    api.fileStorage.getFileUrl, 
+    storageId && !isDirectUrl ? { storageId } : 'skip'
+  );
+  
+  // Debug logging
+  console.log('StorageImage Debug:', { storageId, isDirectUrl, imageUrl });
+  
+  // No storage ID provided
   if (!storageId) {
-    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>No image</div>;
+    return (
+      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+        No image
+      </div>
+    );
   }
   
+  // If it's already a URL (data URI or http), use it directly
+  if (isDirectUrl) {
+    return <img src={storageId} alt={alt} className={className} />;
+  }
+  
+  // Loading from Convex storage
   if (imageUrl === undefined) {
-    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>Loading...</div>;
+    return (
+      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+        Loading...
+      </div>
+    );
   }
   
+  // Failed to get URL from Convex
   if (!imageUrl) {
-    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>Error loading image</div>;
+    return (
+      <div className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}>
+        Error: Invalid storage ID
+      </div>
+    );
   }
   
+  // Successfully got URL from Convex
   return (
     <img
       src={imageUrl}
       alt={alt}
       className={className}
       onError={(e) => {
+        console.error('Failed to load image:', imageUrl);
         e.target.style.display = 'none';
-        e.target.parentElement.innerHTML = '<div class="bg-gray-700 flex items-center justify-center text-white/50">Failed to load</div>';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = `${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`;
+        errorDiv.textContent = 'Failed to load';
+        e.target.parentElement.appendChild(errorDiv);
       }}
     />
   );
