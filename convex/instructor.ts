@@ -43,7 +43,14 @@ export const updateInstructor = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    // Don't update createdAt - it should remain unchanged
+    await ctx.db.patch(id, {
+      name: updates.name,
+      title: updates.title,
+      bio: updates.bio,
+      photoUrl: updates.photoUrl,
+      order: updates.order,
+    });
     return id;
   },
 });

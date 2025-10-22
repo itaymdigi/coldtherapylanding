@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
+import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
 import { api } from '../../../convex/_generated/api';
-import { Upload, Trash2, Edit2, Save, X, UserPlus } from 'lucide-react';
 
 const AdminInstructors = () => {
+  const nameInputId = useId();
+  const titleInputId = useId();
+  const bioInputId = useId();
+  const orderInputId = useId();
+  const photoUploadId = useId();
   const instructors = useQuery(api.instructor.getAllInstructors) || [];
   const addInstructor = useMutation(api.instructor.addInstructor);
   const updateInstructor = useMutation(api.instructor.updateInstructor);
@@ -45,18 +50,24 @@ const AdminInstructors = () => {
 
   const handleSave = async () => {
     try {
+      // Ensure photoUrl has a default placeholder if empty
+      const dataToSave = {
+        ...formData,
+        photoUrl: formData.photoUrl || 'https://via.placeholder.com/400x400?text=Instructor',
+      };
+
       if (editingId) {
         await updateInstructor({
           id: editingId,
-          ...formData,
+          ...dataToSave,
         });
       } else {
-        await addInstructor(formData);
+        await addInstructor(dataToSave);
       }
       handleCancel();
     } catch (error) {
       console.error('Error saving instructor:', error);
-      alert('Failed to save instructor');
+      alert(`Failed to save instructor: ${error.message || error}`);
     }
   };
 
@@ -99,6 +110,7 @@ const AdminInstructors = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-white">Manage Instructors</h2>
         <button
+          type="button"
           onClick={handleAddNew}
           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all"
         >
@@ -115,8 +127,9 @@ const AdminInstructors = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-white mb-2">Name</label>
+              <label htmlFor={nameInputId} className="block text-white mb-2">Name</label>
               <input
+                id={nameInputId}
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -126,8 +139,9 @@ const AdminInstructors = () => {
             </div>
 
             <div>
-              <label className="block text-white mb-2">Title</label>
+              <label htmlFor={titleInputId} className="block text-white mb-2">Title</label>
               <input
+                id={titleInputId}
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -137,8 +151,9 @@ const AdminInstructors = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-white mb-2">Bio</label>
+              <label htmlFor={bioInputId} className="block text-white mb-2">Bio</label>
               <textarea
+                id={bioInputId}
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 rows={4}
@@ -148,28 +163,29 @@ const AdminInstructors = () => {
             </div>
 
             <div>
-              <label className="block text-white mb-2">Order</label>
+              <label htmlFor={orderInputId} className="block text-white mb-2">Order</label>
               <input
+                id={orderInputId}
                 type="number"
                 value={formData.order}
-                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value, 10) })}
                 className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Display order"
               />
             </div>
 
             <div>
-              <label className="block text-white mb-2">Photo</label>
+              <label htmlFor={photoUploadId} className="block text-white mb-2">Photo</label>
               <div className="flex gap-2">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
-                  id="instructor-photo-upload"
+                  id={photoUploadId}
                 />
                 <label
-                  htmlFor="instructor-photo-upload"
+                  htmlFor={photoUploadId}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white cursor-pointer hover:bg-white/20 transition-colors"
                 >
                   <Upload className="w-5 h-5" />
@@ -191,6 +207,7 @@ const AdminInstructors = () => {
 
           <div className="flex gap-3 mt-6">
             <button
+              type="button"
               onClick={handleSave}
               disabled={!formData.name || !formData.title || !formData.bio}
               className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -199,6 +216,7 @@ const AdminInstructors = () => {
               Save
             </button>
             <button
+              type="button"
               onClick={handleCancel}
               className="flex items-center gap-2 px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all"
             >
@@ -233,6 +251,7 @@ const AdminInstructors = () => {
 
             <div className="flex gap-2 mt-4">
               <button
+                type="button"
                 onClick={() => handleEdit(instructor)}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all"
               >
@@ -240,6 +259,7 @@ const AdminInstructors = () => {
                 Edit
               </button>
               <button
+                type="button"
                 onClick={() => handleDelete(instructor._id)}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all"
               >
