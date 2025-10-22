@@ -14,6 +14,7 @@ import type * as breathingVideos from "../breathingVideos.js";
 import type * as chatbotBooking from "../chatbotBooking.js";
 import type * as chatbotKnowledge from "../chatbotKnowledge.js";
 import type * as danPhoto from "../danPhoto.js";
+import type * as fileStorage from "../fileStorage.js";
 import type * as galleryImages from "../galleryImages.js";
 import type * as heroVideo from "../heroVideo.js";
 import type * as instructor from "../instructor.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   chatbotBooking: typeof chatbotBooking;
   chatbotKnowledge: typeof chatbotKnowledge;
   danPhoto: typeof danPhoto;
+  fileStorage: typeof fileStorage;
   galleryImages: typeof galleryImages;
   heroVideo: typeof heroVideo;
   instructor: typeof instructor;

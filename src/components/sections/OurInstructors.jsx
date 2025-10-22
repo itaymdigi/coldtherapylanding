@@ -4,6 +4,9 @@ import { api } from '../../../convex/_generated/api';
 import { useApp } from '../../contexts/AppContext';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
+// Default placeholder image as data URI (no external network call)
+const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
+
 const OurInstructors = () => {
   const { t } = useApp();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -88,7 +91,7 @@ const OurInstructors = () => {
                     {/* Instructor Photo */}
                     <div className="relative h-96 sm:h-[500px] overflow-hidden">
                       <img
-                        src={instructor.photoUrl || 'https://via.placeholder.com/800x600?text=Instructor'}
+                        src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                         alt={instructor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -175,7 +178,7 @@ const OurInstructors = () => {
                   }`}
                 >
                   <img
-                    src={instructor.photoUrl || 'https://via.placeholder.com/200x200?text=Instructor'}
+                    src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                     alt={instructor.name}
                     className="w-full h-full object-cover"
                   />
@@ -215,7 +218,7 @@ const OurInstructors = () => {
               {/* Photo */}
               <div className="relative h-64 md:h-full min-h-[400px]">
                 <img
-                  src={selectedInstructor.photoUrl || 'https://via.placeholder.com/600x800?text=Instructor'}
+                  src={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                   alt={selectedInstructor.name}
                   className="w-full h-full object-cover"
                 />

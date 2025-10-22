@@ -2,20 +2,24 @@ import { useId, useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
 import { api } from '../../../convex/_generated/api';
+import { useFileStorage, formatFileSize } from '../../hooks/useFileStorage';
 
-const AdminInstructors = () => {
+const AdminInstructorsWithStorage = () => {
   const nameInputId = useId();
   const titleInputId = useId();
   const bioInputId = useId();
   const orderInputId = useId();
   const photoUploadId = useId();
+  
   const instructors = useQuery(api.instructor.getAllInstructors) || [];
   const addInstructor = useMutation(api.instructor.addInstructor);
   const updateInstructor = useMutation(api.instructor.updateInstructor);
   const deleteInstructor = useMutation(api.instructor.deleteInstructor);
+  const { uploadFile } = useFileStorage();
 
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     title: '',
@@ -50,8 +54,6 @@ const AdminInstructors = () => {
 
   const handleSave = async () => {
     try {
-      // Ensure photoUrl has a default placeholder if empty
-      // Use a data URI instead of external URL to avoid network issues
       const defaultPhoto = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
       const dataToSave = {
         ...formData,
@@ -86,24 +88,42 @@ const AdminInstructors = () => {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (limit to 1MB to avoid Convex size limits)
-      if (file.size > 1024 * 1024) {
-        alert('Image size must be less than 1MB. Please compress your image and try again.');
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
         return;
       }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result;
-        // Check base64 size (Convex has ~1MB document limit)
-        if (base64.length > 900000) {
-          alert('Image is too large after encoding. Please use a smaller image (recommended: under 500KB).');
-          return;
-        }
-        setFormData({ ...formData, photoUrl: base64 });
-      };
-      reader.readAsDataURL(file);
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        alert(`File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`);
+        return;
+      }
+
+      // Upload to Convex storage
+      const result = await uploadFile(file, {
+        category: 'instructor',
+        tags: ['profile', 'team'],
+        description: `Profile photo for ${formData.name || 'instructor'}`,
+      });
+
+      // Get the storage URL
+      const storageUrl = await api.fileStorage.getFileUrl({ storageId: result.storageId });
+      
+      // Update form data with storage URL
+      setFormData({ ...formData, photoUrl: storageUrl });
+      
+      alert('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert(`Failed to upload image: ${error.message}`);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -122,7 +142,7 @@ const AdminInstructors = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Manage Instructors</h2>
+        <h2 className="text-2xl font-bold text-white">Manage Instructors (with File Storage)</h2>
         <button
           type="button"
           onClick={handleAddNew}
@@ -189,7 +209,9 @@ const AdminInstructors = () => {
             </div>
 
             <div>
-              <label htmlFor={photoUploadId} className="block text-white mb-2">Photo</label>
+              <label htmlFor={photoUploadId} className="block text-white mb-2">
+                Photo {isUploading && <span className="text-cyan-400">(Uploading...)</span>}
+              </label>
               <div className="flex gap-2">
                 <input
                   type="file"
@@ -197,15 +219,19 @@ const AdminInstructors = () => {
                   onChange={handleImageUpload}
                   className="hidden"
                   id={photoUploadId}
+                  disabled={isUploading}
                 />
                 <label
                   htmlFor={photoUploadId}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white cursor-pointer hover:bg-white/20 transition-colors"
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white cursor-pointer hover:bg-white/20 transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <Upload className="w-5 h-5" />
-                  Upload Photo
+                  {isUploading ? 'Uploading...' : 'Upload Photo (Max 10MB)'}
                 </label>
               </div>
+              <p className="text-xs text-white/60 mt-1">
+                Supports: JPG, PNG, WebP. Files stored in Convex cloud storage.
+              </p>
             </div>
 
             {formData.photoUrl && (
@@ -223,7 +249,7 @@ const AdminInstructors = () => {
             <button
               type="button"
               onClick={handleSave}
-              disabled={!formData.name || !formData.title || !formData.bio}
+              disabled={!formData.name || !formData.title || !formData.bio || isUploading}
               className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-5 h-5" />
@@ -294,4 +320,4 @@ const AdminInstructors = () => {
   );
 };
 
-export default AdminInstructors;
+export default AdminInstructorsWithStorage;
