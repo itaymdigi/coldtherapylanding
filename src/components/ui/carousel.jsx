@@ -103,16 +103,15 @@ const Carousel = React.forwardRef(
           canScrollNext,
         }}
       >
-        <div
+        <section
           ref={ref}
           onKeyDownCapture={handleKeyDown}
           className={`relative ${className || ''}`}
-          role="region"
-          aria-roledescription="carousel"
+          aria-label="Carousel"
           {...props}
         >
           {children}
-        </div>
+        </section>
       </CarouselContext.Provider>
     )
   }
@@ -140,11 +139,9 @@ const CarouselItem = React.forwardRef(({ className, ...props }, ref) => {
   const { orientation } = useCarousel()
 
   return (
-    <div
+    <fieldset
       ref={ref}
-      role="group"
-      aria-roledescription="slide"
-      className={`min-w-0 shrink-0 grow-0 basis-full ${
+      className={`min-w-0 shrink-0 grow-0 basis-full border-0 p-0 m-0 ${
         orientation === "horizontal" ? "pl-4" : "pt-4"
       } ${className || ''}`}
       {...props}

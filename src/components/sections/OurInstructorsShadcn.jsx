@@ -14,6 +14,23 @@ import { useApp } from '../../contexts/AppContext';
 // Default placeholder image as data URI (no external network call)
 const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
 
+// Component to display image from Convex storage
+const InstructorImage = ({ storageId, alt, className }) => {
+  const imageUrl = useQuery(api.fileStorage.getFileUrl, storageId && !storageId.startsWith('data:') && !storageId.startsWith('http') ? { storageId } : 'skip');
+  
+  // If it's already a URL (data URI or http), use it directly
+  if (!storageId || storageId.startsWith('data:') || storageId.startsWith('http')) {
+    return <img src={storageId || DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
+  }
+  
+  // If loading from Convex storage
+  if (imageUrl === undefined) {
+    return <img src={DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
+  }
+  
+  return <img src={imageUrl || DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
+};
+
 const OurInstructorsShadcn = () => {
   const { t } = useApp();
   const modalTitleId = useId();
@@ -107,8 +124,8 @@ const OurInstructorsShadcn = () => {
                   >
                     {/* Instructor Photo */}
                     <div className="relative h-96 sm:h-[500px] overflow-hidden">
-                      <img
-                        src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                      <InstructorImage
+                        storageId={instructor.photoUrl}
                         alt={instructor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -174,8 +191,8 @@ const OurInstructorsShadcn = () => {
                       : 'border-white/20 hover:border-white/50 opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img
-                    src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                  <InstructorImage
+                    storageId={instructor.photoUrl}
                     alt={instructor.name}
                     className="w-full h-full object-cover"
                   />
@@ -224,8 +241,8 @@ const OurInstructorsShadcn = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Photo */}
               <div className="relative h-64 md:h-full min-h-[400px]">
-                <img
-                  src={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                <InstructorImage
+                  storageId={selectedInstructor.photoUrl}
                   alt={selectedInstructor.name}
                   className="w-full h-full object-cover"
                 />

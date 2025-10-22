@@ -4,6 +4,35 @@ import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
 import { api } from '../../../convex/_generated/api';
 import { useFileStorage, formatFileSize } from '../../hooks/useFileStorage';
 
+// Component to display image from Convex storage
+const StorageImage = ({ storageId, alt, className }) => {
+  const imageUrl = useQuery(api.fileStorage.getFileUrl, storageId ? { storageId } : 'skip');
+  
+  if (!storageId) {
+    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>No image</div>;
+  }
+  
+  if (imageUrl === undefined) {
+    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>Loading...</div>;
+  }
+  
+  if (!imageUrl) {
+    return <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50`}>Error loading image</div>;
+  }
+  
+  return (
+    <img
+      src={imageUrl}
+      alt={alt}
+      className={className}
+      onError={(e) => {
+        e.target.style.display = 'none';
+        e.target.parentElement.innerHTML = '<div class="bg-gray-700 flex items-center justify-center text-white/50">Failed to load</div>';
+      }}
+    />
+  );
+};
+
 const AdminInstructorsWithStorage = () => {
   const nameInputId = useId();
   const titleInputId = useId();
@@ -112,11 +141,9 @@ const AdminInstructorsWithStorage = () => {
         description: `Profile photo for ${formData.name || 'instructor'}`,
       });
 
-      // Get the storage URL
-      const storageUrl = await api.fileStorage.getFileUrl({ storageId: result.storageId });
-      
-      // Update form data with storage URL
-      setFormData({ ...formData, photoUrl: storageUrl });
+      // Store the storageId directly - Convex will generate URL when needed
+      // The storageId format is: "kg2..." which Convex can convert to URL
+      setFormData({ ...formData, photoUrl: result.storageId });
       
       alert('Image uploaded successfully!');
     } catch (error) {
@@ -236,10 +263,11 @@ const AdminInstructorsWithStorage = () => {
 
             {formData.photoUrl && (
               <div className="md:col-span-2">
-                <img
-                  src={formData.photoUrl}
-                  alt="Preview"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-white/20"
+                <p className="text-white mb-2 text-sm">Preview</p>
+                <StorageImage
+                  storageId={formData.photoUrl}
+                  alt="Instructor preview"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-500"
                 />
               </div>
             )}
@@ -275,8 +303,8 @@ const AdminInstructorsWithStorage = () => {
             className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-cyan-500/50 transition-all"
           >
             <div className="flex items-start gap-4">
-              <img
-                src={instructor.photoUrl || 'https://via.placeholder.com/150'}
+              <StorageImage
+                storageId={instructor.photoUrl}
                 alt={instructor.name}
                 className="w-20 h-20 rounded-full object-cover border-2 border-cyan-500"
               />
