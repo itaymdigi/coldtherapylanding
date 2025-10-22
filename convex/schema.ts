@@ -163,4 +163,14 @@ export default defineSchema({
     expiresAt: v.number(),
     lastActivityAt: v.number(),
   }).index('by_token', ['token']),
+
+  // Instructors
+  instructors: defineTable({
+    name: v.string(),
+    title: v.string(),
+    bio: v.string(),
+    photoUrl: v.string(),
+    order: v.number(),
+    createdAt: v.number(),
+  }),
 });

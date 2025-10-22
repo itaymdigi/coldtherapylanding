@@ -100,6 +100,9 @@ export const translations = {
     faq5Q: 'What are the main benefits?',
     faq5A:
       'Cold therapy delivers game-changing benefits: crushed inflammation, rapid muscle recovery, enhanced circulation, bulletproof immune system, deep sleep, unshakeable mental resilience, stress obliteration, and natural mood elevation through endorphin release.',
+    ourInstructorsTitle: 'Meet Our Expert Team',
+    ourInstructorsSubtitle: 'Certified professionals dedicated to your transformation',
+    noInstructorsYet: 'More instructors coming soon',
     galleryTitle: 'The Experience',
     gallerySubtitle: 'Step inside our transformative cold therapy sessions',
     galleryInstagram: 'Join our community on Instagram for daily inspiration',
@@ -316,6 +319,9 @@ export const translations = {
     faq5Q: 'מהם היתרונות העיקריים?',
     faq5A:
       'טיפול בקור מציע יתרונות רבים כולל הפחתת דלקות, התאוששות שרירים מהירה יותר, שיפור זרימת הדם, שיפור תפקוד חיסוני, איכות שינה טובה יותר, עמידות מנטלית מוגברת, הפחתת מתח ומצב רוח מוגבר באמצעות שחרור אנדורפינים.',
+    ourInstructorsTitle: 'המדריכים שלנו',
+    ourInstructorsSubtitle: 'צוות מומחים מוסמכים המוקדשים להדרכתך בטיפול בקור',
+    noInstructorsYet: 'בקרוב יתווספו מדריכים נוספים',
     galleryTitle: 'גלריית חוויות',
     gallerySubtitle: 'ראו כיצד נראים סשני הטיפול בקור שלנו',
     galleryInstagram: 'עקבו אחרינו באינסטגרם לעדכונים נוספים',
