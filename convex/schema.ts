@@ -124,7 +124,7 @@ export default defineSchema({
   users: defineTable({
     email: v.string(),
     name: v.string(),
-    phone: v.string(), // Changed from optional to required to match inferred schema
+    phone: v.optional(v.string()), // Changed from required to optional to match inferred schema
     gender: v.optional(v.string()), // "male" or "female"
     passwordHash: v.string(),
     createdAt: v.number(),
