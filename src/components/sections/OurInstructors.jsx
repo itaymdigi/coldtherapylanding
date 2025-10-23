@@ -1,9 +1,70 @@
-import { useId, useState } from 'react';
+import { useId, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 import { useApp } from '../../contexts/AppContext';
 import { useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+
+// Component to display image from Convex storage
+const StorageImage = ({ storageId, alt, className }) => {
+  // Check if it's already a full URL or data URI
+  const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
+
+  // Only query Convex if it's a storage ID (not a URL)
+  const imageUrl = useQuery(
+    api.fileStorage.getFileUrl,
+    storageId && !isDirectUrl ? { storageId } : 'skip'
+  );
+
+  // No storage ID provided
+  if (!storageId) {
+    return (
+      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+        No image
+      </div>
+    );
+  }
+
+  // If it's already a URL (data URI or http), use it directly
+  if (isDirectUrl) {
+    return <img src={storageId} alt={alt} className={className} />;
+  }
+
+  // Loading from Convex storage
+  if (imageUrl === undefined) {
+    return (
+      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+        Loading...
+      </div>
+    );
+  }
+
+  // Failed to get URL from Convex
+  if (!imageUrl) {
+    return (
+      <div className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}>
+        Error: Invalid storage ID
+      </div>
+    );
+  }
+
+  // Successfully got URL from Convex
+  return (
+    <img
+      src={imageUrl}
+      alt={alt}
+      className={className}
+      onError={(e) => {
+        console.error('Failed to load image:', imageUrl);
+        e.target.style.display = 'none';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = `${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`;
+        errorDiv.textContent = 'Failed to load';
+        e.target.parentElement.appendChild(errorDiv);
+      }}
+    />
+  );
+};
 
 // Default placeholder image as data URI (no external network call)
 const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
@@ -16,6 +77,20 @@ const OurInstructors = () => {
   
   // Query instructors - will return undefined while loading or if function doesn't exist
   const instructors = useQuery(api.instructor?.getAllInstructors);
+
+  // Handle escape key for modal
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && selectedInstructor) {
+        setSelectedInstructor(null);
+      }
+    };
+
+    if (selectedInstructor) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [selectedInstructor]);
 
   // Handle loading state - don't render anything while loading
   if (instructors === undefined) {
@@ -100,8 +175,8 @@ const OurInstructors = () => {
                   >
                     {/* Instructor Photo */}
                     <div className="relative h-96 sm:h-[500px] overflow-hidden">
-                      <img
-                        src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                      <StorageImage
+                        storageId={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                         alt={instructor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -138,6 +213,12 @@ const OurInstructors = () => {
               <button
                 type="button"
                 onClick={prevSlide}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    prevSlide();
+                  }
+                }}
                 className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group"
                 aria-label="Previous instructor"
               >
@@ -146,6 +227,12 @@ const OurInstructors = () => {
               <button
                 type="button"
                 onClick={nextSlide}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    nextSlide();
+                  }
+                }}
                 className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group"
                 aria-label="Next instructor"
               >
@@ -193,8 +280,8 @@ const OurInstructors = () => {
                       : 'border-white/20 hover:border-white/50 opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img
-                    src={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                  <StorageImage
+                    storageId={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                     alt={instructor.name}
                     className="w-full h-full object-cover"
                   />
@@ -215,15 +302,8 @@ const OurInstructors = () => {
       {selectedInstructor && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
-          onClick={() => setSelectedInstructor(null)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setSelectedInstructor(null);
-            }
-          }}
-          role="button"
-          tabIndex={0}
-          aria-label="Close modal"
+          role="presentation"
+          tabIndex={-1}
         >
           <div
             className="relative max-w-4xl w-full bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-md rounded-3xl border-2 border-cyan-400/50 overflow-hidden"
@@ -250,8 +330,8 @@ const OurInstructors = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Photo */}
               <div className="relative h-64 md:h-full min-h-[400px]">
-                <img
-                  src={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                <StorageImage
+                  storageId={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                   alt={selectedInstructor.name}
                   className="w-full h-full object-cover"
                 />
