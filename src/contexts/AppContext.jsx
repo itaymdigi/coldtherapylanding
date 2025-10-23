@@ -1,17 +1,9 @@
+import { api } from '../../convex/_generated/api';
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api';
 import { translations } from '../data/translations';
 
 const AppContext = createContext();
-
-export const useApp = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within AppProvider');
-  }
-  return context;
-};
 
 export const AppProvider = ({ children }) => {
   // Convex queries
@@ -140,13 +132,15 @@ export const AppProvider = ({ children }) => {
     // Only observe elements that actually need scroll reveal (skip if reduced motion)
     if (!prefersReducedMotion) {
       const reveals = document.querySelectorAll('.scroll-reveal');
-      reveals.forEach((element) => observer.observe(element));
+      for (const element of reveals) {
+        observer.observe(element);
+      }
     } else {
       // If reduced motion, just show all elements immediately
       const reveals = document.querySelectorAll('.scroll-reveal');
-      reveals.forEach((element) => {
+      for (const element of reveals) {
         element.classList.add('revealed');
-      });
+      }
     }
 
     return () => observer.disconnect();
@@ -334,4 +328,12 @@ export const AppProvider = ({ children }) => {
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
+
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within AppProvider');
+  }
+  return context;
 };

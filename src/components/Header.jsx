@@ -59,13 +59,12 @@ const Header = () => {
               >
                 {t.livePractice}
               </Link>
-              <button
-                type="button"
-                onClick={scrollToPackages}
+              <Link
+                to="/#packages"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
                 {t.packages}
-              </button>
+              </Link>
               <Link
                 to="/#gallery"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
@@ -78,13 +77,6 @@ const Header = () => {
               >
                 {t.contact}
               </Link>
-              <button
-                type="button"
-                onClick={scrollToPackages}
-                className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-base ml-2"
-              >
-                {t.bookNow}
-              </button>
 
               {/* Language Toggle */}
               <button
@@ -92,7 +84,7 @@ const Header = () => {
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-sm font-semibold text-white"
               >
-                {language === 'en' ? '🇮🇱' : '🇺🇸'}
+                {language === 'en' ? '🇺🇸' : '🇮🇱'}
               </button>
 
               {/* Music Toggle */}
@@ -121,16 +113,16 @@ const Header = () => {
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
-                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-xs"
+                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-sm"
               >
-                {language === 'en' ? '🇮🇱' : '🇺🇸'}
+                {language === 'en' ? '🇺🇸' : '🇮🇱'}
               </button>
 
               {/* Music Toggle Mobile */}
               <button
                 type="button"
                 onClick={toggleMusic}
-                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-base"
+                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-base"
               >
                 {isPlaying ? '🔇' : '🔊'}
               </button>
@@ -217,16 +209,13 @@ const Header = () => {
               >
                 ⏱️ {t.livePractice}
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  scrollToPackages();
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full text-start px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
+              <Link
+                to="/#packages"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t.packages}
-              </button>
+              </Link>
               <Link
                 to="/#gallery"
                 onClick={() => setMobileMenuOpen(false)}
@@ -241,16 +230,6 @@ const Header = () => {
               >
                 {t.contact}
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  scrollToPackages();
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 text-center text-lg"
-              >
-                {t.bookNow}
-              </button>
             </div>
           </div>
         )}
