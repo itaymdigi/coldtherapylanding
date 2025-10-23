@@ -156,9 +156,8 @@ export default function LivePractice({ language = 'he' }) {
             <div className="animate-fadeIn">
               {activeTab === 'timer' ? (
                 <LivePracticeTimer
-                  user={user}
-                  token={token}
                   language={language}
+                  gender={user?.gender || 'male'}
                   onSessionSaved={handleSessionSaved}
                 />
               ) : (

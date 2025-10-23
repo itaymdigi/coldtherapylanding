@@ -126,3 +126,6 @@ convex/_generated
 # Documentation files (auto-generated guides)
 *.md
 !README.md
+
+# CSS files (handled by PostCSS/Tailwind)
+src/**/*.css

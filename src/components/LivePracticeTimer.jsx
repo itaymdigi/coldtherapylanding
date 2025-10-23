@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, useId } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 
-export default function LivePracticeTimer({ language = 'he', gender = 'male', onSessionSaved }) {
+export default function LivePracticeTimer({ language = 'he', gender = 'male', token, onSessionSaved }) {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -234,10 +234,12 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', on
   const handleSave = async () => {
     try {
       const result = await saveSessionMutation({
+        token,
         duration: time,
         temperature: temperature ? parseFloat(temperature) : undefined,
         notes: notes || undefined,
         mood: mood || undefined,
+        rating: rating || undefined,
         pauseCount,
       });
 

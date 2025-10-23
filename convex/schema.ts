@@ -140,6 +140,7 @@ export default defineSchema({
     temperature: v.optional(v.number()), // water temperature in Celsius
     notes: v.optional(v.string()),
     mood: v.optional(v.string()), // "excellent", "good", "neutral", "challenging"
+    rating: v.optional(v.number()), // star rating from 1-5
     completedAt: v.number(),
     pauseCount: v.number(), // how many times user paused
     personalBest: v.boolean(), // is this a personal record

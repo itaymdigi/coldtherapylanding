@@ -8,12 +8,8 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "src/**/*.js",
-      "src/**/*.jsx",
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "convex/**/*.js",
-      "convex/**/*.ts"
+      "src/**/*.{js,jsx,ts,tsx}",
+      "convex/**/*.{js,ts}"
     ]
   },
   "formatter": {

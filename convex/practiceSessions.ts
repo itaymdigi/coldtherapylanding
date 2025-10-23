@@ -9,6 +9,7 @@ export const saveSession = mutation({
     temperature: v.optional(v.number()),
     notes: v.optional(v.string()),
     mood: v.optional(v.string()),
+    rating: v.optional(v.number()),
     pauseCount: v.number(),
   },
   handler: async (ctx, args) => {
@@ -42,6 +43,7 @@ export const saveSession = mutation({
       temperature: args.temperature,
       notes: args.notes,
       mood: args.mood,
+      rating: args.rating,
       completedAt: Date.now(),
       pauseCount: args.pauseCount,
       personalBest: isPersonalBest,

@@ -1,16 +1,17 @@
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api';
+import { useState } from 'react';
 import {
-  Trophy,
-  Clock,
-  Thermometer,
+  Award,
   Calendar,
+  Clock,
+  Flame,
+  Star,
+  Thermometer,
   Trash2,
   TrendingUp,
-  Award,
-  Flame,
+  Trophy,
 } from 'lucide-react';
-import { useState } from 'react';
+import { api } from '../../convex/_generated/api';
 
 export default function SessionHistory({ token, language = 'he' }) {
   const sessions = useQuery(api.practiceSessions.getUserSessions, {
@@ -246,13 +247,24 @@ export default function SessionHistory({ token, language = 'he' }) {
 
                       {session.mood && (
                         <div className="flex items-center gap-1 text-white/70">
-                          {getMoodEmoji(session.mood)} {t[session.mood]}
+                          <span className="text-lg">{getMoodEmoji(session.mood)}</span>
+                          <span>{t[session.mood]}</span>
                         </div>
                       )}
 
-                      {session.pauseCount > 0 && (
-                        <div className="text-white/50">
-                          {t.pauses}: {session.pauseCount}
+                      {session.rating && (
+                        <div className="flex items-center gap-1 text-white/70">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={`star-${session._id}-${i}`}
+                              size={16}
+                              className={`${
+                                i < session.rating
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-white/30'
+                              }`}
+                            />
+                          ))}
                         </div>
                       )}
                     </div>
@@ -265,6 +277,7 @@ export default function SessionHistory({ token, language = 'he' }) {
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => handleDelete(session._id)}
                     disabled={deletingId === session._id}
                     className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-500/10 rounded-lg disabled:opacity-50"
