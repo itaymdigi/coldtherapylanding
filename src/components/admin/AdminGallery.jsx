@@ -115,9 +115,9 @@ const AdminGallery = () => {
         {/* Image Preview */}
         {imagePreview && (
           <div className="space-y-2">
-            <label className="block text-white text-sm font-semibold">
+            <div className="block text-white text-sm font-semibold">
               Image Preview
-            </label>
+            </div>
             <div className="relative">
               <img
                 src={imagePreview}

@@ -55,8 +55,8 @@ const Layout = () => {
       {/* Footer */}
       <footer className="relative z-20 py-8 px-4 bg-gradient-to-t from-slate-900 to-transparent border-t border-cyan-400/10">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-blue-200 mb-2">{t.footer}</p>
-          <p className="text-cyan-400 text-sm">{t.footerTagline}</p>
+          <p className="text-blue-200 mb-2">{t?.footer || '© 2025 Cold Therapy by Dan Hayat. All rights reserved.'}</p>
+          <p className="text-cyan-400 text-sm">{t?.footerTagline || 'Unleash your potential through the power of cold and breath'}</p>
         </div>
       </footer>
     </div>

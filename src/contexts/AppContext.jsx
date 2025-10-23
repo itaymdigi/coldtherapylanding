@@ -92,21 +92,38 @@ export const AppProvider = ({ children }) => {
     return siteStats?.averageTemp || 0;
   });
 
-  // Save stats animation setting to localStorage when it changes
+  // Ensure language is valid on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('statsAnimationEnabled', statsAnimationEnabled);
+    if (!translations[language] && !translations.en) {
+      console.error('Translations not loaded properly', {
+        language,
+        availableLanguages: Object.keys(translations || {}),
+        translations
+      });
     }
-  }, [statsAnimationEnabled]);
+  }, [language]);
 
   // Refs
   const audioRef = useRef(null);
   const packagesRef = useRef(null);
   const statsRef = useRef(null);
 
-  const t = translations[language];
-
-  // Fallback data with defaults
+  const t = (translations?.[language]) || translations?.en || {
+    footer: '© 2025 Cold Therapy by Dan Hayat. All rights reserved.',
+    footerTagline: 'Unleash your potential through the power of cold and breath',
+    wrongPassword: 'Wrong password!',
+    logo: 'COLD THERAPY',
+    home: 'Home',
+    about: 'About',
+    packages: 'Packages',
+    gallery: 'Gallery',
+    contact: 'Contact',
+    bookNow: 'Book Now',
+    adminButton: 'Admin',
+    livePractice: 'Live Training',
+    instructorTraining: 'Instructor Training',
+    breathingVideosMenu: 'Breathwork Videos',
+  };
   const galleryImages =
     convexGalleryImages && convexGalleryImages.length > 0
       ? convexGalleryImages.map((img) => img.url)
@@ -314,7 +331,7 @@ export const AppProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Admin login failed:', error);
-      alert(t.wrongPassword);
+      alert(t?.wrongPassword || 'Wrong password!');
       setPassword('');
     }
   };

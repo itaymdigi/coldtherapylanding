@@ -23,7 +23,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0">
               <div className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                <span className="text-cyan-400">❄️</span> {t.logo}
+                <span className="text-cyan-400">❄️</span> {t?.logo || 'COLD THERAPY'}
               </div>
             </Link>
 
@@ -33,49 +33,49 @@ const Header = () => {
                 to="/"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.home}
+                {t?.home || 'Home'}
               </Link>
               <Link
                 to="/breathing-videos"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.breathingVideosMenu}
+                {t?.breathingVideosMenu || 'Breathwork Videos'}
               </Link>
               <Link
                 to="/instructor-training"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.instructorTraining}
+                {t?.instructorTraining || 'Instructor Training'}
               </Link>
               <Link
                 to="/#about"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.about}
+                {t?.about || 'About'}
               </Link>
               <Link
                 to="/live-practice"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.livePractice}
+                {t?.livePractice || 'Live Training'}
               </Link>
               <Link
                 to="/#packages"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.packages}
+                {t?.packages || 'Packages'}
               </Link>
               <Link
                 to="/#gallery"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.gallery}
+                {t?.gallery || 'Gallery'}
               </Link>
               <Link
                 to="/#contact"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
-                {t.contact}
+                {t?.contact || 'Contact'}
               </Link>
 
               {/* Language Toggle */}
@@ -101,7 +101,7 @@ const Header = () => {
                 type="button"
                 onClick={() => setShowAdmin(true)}
                 className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-lg"
-                title={t.adminButton}
+                title={t?.adminButton || 'Admin'}
               >
                 🔐
               </button>
@@ -179,56 +179,56 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                {t.home}
+                {t?.home || 'Home'}
               </Link>
               <Link
                 to="/breathing-videos"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                🌬️ {t.breathingVideosMenu}
+                🌬️ {t?.breathingVideosMenu || 'Breathwork Videos'}
               </Link>
               <Link
                 to="/instructor-training"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                🎓 {t.instructorTraining}
+                🎓 {t?.instructorTraining || 'Instructor Training'}
               </Link>
               <Link
                 to="/#about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                {t.about}
+                {t?.about || 'About'}
               </Link>
               <Link
                 to="/live-practice"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                ⏱️ {t.livePractice}
+                ⏱️ {t?.livePractice || 'Live Training'}
               </Link>
               <Link
                 to="/#packages"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                {t.packages}
+                {t?.packages || 'Packages'}
               </Link>
               <Link
                 to="/#gallery"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                {t.gallery}
+                {t?.gallery || 'Gallery'}
               </Link>
               <Link
                 to="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
-                {t.contact}
+                {t?.contact || 'Contact'}
               </Link>
             </div>
           </div>
@@ -242,7 +242,7 @@ const Header = () => {
           onClick={scrollToPackages}
           className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 pointer-events-auto"
         >
-          📞 {t.bookNow}
+          📞 {t?.bookNow || 'Book Now'}
         </button>
       </div>
     </>
