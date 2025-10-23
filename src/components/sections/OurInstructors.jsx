@@ -1,9 +1,8 @@
-import { useId, useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-
-import { useApp } from '../../contexts/AppContext';
 import { useQuery } from 'convex/react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useEffect, useId, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
+import { useApp } from '../../contexts/AppContext';
 
 // Component to display image from Convex storage
 const StorageImage = ({ storageId, alt, className }) => {
@@ -26,7 +25,9 @@ const StorageImage = ({ storageId, alt, className }) => {
   // No storage ID provided
   if (!storageId) {
     return (
-      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+      <div
+        className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}
+      >
         No image
       </div>
     );
@@ -52,8 +53,11 @@ const StorageImage = ({ storageId, alt, className }) => {
           // Remove any error divs that might have been created
           const parent = e.target.parentElement;
           const errorDivs = parent.querySelectorAll('[class*="bg-red-"], [class*="bg-gray-8"]');
-          errorDivs.forEach(div => {
-            if (div.textContent.includes('Failed to load') || div.textContent.includes('No image')) {
+          errorDivs.forEach((div) => {
+            if (
+              div.textContent.includes('Failed to load') ||
+              div.textContent.includes('No image')
+            ) {
               div.remove();
             }
           });
@@ -65,7 +69,8 @@ const StorageImage = ({ storageId, alt, className }) => {
 
           // Create and show error message
           const errorDiv = document.createElement('div');
-          errorDiv.className = 'w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white/70 text-sm border-2 border-red-500/30 rounded-lg';
+          errorDiv.className =
+            'w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white/70 text-sm border-2 border-red-500/30 rounded-lg';
           errorDiv.innerHTML = `
             <div class="text-center p-4">
               <div class="text-red-400 text-2xl mb-2">⚠️</div>
@@ -82,7 +87,9 @@ const StorageImage = ({ storageId, alt, className }) => {
   // Loading from Convex storage
   if (imageUrl === undefined) {
     return (
-      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+      <div
+        className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}
+      >
         Loading...
       </div>
     );
@@ -91,7 +98,9 @@ const StorageImage = ({ storageId, alt, className }) => {
   // Failed to get URL from Convex
   if (!imageUrl) {
     return (
-      <div className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}>
+      <div
+        className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}
+      >
         Error: Invalid storage ID
       </div>
     );
@@ -114,7 +123,7 @@ const StorageImage = ({ storageId, alt, className }) => {
         // Remove any error divs that might have been created
         const parent = e.target.parentElement;
         const errorDivs = parent.querySelectorAll('[class*="bg-red-"], [class*="bg-gray-8"]');
-        errorDivs.forEach(div => {
+        errorDivs.forEach((div) => {
           if (div.textContent.includes('Failed to load') || div.textContent.includes('No image')) {
             div.remove();
           }
@@ -127,7 +136,8 @@ const StorageImage = ({ storageId, alt, className }) => {
 
         // Create and show error message
         const errorDiv = document.createElement('div');
-        errorDiv.className = 'w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white/70 text-sm border-2 border-red-500/30 rounded-lg';
+        errorDiv.className =
+          'w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white/70 text-sm border-2 border-red-500/30 rounded-lg';
         errorDiv.innerHTML = `
           <div class="text-center p-4">
             <div class="text-red-400 text-2xl mb-2">⚠️</div>
@@ -142,14 +152,15 @@ const StorageImage = ({ storageId, alt, className }) => {
 };
 
 // Default placeholder image as data URI (no external network call)
-const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23334155;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%231e293b;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="800" height="600"/%3E%3Ccircle cx="400" cy="250" r="80" fill="%2306b6d4" opacity="0.3"/%3E%3Ctext fill="%23fff" font-family="Arial, sans-serif" font-size="28" font-weight="bold" x="50%25" y="45%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3Ctext fill="%2306b6d4" font-family="Arial, sans-serif" font-size="16" x="50%25" y="55%25" text-anchor="middle" dy=".3em"%3EPhoto Coming Soon%3C/text%3E%3C/svg%3E';
+const DEFAULT_INSTRUCTOR_PHOTO =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23334155;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%231e293b;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="800" height="600"/%3E%3Ccircle cx="400" cy="250" r="80" fill="%2306b6d4" opacity="0.3"/%3E%3Ctext fill="%23fff" font-family="Arial, sans-serif" font-size="28" font-weight="bold" x="50%25" y="45%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3Ctext fill="%2306b6d4" font-family="Arial, sans-serif" font-size="16" x="50%25" y="55%25" text-anchor="middle" dy=".3em"%3EPhoto Coming Soon%3C/text%3E%3C/svg%3E';
 
 const OurInstructors = () => {
   const { t } = useApp();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const modalTitleId = useId();
-  
+
   // Query instructors - will return undefined while loading or if function doesn't exist
   const instructors = useQuery(api.instructor?.getAllInstructors);
 
@@ -218,7 +229,7 @@ const OurInstructors = () => {
     <section className="py-16 sm:py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent pointer-events-none" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16">
@@ -238,14 +249,11 @@ const OurInstructors = () => {
               className="flex transition-transform duration-500 ease-out"
               style={{
                 transform: `translateX(-${currentIndex * 100}%)`,
-                width: `${sortedInstructors.length * 100}%`
+                width: `${sortedInstructors.length * 100}%`,
               }}
             >
               {sortedInstructors.map((instructor) => (
-                <div
-                  key={instructor._id}
-                  className="min-w-full px-4"
-                >
+                <div key={instructor._id} className="min-w-full px-4">
                   <button
                     type="button"
                     onClick={() => setSelectedInstructor(instructor)}
@@ -384,9 +392,7 @@ const OurInstructors = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-2">
-                    <p className="text-white text-xs font-semibold truncate">
-                      {instructor.name}
-                    </p>
+                    <p className="text-white text-xs font-semibold truncate">{instructor.name}</p>
                   </div>
                 </button>
               ))}
@@ -431,7 +437,10 @@ const OurInstructors = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Photo */}
-              <div key={`photo-${selectedInstructor._id}`} className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full">
+              <div
+                key={`photo-${selectedInstructor._id}`}
+                className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full"
+              >
                 <StorageImage
                   key={selectedInstructor._id}
                   storageId={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
@@ -446,12 +455,8 @@ const OurInstructors = () => {
                 <h3 id={modalTitleId} className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {selectedInstructor.name}
                 </h3>
-                <p className="text-cyan-400 text-xl font-medium mb-6">
-                  {selectedInstructor.title}
-                </p>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  {selectedInstructor.bio}
-                </p>
+                <p className="text-cyan-400 text-xl font-medium mb-6">{selectedInstructor.title}</p>
+                <p className="text-white/90 text-lg leading-relaxed">{selectedInstructor.bio}</p>
               </div>
             </div>
           </div>

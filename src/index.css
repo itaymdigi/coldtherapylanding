@@ -348,7 +348,7 @@ body {
 
   /* Simplify background effects */
   .bg-gradient-to-br {
-    background: linear-gradient(to bottom right, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+    background: linear-gradient(to bottom right, #0c4a6e, #1e3a8a, #1e293b);
   }
 
   /* Optimize text rendering for mobile */

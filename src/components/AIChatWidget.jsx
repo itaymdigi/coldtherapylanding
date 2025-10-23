@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import { Loader2, MessageCircle, Send, X } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const AIChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);

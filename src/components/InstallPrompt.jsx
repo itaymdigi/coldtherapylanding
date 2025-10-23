@@ -1,5 +1,5 @@
 import { Download, X } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 
 const InstallPrompt = () => {
@@ -29,20 +29,50 @@ const InstallPrompt = () => {
 
   useEffect(() => {
     // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true);
-      return;
-    }
+    const checkIfInstalled = () => {
+      // Check display mode
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      // Also check if running in PWA mode via other indicators
+      const isInWebAppiOS = window.navigator.standalone === true;
+      const isInstalled = isStandalone || isInWebAppiOS;
+
+      if (isInstalled) {
+        setIsInstalled(true);
+        return;
+      }
+    };
+
+    // Initial check
+    checkIfInstalled();
 
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e) => {
+      console.log('🔄 BeforeInstallPrompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
 
       // Show prompt after 3 seconds
       setTimeout(() => {
         const dismissed = localStorage.getItem('pwa-install-dismissed');
+        const dismissedTime = localStorage.getItem('pwa-install-dismissed-time');
+
+        // Check if dismissed less than 7 days ago
+        if (dismissed && dismissedTime) {
+          const dismissedDate = new Date(parseInt(dismissedTime));
+          const daysSinceDismissed = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+          if (daysSinceDismissed < 7) {
+            console.log('⏰ Install prompt dismissed recently, not showing');
+            return;
+          } else {
+            // Clear old dismissal
+            localStorage.removeItem('pwa-install-dismissed');
+            localStorage.removeItem('pwa-install-dismissed-time');
+          }
+        }
+
         if (!dismissed) {
+          console.log('✅ Showing install prompt');
           setShowPrompt(true);
         }
       }, 3000);
@@ -89,11 +119,13 @@ const InstallPrompt = () => {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('pwa-install-dismissed', 'true');
+    localStorage.setItem('pwa-install-dismissed-time', Date.now().toString());
 
     // Show again after 7 days
     setTimeout(
       () => {
         localStorage.removeItem('pwa-install-dismissed');
+        localStorage.removeItem('pwa-install-dismissed-time');
       },
       7 * 24 * 60 * 60 * 1000
     );

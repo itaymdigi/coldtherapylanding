@@ -1,5 +1,5 @@
+import { useMutation, useQuery } from 'convex/react';
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useApp } from '../contexts/AppContext';
 
@@ -226,7 +226,7 @@ const AdminPanel = () => {
 
     // Check file size limit (2MB per file - Convex has document size limits)
     const MAX_SIZE = 2 * 1024 * 1024; // 2MB
-    for (let file of files) {
+    for (const file of files) {
       if (file.size > MAX_SIZE) {
         alert(
           `❌ File "${file.name}" is too large. Maximum size is 2MB.\n\nTip: Compress images before uploading or use smaller files.`

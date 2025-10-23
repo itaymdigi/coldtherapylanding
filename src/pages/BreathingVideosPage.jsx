@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { useQuery } from 'convex/react';
+import React, { useState } from 'react';
 import { api } from '../../convex/_generated/api';
 import { useApp } from '../contexts/AppContext';
 
@@ -16,7 +16,7 @@ const BreathingVideosPage = () => {
     // If already an embed URL, ensure it doesn't have mute parameter
     if (url.includes('/embed/')) {
       // Remove mute parameter if present and ensure autoplay is enabled
-      let cleanUrl = url.replace(/[?&]mute=1/, '').replace(/[?&]muted=1/, '');
+      const cleanUrl = url.replace(/[?&]mute=1/, '').replace(/[?&]muted=1/, '');
       const separator = cleanUrl.includes('?') ? '&' : '?';
       return `${cleanUrl}${separator}autoplay=1`;
     }

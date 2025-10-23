@@ -1,6 +1,6 @@
+import { useMutation, useQuery } from 'convex/react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { api } from '../../convex/_generated/api';
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { useQuery, useMutation } from 'convex/react';
 import { translations } from '../data/translations';
 
 const AppContext = createContext();
@@ -112,8 +112,13 @@ export const AppProvider = ({ children }) => {
   // Scroll reveal animation using Intersection Observer (more performant)
   useEffect(() => {
     // Check if device is mobile for different optimization strategy
-    const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile =
+      typeof window !== 'undefined' &&
+      (window.innerWidth <= 768 ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -124,8 +129,8 @@ export const AppProvider = ({ children }) => {
         });
       },
       {
-        threshold: prefersReducedMotion ? 0.01 : (isMobile ? 0.05 : 0.1), // Lower threshold for mobile
-        rootMargin: isMobile ? '25px 0px -25px 0px' : '50px 0px -50px 0px' // Smaller margin for mobile
+        threshold: prefersReducedMotion ? 0.01 : isMobile ? 0.05 : 0.1, // Lower threshold for mobile
+        rootMargin: isMobile ? '25px 0px -25px 0px' : '50px 0px -50px 0px', // Smaller margin for mobile
       }
     );
 

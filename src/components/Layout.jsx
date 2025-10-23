@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
 import { Outlet, useLocation } from '@tanstack/react-router';
+import React, { useEffect } from 'react';
+import { useApp } from '../contexts/AppContext';
 import AIChatWidget from './AIChatWidget';
 import AdminPanelNew from './admin/AdminPanelNew';
 import Background from './Background';
 import ErrorBoundary from './ErrorBoundary';
 import Header from './Header';
 import InstallPrompt from './InstallPrompt';
-import { useApp } from '../contexts/AppContext';
 
 const Layout = () => {
   const { language, audioRef, showAdmin, t } = useApp();

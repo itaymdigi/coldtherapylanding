@@ -1,9 +1,14 @@
-import { Play, Pause, Square, Timer, Thermometer, Heart, Star } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState, useId } from 'react';
 import { useMutation } from 'convex/react';
+import { Heart, Pause, Play, Square, Star, Thermometer, Timer } from 'lucide-react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { api } from '../../convex/_generated/api';
 
-export default function LivePracticeTimer({ language = 'he', gender = 'male', token, onSessionSaved }) {
+export default function LivePracticeTimer({
+  language = 'he',
+  gender = 'male',
+  token,
+  onSessionSaved,
+}) {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -76,98 +81,101 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', to
   const ratingInputId = useId();
   const notesTextareaId = useId();
 
-  const announceTime = useCallback((seconds) => {
-    const speak = (text, lang = 'he-IL') => {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        window.speechSynthesis.speak(utterance);
-      }
-    };
-
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (language === 'he') {
-      const isFemale = gender === 'female';
-      const you = isFemale ? 'את' : 'אתה';
-      const pastSuffix = isFemale ? 'ה' : '';
-      const presentSuffix = isFemale ? 'י' : '';
-      const pastSuffixPlural = 'ו';
-
-      let announcement = '';
-      let encouragement = '';
-
-      // Proper Hebrew grammar for minutes
-      if (minutes === 1) {
-        announcement = `דקה אחת עבר${pastSuffix}`;
-      } else if (minutes === 2) {
-        announcement = `שתי דקות עבר${pastSuffixPlural}`;
-      } else if (minutes > 2) {
-        announcement = `${minutes} דקות עבר${pastSuffixPlural}`;
-      }
-
-      // Add encouraging messages at milestones
-      if (minutes > 0) {
-        if (minutes === 1) {
-          encouragement = `כל הכבוד! ${you} מתחיל${isFemale ? 'ה' : ''} חזק`;
-        } else if (minutes === 2) {
-          encouragement = `שתי דקות כבר מאחור${isFemale ? 'יך' : 'יך'}! תמשיכ${presentSuffix} ככה`;
-        } else if (minutes === 3) {
-          encouragement = `מדהים! ${you} בשליטה מלאה`;
-        } else if (minutes === 5) {
-          encouragement = `חמש דקות של כוח! ${you} גיבור${isFemale ? 'ה' : ''}`;
-        } else if (minutes === 10) {
-          encouragement = `עשר דקות! זה כבר הישג אמיתי`;
-        } else if (minutes % 3 === 0) {
-          encouragement = `כל הכבוד! תמשיכ${presentSuffix} ככה`;
+  const announceTime = useCallback(
+    (seconds) => {
+      const speak = (text, lang = 'he-IL') => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          window.speechSynthesis.speak(utterance);
         }
-      }
+      };
 
-      // Combine announcement and encouragement
-      const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
 
-      // Add seconds if not exact minutes
-      if (remainingSeconds > 0) {
-        const secondsText = remainingSeconds === 1 ? 'שנייה אחת' : `${remainingSeconds} שניות`;
-        speak(`${fullMessage}, ועוד ${secondsText}`, 'he-IL');
-      } else {
-        speak(fullMessage, 'he-IL');
-      }
-    } else {
-      // English version with encouragement
-      let announcement = '';
-      let encouragement = '';
+      if (language === 'he') {
+        const isFemale = gender === 'female';
+        const you = isFemale ? 'את' : 'אתה';
+        const pastSuffix = isFemale ? 'ה' : '';
+        const presentSuffix = isFemale ? 'י' : '';
+        const pastSuffixPlural = 'ו';
 
-      if (remainingSeconds === 0) {
-        announcement = `${minutes} minutes completed`;
-      } else {
-        announcement = `${minutes} minutes and ${remainingSeconds} seconds`;
-      }
+        let announcement = '';
+        let encouragement = '';
 
-      // Add encouraging messages
-      if (minutes > 0) {
+        // Proper Hebrew grammar for minutes
         if (minutes === 1) {
-          encouragement = 'Great start! Keep going strong!';
+          announcement = `דקה אחת עבר${pastSuffix}`;
         } else if (minutes === 2) {
-          encouragement = 'Two minutes down! You\'re doing amazing!';
-        } else if (minutes === 3) {
-          encouragement = 'Fantastic! You\'ve got this under control!';
-        } else if (minutes === 5) {
-          encouragement = 'Five minutes of power! You\'re a champion!';
-        } else if (minutes === 10) {
-          encouragement = 'Ten minutes! That\'s a real achievement!';
-        } else if (minutes % 3 === 0) {
-          encouragement = 'Well done! Keep it up!';
+          announcement = `שתי דקות עבר${pastSuffixPlural}`;
+        } else if (minutes > 2) {
+          announcement = `${minutes} דקות עבר${pastSuffixPlural}`;
         }
-      }
 
-      const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
-      speak(fullMessage, 'en-US');
-    }
-  }, [language, gender]);
+        // Add encouraging messages at milestones
+        if (minutes > 0) {
+          if (minutes === 1) {
+            encouragement = `כל הכבוד! ${you} מתחיל${isFemale ? 'ה' : ''} חזק`;
+          } else if (minutes === 2) {
+            encouragement = `שתי דקות כבר מאחור${isFemale ? 'יך' : 'יך'}! תמשיכ${presentSuffix} ככה`;
+          } else if (minutes === 3) {
+            encouragement = `מדהים! ${you} בשליטה מלאה`;
+          } else if (minutes === 5) {
+            encouragement = `חמש דקות של כוח! ${you} גיבור${isFemale ? 'ה' : ''}`;
+          } else if (minutes === 10) {
+            encouragement = `עשר דקות! זה כבר הישג אמיתי`;
+          } else if (minutes % 3 === 0) {
+            encouragement = `כל הכבוד! תמשיכ${presentSuffix} ככה`;
+          }
+        }
+
+        // Combine announcement and encouragement
+        const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
+
+        // Add seconds if not exact minutes
+        if (remainingSeconds > 0) {
+          const secondsText = remainingSeconds === 1 ? 'שנייה אחת' : `${remainingSeconds} שניות`;
+          speak(`${fullMessage}, ועוד ${secondsText}`, 'he-IL');
+        } else {
+          speak(fullMessage, 'he-IL');
+        }
+      } else {
+        // English version with encouragement
+        let announcement = '';
+        let encouragement = '';
+
+        if (remainingSeconds === 0) {
+          announcement = `${minutes} minutes completed`;
+        } else {
+          announcement = `${minutes} minutes and ${remainingSeconds} seconds`;
+        }
+
+        // Add encouraging messages
+        if (minutes > 0) {
+          if (minutes === 1) {
+            encouragement = 'Great start! Keep going strong!';
+          } else if (minutes === 2) {
+            encouragement = "Two minutes down! You're doing amazing!";
+          } else if (minutes === 3) {
+            encouragement = "Fantastic! You've got this under control!";
+          } else if (minutes === 5) {
+            encouragement = "Five minutes of power! You're a champion!";
+          } else if (minutes === 10) {
+            encouragement = "Ten minutes! That's a real achievement!";
+          } else if (minutes % 3 === 0) {
+            encouragement = 'Well done! Keep it up!';
+          }
+        }
+
+        const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
+        speak(fullMessage, 'en-US');
+      }
+    },
+    [language, gender]
+  );
 
   useEffect(() => {
     if (isRunning && !isPaused) {
@@ -355,7 +363,10 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', to
       {showSaveForm && (
         <div className="space-y-4 animate-fadeIn">
           <div>
-            <label htmlFor={temperatureInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label
+              htmlFor={temperatureInputId}
+              className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2"
+            >
               <Thermometer size={18} />
               {t.temperature}
             </label>
@@ -371,7 +382,10 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', to
           </div>
 
           <div>
-            <label htmlFor={ratingInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label
+              htmlFor={ratingInputId}
+              className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2"
+            >
               <Heart size={18} />
               {t.mood}
             </label>
@@ -395,7 +409,10 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', to
           </div>
 
           <div>
-            <label htmlFor={ratingInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label
+              htmlFor={ratingInputId}
+              className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2"
+            >
               <Star size={18} />
               {t.rating}
             </label>
@@ -421,7 +438,12 @@ export default function LivePracticeTimer({ language = 'he', gender = 'male', to
           </div>
 
           <div>
-            <label htmlFor={notesTextareaId} className="block text-white/90 mb-2 text-sm font-medium">{t.notes}</label>
+            <label
+              htmlFor={notesTextareaId}
+              className="block text-white/90 mb-2 text-sm font-medium"
+            >
+              {t.notes}
+            </label>
             <textarea
               id={notesTextareaId}
               value={notes}

@@ -1,55 +1,61 @@
-import { useId, useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
+import { useId, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
-import { useFileStorage, formatFileSize } from '../../hooks/useFileStorage';
+import { formatFileSize, useFileStorage } from '../../hooks/useFileStorage';
 
 // Component to display image from Convex storage
 const StorageImage = ({ storageId, alt, className }) => {
   // Check if it's already a full URL or data URI
   const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
-  
+
   // Only query Convex if it's a storage ID (not a URL)
   const imageUrl = useQuery(
-    api.fileStorage.getFileUrl, 
+    api.fileStorage.getFileUrl,
     storageId && !isDirectUrl ? { storageId } : 'skip'
   );
-  
+
   // Debug logging
   console.log('StorageImage Debug:', { storageId, isDirectUrl, imageUrl });
-  
+
   // No storage ID provided
   if (!storageId) {
     return (
-      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+      <div
+        className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}
+      >
         No image
       </div>
     );
   }
-  
+
   // If it's already a URL (data URI or http), use it directly
   if (isDirectUrl) {
     return <img src={storageId} alt={alt} className={className} />;
   }
-  
+
   // Loading from Convex storage
   if (imageUrl === undefined) {
     return (
-      <div className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}>
+      <div
+        className={`${className} bg-gray-700 flex items-center justify-center text-white/50 text-xs`}
+      >
         Loading...
       </div>
     );
   }
-  
+
   // Failed to get URL from Convex
   if (!imageUrl) {
     return (
-      <div className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}>
+      <div
+        className={`${className} bg-red-900/50 flex items-center justify-center text-white/70 text-xs p-2`}
+      >
         Error: Invalid storage ID
       </div>
     );
   }
-  
+
   // Successfully got URL from Convex
   return (
     <img
@@ -74,7 +80,7 @@ const AdminInstructorsWithStorage = () => {
   const bioInputId = useId();
   const orderInputId = useId();
   const photoUploadId = useId();
-  
+
   const instructors = useQuery(api.instructor.getAllInstructors) || [];
   const addInstructor = useMutation(api.instructor.addInstructor);
   const updateInstructor = useMutation(api.instructor.updateInstructor);
@@ -118,7 +124,8 @@ const AdminInstructorsWithStorage = () => {
 
   const handleSave = async () => {
     try {
-      const defaultPhoto = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
+      const defaultPhoto =
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
       const dataToSave = {
         ...formData,
         photoUrl: formData.photoUrl || defaultPhoto,
@@ -165,7 +172,9 @@ const AdminInstructorsWithStorage = () => {
 
       // Validate file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
-        alert(`File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`);
+        alert(
+          `File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`
+        );
         return;
       }
 
@@ -179,7 +188,7 @@ const AdminInstructorsWithStorage = () => {
       // Store the storageId directly - Convex will generate URL when needed
       // The storageId format is: "kg2..." which Convex can convert to URL
       setFormData({ ...formData, photoUrl: result.storageId });
-      
+
       alert('Image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -223,7 +232,9 @@ const AdminInstructorsWithStorage = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor={nameInputId} className="block text-white mb-2">Name</label>
+              <label htmlFor={nameInputId} className="block text-white mb-2">
+                Name
+              </label>
               <input
                 id={nameInputId}
                 type="text"
@@ -235,7 +246,9 @@ const AdminInstructorsWithStorage = () => {
             </div>
 
             <div>
-              <label htmlFor={titleInputId} className="block text-white mb-2">Title</label>
+              <label htmlFor={titleInputId} className="block text-white mb-2">
+                Title
+              </label>
               <input
                 id={titleInputId}
                 type="text"
@@ -247,7 +260,9 @@ const AdminInstructorsWithStorage = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label htmlFor={bioInputId} className="block text-white mb-2">Bio</label>
+              <label htmlFor={bioInputId} className="block text-white mb-2">
+                Bio
+              </label>
               <textarea
                 id={bioInputId}
                 value={formData.bio}
@@ -259,7 +274,9 @@ const AdminInstructorsWithStorage = () => {
             </div>
 
             <div>
-              <label htmlFor={orderInputId} className="block text-white mb-2">Order</label>
+              <label htmlFor={orderInputId} className="block text-white mb-2">
+                Order
+              </label>
               <input
                 id={orderInputId}
                 type="number"

@@ -1,6 +1,8 @@
-import React, { useId, useState } from 'react';
 import { useQuery } from 'convex/react';
 import { X } from 'lucide-react';
+import React, { useId, useState } from 'react';
+import { api } from '../../../convex/_generated/api';
+import { useApp } from '../../contexts/AppContext';
 import {
   Carousel,
   CarouselContent,
@@ -8,26 +10,30 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '../ui/carousel';
-import { api } from '../../../convex/_generated/api';
-import { useApp } from '../../contexts/AppContext';
 
 // Default placeholder image as data URI (no external network call)
-const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
+const DEFAULT_INSTRUCTOR_PHOTO =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
 
 // Component to display image from Convex storage
 const InstructorImage = ({ storageId, alt, className }) => {
-  const imageUrl = useQuery(api.fileStorage.getFileUrl, storageId && !storageId.startsWith('data:') && !storageId.startsWith('http') ? { storageId } : 'skip');
-  
+  const imageUrl = useQuery(
+    api.fileStorage.getFileUrl,
+    storageId && !storageId.startsWith('data:') && !storageId.startsWith('http')
+      ? { storageId }
+      : 'skip'
+  );
+
   // If it's already a URL (data URI or http), use it directly
   if (!storageId || storageId.startsWith('data:') || storageId.startsWith('http')) {
     return <img src={storageId || DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
   }
-  
+
   // If loading from Convex storage
   if (imageUrl === undefined) {
     return <img src={DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
   }
-  
+
   return <img src={imageUrl || DEFAULT_INSTRUCTOR_PHOTO} alt={alt} className={className} />;
 };
 
@@ -37,7 +43,7 @@ const OurInstructorsShadcn = () => {
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [carouselApi, setCarouselApi] = useState(null);
   const [current, setCurrent] = useState(0);
-  
+
   // Query instructors - will return undefined while loading or if function doesn't exist
   const instructors = useQuery(api.instructor?.getAllInstructors);
 
@@ -49,7 +55,7 @@ const OurInstructorsShadcn = () => {
 
     setCurrent(carouselApi.selectedScrollSnap());
 
-    carouselApi.on("select", () => {
+    carouselApi.on('select', () => {
       setCurrent(carouselApi.selectedScrollSnap());
     });
   }, [carouselApi]);
@@ -86,7 +92,7 @@ const OurInstructorsShadcn = () => {
     <section className="py-16 sm:py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent pointer-events-none" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16 scroll-reveal">
@@ -103,7 +109,7 @@ const OurInstructorsShadcn = () => {
           <Carousel
             setApi={setCarouselApi}
             opts={{
-              align: "start",
+              align: 'start',
               loop: true,
             }}
             className="w-full"
@@ -130,7 +136,7 @@ const OurInstructorsShadcn = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                      
+
                       {/* Name and Title Overlay */}
                       <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-12">
                         <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
@@ -198,9 +204,7 @@ const OurInstructorsShadcn = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-2">
-                    <p className="text-white text-xs font-semibold truncate">
-                      {instructor.name}
-                    </p>
+                    <p className="text-white text-xs font-semibold truncate">{instructor.name}</p>
                   </div>
                 </button>
               ))}
@@ -254,12 +258,8 @@ const OurInstructorsShadcn = () => {
                 <h3 id={modalTitleId} className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {selectedInstructor.name}
                 </h3>
-                <p className="text-cyan-400 text-xl font-medium mb-6">
-                  {selectedInstructor.title}
-                </p>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  {selectedInstructor.bio}
-                </p>
+                <p className="text-cyan-400 text-xl font-medium mb-6">{selectedInstructor.title}</p>
+                <p className="text-white/90 text-lg leading-relaxed">{selectedInstructor.bio}</p>
               </div>
             </div>
           </div>

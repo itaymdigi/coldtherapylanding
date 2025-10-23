@@ -147,12 +147,15 @@ export const translations = {
     followUs: 'Follow Us',
     instructorTitle: 'Become a Certified Cold Therapy Instructor',
     instructorBenefit1Title: 'Professional Training',
-    instructorBenefit1Desc: 'Learn all proven techniques and protocols for leading cold therapy and breathwork workshops',
+    instructorBenefit1Desc:
+      'Learn all proven techniques and protocols for leading cold therapy and breathwork workshops',
     instructorBenefit2Title: 'Career Building',
-    instructorBenefit2Desc: 'Get tools to build a successful business in natural health and wellness',
+    instructorBenefit2Desc:
+      'Get tools to build a successful business in natural health and wellness',
     instructorBenefit3Title: 'Supportive Community',
-    instructorBenefit3Desc: 'Join a community of certified instructors and build a strong professional network',
-    instructorLearnTitle: 'What You\'ll Learn in Training?',
+    instructorBenefit3Desc:
+      'Join a community of certified instructors and build a strong professional network',
+    instructorLearnTitle: "What You'll Learn in Training?",
     instructorLearn1Title: 'Advanced Breathing Techniques',
     instructorLearn1Desc: 'Pranayama, circular breathing, and unique breathing methods',
     instructorLearn2Title: 'Cold Therapy Protocols',
@@ -385,7 +388,8 @@ export const translations = {
     followUs: 'עקבו אחרינו',
     instructorTitle: 'הכשרת מדריכים בשיטה שלנו',
     instructorBenefit1Title: 'הכשרה מקצועית',
-    instructorBenefit1Desc: 'למד את כל הטכניקות והפרוטוקולים המוכחים לניהול סדנאות טיפול בקור ונשימה',
+    instructorBenefit1Desc:
+      'למד את כל הטכניקות והפרוטוקולים המוכחים לניהול סדנאות טיפול בקור ונשימה',
     instructorBenefit2Title: 'בניית קריירה',
     instructorBenefit2Desc: 'קבל כלים לבניית עסק מצליח בתחום הבריאות הטבעית והוולנס',
     instructorBenefit3Title: 'קהילה תומכת',

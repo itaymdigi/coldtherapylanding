@@ -1,8 +1,7 @@
-import { LogIn, LogOut, User, Activity, Home } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import { createFileRoute } from '@tanstack/react-router';
-import { useState, useEffect, useCallback } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from 'convex/react';
+import { Activity, Home, LogIn, LogOut, User } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../convex/_generated/api';
 import AuthModal from '../components/AuthModal';
 import LivePracticeTimer from '../components/LivePracticeTimer';

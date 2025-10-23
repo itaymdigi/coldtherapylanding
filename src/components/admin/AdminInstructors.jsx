@@ -1,8 +1,8 @@
-import { useId, useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
+import { useId, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
-import { useFileStorage, formatFileSize } from '../../hooks/useFileStorage';
+import { formatFileSize, useFileStorage } from '../../hooks/useFileStorage';
 
 const AdminInstructors = () => {
   const nameInputId = useId();
@@ -55,7 +55,9 @@ const AdminInstructors = () => {
     try {
       const dataToSave = {
         ...formData,
-        photoUrl: formData.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E',
+        photoUrl:
+          formData.photoUrl ||
+          'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E',
       };
 
       if (editingId) {
@@ -99,7 +101,9 @@ const AdminInstructors = () => {
 
       // Validate file size (10MB limit for Convex storage)
       if (file.size > 10 * 1024 * 1024) {
-        alert(`File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`);
+        alert(
+          `File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`
+        );
         return;
       }
 
@@ -159,7 +163,9 @@ const AdminInstructors = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor={nameInputId} className="block text-white mb-2">Name</label>
+              <label htmlFor={nameInputId} className="block text-white mb-2">
+                Name
+              </label>
               <input
                 id={nameInputId}
                 type="text"
@@ -171,7 +177,9 @@ const AdminInstructors = () => {
             </div>
 
             <div>
-              <label htmlFor={titleInputId} className="block text-white mb-2">Title</label>
+              <label htmlFor={titleInputId} className="block text-white mb-2">
+                Title
+              </label>
               <input
                 id={titleInputId}
                 type="text"
@@ -183,7 +191,9 @@ const AdminInstructors = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label htmlFor={bioInputId} className="block text-white mb-2">Bio</label>
+              <label htmlFor={bioInputId} className="block text-white mb-2">
+                Bio
+              </label>
               <textarea
                 id={bioInputId}
                 value={formData.bio}
@@ -195,7 +205,9 @@ const AdminInstructors = () => {
             </div>
 
             <div>
-              <label htmlFor={orderInputId} className="block text-white mb-2">Order</label>
+              <label htmlFor={orderInputId} className="block text-white mb-2">
+                Order
+              </label>
               <input
                 id={orderInputId}
                 type="number"

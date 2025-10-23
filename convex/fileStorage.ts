@@ -3,10 +3,10 @@ import { mutation, query } from './_generated/server';
 
 /**
  * Convex File Storage System
- * 
+ *
  * This module provides a comprehensive file storage solution using Convex's built-in file storage.
  * It handles file uploads, metadata management, and retrieval.
- * 
+ *
  * Features:
  * - Upload files with automatic metadata tracking
  * - Support for images, videos, and documents
@@ -71,7 +71,7 @@ export const getAllFiles = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    let query = ctx.db.query('media');
+    const query = ctx.db.query('media');
 
     // Apply filters
     const files = await query.collect();

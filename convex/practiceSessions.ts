@@ -131,7 +131,7 @@ export const getUserStats = query({
     let streak = 0;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    let checkDate = today.getTime();
+    const checkDate = today.getTime();
 
     const sortedSessions = [...sessions].sort((a, b) => b.completedAt - a.completedAt);
 

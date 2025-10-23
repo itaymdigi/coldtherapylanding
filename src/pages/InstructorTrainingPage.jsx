@@ -59,9 +59,7 @@ const InstructorTrainingPage = () => {
             <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-md p-6 rounded-2xl border border-cyan-400/30 hover:border-cyan-400 hover:scale-105 transition-all duration-500 scroll-reveal">
               <div className="text-5xl mb-4">🎓</div>
               <h3 className="text-white font-bold text-xl mb-3">{t.instructorBenefit1Title}</h3>
-              <p className="text-blue-200">
-                {t.instructorBenefit1Desc}
-              </p>
+              <p className="text-blue-200">{t.instructorBenefit1Desc}</p>
             </div>
 
             <div
@@ -70,9 +68,7 @@ const InstructorTrainingPage = () => {
             >
               <div className="text-5xl mb-4">💼</div>
               <h3 className="text-white font-bold text-xl mb-3">{t.instructorBenefit2Title}</h3>
-              <p className="text-blue-200">
-                {t.instructorBenefit2Desc}
-              </p>
+              <p className="text-blue-200">{t.instructorBenefit2Desc}</p>
             </div>
 
             <div
@@ -94,28 +90,36 @@ const InstructorTrainingPage = () => {
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn1Title}</h4>
+                  <h4 className="text-white font-semibold text-lg mb-2">
+                    {t.instructorLearn1Title}
+                  </h4>
                   <p className="text-blue-200">{t.instructorLearn1Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn2Title}</h4>
+                  <h4 className="text-white font-semibold text-lg mb-2">
+                    {t.instructorLearn2Title}
+                  </h4>
                   <p className="text-blue-200">{t.instructorLearn2Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn3Title}</h4>
+                  <h4 className="text-white font-semibold text-lg mb-2">
+                    {t.instructorLearn3Title}
+                  </h4>
                   <p className="text-blue-200">{t.instructorLearn3Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn4Title}</h4>
+                  <h4 className="text-white font-semibold text-lg mb-2">
+                    {t.instructorLearn4Title}
+                  </h4>
                   <p className="text-blue-200">{t.instructorLearn4Desc}</p>
                 </div>
               </div>
@@ -124,10 +128,10 @@ const InstructorTrainingPage = () => {
 
           {/* Final CTA */}
           <div className="mt-16 text-center bg-gradient-to-r from-cyan-500/10 to-blue-600/10 backdrop-blur-md p-12 rounded-3xl border-2 border-cyan-400/30 scroll-reveal">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t.instructorCTATitle}</h2>
-            <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
-              {t.instructorCTADesc}
-            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              {t.instructorCTATitle}
+            </h2>
+            <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">{t.instructorCTADesc}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://wa.me/972524343975"

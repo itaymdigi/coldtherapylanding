@@ -1,5 +1,5 @@
-import { query, mutation } from './_generated/server';
 import { v } from 'convex/values';
+import { mutation, query } from './_generated/server';
 
 // Get all published videos (free + premium)
 export const getAllVideos = query({

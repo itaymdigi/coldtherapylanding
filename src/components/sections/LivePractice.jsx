@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import { useQuery } from 'convex/react';
+import { Activity, LogIn, LogOut, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
 import AuthModal from '../AuthModal';
 import LivePracticeTimer from '../LivePracticeTimer';
 import SessionHistory from '../SessionHistory';
-import { LogIn, LogOut, User, Activity } from 'lucide-react';
 
 export default function LivePractice({ language = 'he' }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);

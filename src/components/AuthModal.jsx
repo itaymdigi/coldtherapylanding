@@ -1,6 +1,6 @@
-import { Eye, EyeOff, X } from 'lucide-react';
-import { useState, useId } from 'react';
 import { useMutation } from 'convex/react';
+import { Eye, EyeOff, X } from 'lucide-react';
+import { useId, useState } from 'react';
 import { api } from '../../convex/_generated/api';
 
 export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' }) {
@@ -129,7 +129,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label htmlFor={nameId} className="block text-white/90 mb-2 text-sm font-medium">{t.name}</label>
+              <label htmlFor={nameId} className="block text-white/90 mb-2 text-sm font-medium">
+                {t.name}
+              </label>
               <input
                 id={nameId}
                 type="text"
@@ -145,7 +147,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
 
           {!isLogin && (
             <div>
-              <label htmlFor={genderId} className="block text-white/90 mb-2 text-sm font-medium">{t.gender}</label>
+              <label htmlFor={genderId} className="block text-white/90 mb-2 text-sm font-medium">
+                {t.gender}
+              </label>
               <select
                 id={genderId}
                 name="gender"
@@ -160,7 +164,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           )}
 
           <div>
-            <label htmlFor={emailId} className="block text-white/90 mb-2 text-sm font-medium">{t.email}</label>
+            <label htmlFor={emailId} className="block text-white/90 mb-2 text-sm font-medium">
+              {t.email}
+            </label>
             <input
               id={emailId}
               type="email"
@@ -174,7 +180,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           </div>
 
           <div>
-            <label htmlFor={passwordId} className="block text-white/90 mb-2 text-sm font-medium">{t.password}</label>
+            <label htmlFor={passwordId} className="block text-white/90 mb-2 text-sm font-medium">
+              {t.password}
+            </label>
             <div className="relative">
               <input
                 id={passwordId}
@@ -199,7 +207,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
 
           {!isLogin && (
             <div>
-              <label htmlFor={phoneId} className="block text-white/90 mb-2 text-sm font-medium">{t.phone}</label>
+              <label htmlFor={phoneId} className="block text-white/90 mb-2 text-sm font-medium">
+                {t.phone}
+              </label>
               <input
                 id={phoneId}
                 type="tel"

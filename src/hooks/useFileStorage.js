@@ -3,11 +3,11 @@ import { api } from '../../convex/_generated/api';
 
 /**
  * Custom hook for file storage operations
- * 
+ *
  * Usage:
  * ```jsx
  * const { uploadFile, isUploading, error } = useFileStorage();
- * 
+ *
  * const handleUpload = async (file) => {
  *   const result = await uploadFile(file, {
  *     category: 'instructor',
@@ -115,5 +115,5 @@ export const formatFileSize = (bytes) => {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };

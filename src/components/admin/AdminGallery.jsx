@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
+import React, { useId, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
 
 const AdminGallery = () => {
   const [galleryForm, setGalleryForm] = useState({ url: '', altText: '' });
   const [editingGalleryId, setEditingGalleryId] = useState(null);
+
+  // Generate unique IDs for form inputs
+  const urlInputId = useId();
+  const altInputId = useId();
 
   // Convex queries and mutations
   const allGalleryImages = useQuery(api.galleryImages.getGalleryImages);
@@ -35,7 +39,7 @@ const AdminGallery = () => {
       setEditingGalleryId(null);
     } catch (error) {
       console.error('Error saving gallery image:', error);
-      alert('❌ Failed to save gallery image: ' + error.message);
+      alert(`❌ Failed to save gallery image: ${error.message}`);
     }
   };
 
@@ -60,8 +64,11 @@ const AdminGallery = () => {
       {/* Gallery Form */}
       <form onSubmit={handleGallerySubmit} className="space-y-4 bg-white/5 p-6 rounded-2xl">
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+          <label htmlFor={urlInputId} className="block text-white text-sm font-semibold mb-2">
+            Image URL *
+          </label>
           <input
+            id={urlInputId}
             type="url"
             required
             value={galleryForm.url}
@@ -72,8 +79,11 @@ const AdminGallery = () => {
         </div>
 
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Alt Text (Optional)</label>
+          <label htmlFor={altInputId} className="block text-white text-sm font-semibold mb-2">
+            Alt Text (Optional)
+          </label>
           <input
+            id={altInputId}
             type="text"
             value={galleryForm.altText}
             onChange={(e) => setGalleryForm({ ...galleryForm, altText: e.target.value })}
@@ -119,6 +129,7 @@ const AdminGallery = () => {
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2">
                 <button
+                  type="button"
                   onClick={() => {
                     setGalleryForm({
                       url: image.url,
@@ -131,6 +142,7 @@ const AdminGallery = () => {
                   ✏️ Edit
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleDeleteGalleryImage(image._id)}
                   className="px-3 py-1 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all text-sm"
                 >
