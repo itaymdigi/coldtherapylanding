@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link } from '@tanstack/react-router';
+import React from 'react';
 import { useApp } from '../contexts/AppContext';
 
 const Header = () => {
@@ -60,6 +60,7 @@ const Header = () => {
                 {t.livePractice}
               </Link>
               <button
+                type="button"
                 onClick={scrollToPackages}
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
@@ -78,6 +79,7 @@ const Header = () => {
                 {t.contact}
               </Link>
               <button
+                type="button"
                 onClick={scrollToPackages}
                 className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 text-base ml-2"
               >
@@ -86,6 +88,7 @@ const Header = () => {
 
               {/* Language Toggle */}
               <button
+                type="button"
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-sm font-semibold text-white"
               >
@@ -94,6 +97,7 @@ const Header = () => {
 
               {/* Music Toggle */}
               <button
+                type="button"
                 onClick={toggleMusic}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-lg"
               >
@@ -102,6 +106,7 @@ const Header = () => {
 
               {/* Admin Button */}
               <button
+                type="button"
                 onClick={() => setShowAdmin(true)}
                 className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-lg"
                 title={t.adminButton}
@@ -114,6 +119,7 @@ const Header = () => {
             <div className="md:hidden flex items-center gap-2">
               {/* Language Toggle Mobile */}
               <button
+                type="button"
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-xs"
               >
@@ -122,6 +128,7 @@ const Header = () => {
 
               {/* Music Toggle Mobile */}
               <button
+                type="button"
                 onClick={toggleMusic}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-base"
               >
@@ -130,6 +137,7 @@ const Header = () => {
 
               {/* Admin Button Mobile */}
               <button
+                type="button"
                 onClick={() => setShowAdmin(true)}
                 className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 transition-all duration-300 text-base"
                 title={t.adminButton}
@@ -139,12 +147,14 @@ const Header = () => {
 
               {/* Hamburger Button */}
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 rounded-lg text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Close menu</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -154,6 +164,7 @@ const Header = () => {
                   </svg>
                 ) : (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Open menu</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -207,6 +218,7 @@ const Header = () => {
                 ⏱️ {t.livePractice}
               </Link>
               <button
+                type="button"
                 onClick={() => {
                   scrollToPackages();
                   setMobileMenuOpen(false);
@@ -230,6 +242,7 @@ const Header = () => {
                 {t.contact}
               </Link>
               <button
+                type="button"
                 onClick={() => {
                   scrollToPackages();
                   setMobileMenuOpen(false);
@@ -246,6 +259,7 @@ const Header = () => {
       {/* Sticky Mobile CTA */}
       <div className="fixed bottom-4 left-4 right-4 z-30 md:hidden pointer-events-none">
         <button
+          type="button"
           onClick={scrollToPackages}
           className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 pointer-events-auto"
         >

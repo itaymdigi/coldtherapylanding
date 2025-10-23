@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { Download, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 
 const InstallPrompt = () => {
@@ -109,6 +109,7 @@ const InstallPrompt = () => {
       <div className="bg-gradient-to-br from-cyan-900 to-blue-900 rounded-2xl shadow-2xl border border-cyan-400/30 backdrop-blur-lg overflow-hidden">
         {/* Close button */}
         <button
+          type="button"
           onClick={handleDismiss}
           className="absolute top-3 right-3 text-cyan-300 hover:text-white transition-colors"
           aria-label="Close"
@@ -132,12 +133,14 @@ const InstallPrompt = () => {
               {/* Buttons */}
               <div className="flex gap-3">
                 <button
+                  type="button"
                   onClick={handleInstallClick}
                   className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2.5 rounded-lg font-semibold hover:from-cyan-400 hover:to-blue-400 transition-all transform hover:scale-105 shadow-lg"
                 >
                   {t.install}
                 </button>
                 <button
+                  type="button"
                   onClick={handleDismiss}
                   className="px-4 py-2.5 rounded-lg font-semibold text-cyan-300 hover:text-white hover:bg-white/10 transition-all"
                 >

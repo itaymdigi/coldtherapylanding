@@ -1,12 +1,12 @@
 import React from 'react';
 
 class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
@@ -39,21 +39,25 @@ class ErrorBoundary extends React.Component {
                     Error Details (Development Mode)
                   </summary>
                   <pre className="text-xs text-red-200 overflow-auto">
-                    {this.state.error.toString()}
-                    {this.state.errorInfo && this.state.errorInfo.componentStack}
+                    {this.state.error?.toString()}
+                    {this.state.errorInfo?.componentStack}
                   </pre>
                 </details>
               )}
 
               <div className="flex gap-4 justify-center">
                 <button
+                  type="button"
                   onClick={() => window.location.reload()}
                   className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
                 >
                   🔄 Reload Page
                 </button>
                 <button
-                  onClick={() => (window.location.href = '/')}
+                  type="button"
+                  onClick={() => {
+                    window.location.href = '/';
+                  }}
                   className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
                 >
                   🏠 Go Home

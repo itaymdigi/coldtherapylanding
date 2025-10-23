@@ -1,9 +1,13 @@
-import React, { useEffect } from 'react';
-import { useApp } from '../contexts/AppContext';
+import React, { useEffect, useId } from 'react';
 import LivePractice from '../components/sections/LivePractice';
 import OurInstructors from '../components/sections/OurInstructors';
+import { useApp } from '../contexts/AppContext';
 
 const HomePage = () => {
+  const homeId = useId();
+  const aboutId = useId();
+  const contactId = useId();
+
   const {
     t,
     language,
@@ -108,7 +112,7 @@ const HomePage = () => {
     <>
       {/* Hero Section */}
       <div
-        id="home"
+        id={homeId}
         className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-8 md:px-16 lg:px-24 pt-20"
       >
         <div className="text-center space-y-4 sm:space-y-6 max-w-4xl mt-12 sm:mt-20">
@@ -148,13 +152,17 @@ const HomePage = () => {
             style={{ animationDelay: '0.4s' }}
           >
             <button
+              type="button"
               onClick={scrollToPackages}
               className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300 text-base sm:text-lg animate-glow relative overflow-hidden group"
             >
               <span className="relative z-10">{t.viewPackages}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
-            <button className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-full border-2 border-cyan-400/50 hover:bg-white/20 hover:border-cyan-400 hover:scale-110 transition-all duration-300 text-base sm:text-lg relative overflow-hidden group">
+            <button
+              type="button"
+              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-full border-2 border-cyan-400/50 hover:bg-white/20 hover:border-cyan-400 hover:scale-110 transition-all duration-300 text-base sm:text-lg relative overflow-hidden group"
+            >
               <span className="relative z-10">{t.bookNow}</span>
               <div className="absolute inset-0 animate-shimmer"></div>
             </button>
@@ -209,7 +217,7 @@ const HomePage = () => {
 
       {/* About Dan Hayat Section - MOVED UP for trust building */}
       <div
-        id="about"
+        id={aboutId}
         className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent"
       >
         <div className="max-w-6xl mx-auto">
@@ -318,7 +326,10 @@ const HomePage = () => {
                       <span>{t.package1Feature3}</span>
                     </li>
                   </ul>
-                  <button className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300">
+                  <button
+                    type="button"
+                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                  >
                     {t.bookNow}
                   </button>
                 </div>
@@ -355,7 +366,10 @@ const HomePage = () => {
                       <span>{t.package2Feature5}</span>
                     </li>
                   </ul>
-                  <button className="w-full py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300">
+                  <button
+                    type="button"
+                    className="w-full py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                  >
                     {t.getStarted}
                   </button>
                 </div>
@@ -384,7 +398,10 @@ const HomePage = () => {
                       <span>{t.package3Feature3}</span>
                     </li>
                   </ul>
-                  <button className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300">
+                  <button
+                    type="button"
+                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                  >
                     {t.bookNow}
                   </button>
                 </div>
@@ -566,7 +583,10 @@ const HomePage = () => {
 
           <div className="text-center mt-12">
             <p className="text-blue-200 mb-4">{t.videoCTA}</p>
-            <button className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg">
+            <button
+              type="button"
+              className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
+            >
               {t.videoButton}
             </button>
           </div>
@@ -616,6 +636,7 @@ const HomePage = () => {
                 className="bg-cyan-900/20 backdrop-blur-md rounded-2xl border border-cyan-400/30 overflow-hidden"
               >
                 <button
+                  type="button"
                   onClick={() => setOpenFaq(openFaq === faqNum ? null : faqNum)}
                   className="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-cyan-900/30 transition-all duration-300"
                 >
@@ -674,7 +695,7 @@ const HomePage = () => {
 
       {/* Contact Section */}
       <div
-        id="contact"
+        id={contactId}
         className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24"
       >
         <div className="max-w-4xl mx-auto">

@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from '@tanstack/react-router';
-import { useApp } from '../contexts/AppContext';
-import Header from './Header';
+import AIChatWidget from './AIChatWidget';
 import AdminPanelNew from './admin/AdminPanelNew';
 import Background from './Background';
-import InstallPrompt from './InstallPrompt';
-import AIChatWidget from './AIChatWidget';
 import ErrorBoundary from './ErrorBoundary';
+import Header from './Header';
+import InstallPrompt from './InstallPrompt';
+import { useApp } from '../contexts/AppContext';
 
 const Layout = () => {
-  const { language, audioRef, isPlaying, showAdmin, t } = useApp();
+  const { language, audioRef, showAdmin, t } = useApp();
   const location = useLocation();
 
   // Handle hash navigation
@@ -23,7 +23,7 @@ const Layout = () => {
         }
       }, 100);
     }
-  }, [location.hash, location.pathname]);
+  }, [location.hash]);
 
   return (
     <div
@@ -36,6 +36,7 @@ const Layout = () => {
           src="https://www.bensound.com/bensound-music/bensound-relaxing.mp3"
           type="audio/mpeg"
         />
+        <track kind="captions" srcLang="en" label="Background Music" />
       </audio>
 
       {/* Admin Panel */}

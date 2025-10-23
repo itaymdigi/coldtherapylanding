@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
 
 const AIChatWidget = () => {
@@ -19,9 +19,9 @@ const AIChatWidget = () => {
   // N8N webhook URL - Enhanced version with booking, email, and analytics
   const N8N_WEBHOOK_URL = 'https://n8n.digiautomation.cloud/webhook/cold-therapy-chat-v2';
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -126,7 +126,11 @@ const AIChatWidget = () => {
         } text-white`}
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
-        {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />}
+        {isOpen ? (
+          <X className="w-5 h-5 sm:w-6 sm:h-6" />
+        ) : (
+          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+        )}
       </button>
 
       {/* Chat Window */}
@@ -166,7 +170,9 @@ const AIChatWidget = () => {
                       : 'bg-white text-gray-800 shadow-sm border border-gray-200'
                   }`}
                 >
-                  <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">
+                    {message.content}
+                  </p>
                   <p
                     className={`text-xs mt-1 ${
                       message.role === 'user' ? 'text-white/70' : 'text-gray-500'

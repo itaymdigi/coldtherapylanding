@@ -1,7 +1,7 @@
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import './index.css';
 
 // Import the generated route tree
