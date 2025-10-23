@@ -29,61 +29,63 @@ body {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0) translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px) translateX(20px);
+    transform: translate3d(20px, -20px, 0);
   }
 }
 
 @keyframes float-delayed {
   0%,
   100% {
-    transform: translateY(0) translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(20px) translateX(-20px);
+    transform: translate3d(-20px, 20px, 0);
   }
 }
 
 .animate-float {
   animation: float 8s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-float-delayed {
   animation: float-delayed 10s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translate3d(0, 30px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translate3d(0, -30px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale3d(0.9, 0.9, 1);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
 }
 
@@ -210,32 +212,148 @@ body {
   animation: gradientShift 3s ease infinite;
 }
 
-/* PWA Install Prompt Animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(100px);
+/* Mobile-first optimizations */
+@media (max-width: 768px) {
+  /* Improve scrolling performance on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
   }
-  to {
+
+  /* Optimize transforms for mobile */
+  .animate-fadeInUp,
+  .animate-fadeInDown,
+  .animate-scaleIn {
+    will-change: transform, opacity;
+  }
+
+  /* Reduce motion complexity on mobile */
+  .group:hover {
+    transform: none;
+  }
+
+  /* Optimize video performance on mobile */
+  video {
+    object-fit: contain;
+  }
+}
+
+/* Performance optimizations for all devices */
+* {
+  /* Improve rendering performance */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Optimize images for mobile */
+@media (max-width: 768px) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+  }
+
+  /* Reduce background complexity on mobile */
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Reduce animation complexity on mobile */
+  .animate-float {
+    animation-duration: 12s; /* Slower animations for better performance */
+  }
+
+  .animate-float-delayed {
+    animation-duration: 15s;
+  }
+
+  /* Disable some animations on mobile for performance */
+  .animate-rotate {
+    animation: none; /* Disable rotation on mobile */
+  }
+
+  /* Optimize scroll reveal for mobile */
+  .scroll-reveal {
+    transition-duration: 0.6s; /* Faster transitions on mobile */
+  }
+
+  /* Reduce blur effects on mobile for better performance */
+  .blur-3xl {
+    filter: blur(1rem); /* Less blur on mobile */
+  }
+
+  .blur-2xl {
+    filter: blur(0.75rem);
+  }
+
+  /* Optimize gradients for mobile */
+  .bg-gradient-to-br {
+    background-attachment: scroll; /* Better performance than fixed */
+  }
+}
+
+/* Respect user's reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-delayed,
+  .animate-rotate,
+  .animate-gradient,
+  .animate-glow,
+  .animate-shimmer {
+    animation: none;
+  }
+
+  .scroll-reveal {
     opacity: 1;
     transform: translateY(0);
+    transition: none;
   }
-}
 
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
-}
-
-/* Fade In Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
+  /* Disable parallax effects for reduced motion */
+  .animate-fadeInUp,
+  .animate-fadeInDown,
+  .animate-scaleIn {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-in forwards;
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Reduce hover effects on touch devices */
+  .group:hover {
+    transform: none;
+    scale: none;
+  }
+
+  /* Faster transitions for touch */
+  .transition-all {
+    transition-duration: 200ms;
+  }
+
+  /* Disable some animations that don't work well on touch */
+  .animate-glow {
+    animation: none;
+  }
+}
+
+/* High-performance mobile optimizations */
+@media (max-width: 480px) {
+  /* Further reduce animations on small screens */
+  .animate-float,
+  .animate-float-delayed {
+    animation: none;
+  }
+
+  /* Simplify background effects */
+  .bg-gradient-to-br {
+    background: linear-gradient(to bottom right, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+  }
+
+  /* Optimize text rendering for mobile */
+  body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
 }

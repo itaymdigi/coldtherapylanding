@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { translations } from '../data/translations';
@@ -83,41 +83,73 @@ export const AppProvider = ({ children }) => {
   const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
   const heroVideo = convexHeroVideo?.url || '/dan_logo.mp4';
 
-  // Mouse tracking for parallax effect
+  // Mouse tracking for parallax effect (throttled for performance)
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      });
+    let ticking = false;
+
+    const handleInteraction = (e) => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          // Get coordinates from both mouse and touch events
+          const clientX = e.clientX || (e.touches?.[0]?.clientX ?? 0);
+          const clientY = e.clientY || (e.touches?.[0]?.clientY ?? 0);
+
+          // Only update if we have valid coordinates
+          if (clientX !== undefined && clientY !== undefined) {
+            setMousePosition({
+              x: (clientX / window.innerWidth) * 100,
+              y: (clientY / window.innerHeight) * 100,
+            });
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    // Add both mouse and touch event listeners with passive option for mobile performance
+    window.addEventListener('mousemove', handleInteraction, { passive: true });
+    window.addEventListener('touchmove', handleInteraction, { passive: true });
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleInteraction);
+      window.removeEventListener('touchmove', handleInteraction);
     };
   }, []);
 
-  // Scroll reveal animation
+  // Scroll reveal animation using Intersection Observer (more performant)
   useEffect(() => {
-    const handleScroll = () => {
+    // Check if device is mobile for different optimization strategy
+    const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      {
+        threshold: prefersReducedMotion ? 0.01 : (isMobile ? 0.05 : 0.1), // Lower threshold for mobile
+        rootMargin: isMobile ? '25px 0px -25px 0px' : '50px 0px -50px 0px' // Smaller margin for mobile
+      }
+    );
+
+    // Only observe elements that actually need scroll reveal (skip if reduced motion)
+    if (!prefersReducedMotion) {
+      const reveals = document.querySelectorAll('.scroll-reveal');
+      reveals.forEach((element) => observer.observe(element));
+    } else {
+      // If reduced motion, just show all elements immediately
       const reveals = document.querySelectorAll('.scroll-reveal');
       reveals.forEach((element) => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-        if (elementTop < window.innerHeight - elementVisible) {
-          element.classList.add('revealed');
-        }
+        element.classList.add('revealed');
       });
-    };
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => observer.disconnect();
   }, []);
 
   const toggleMusic = () => {
@@ -215,9 +247,9 @@ export const AppProvider = ({ children }) => {
 
   // Auto-verify admin token on mount
   useEffect(() => {
-    if (adminTokenVerification && adminTokenVerification.valid) {
+    if (adminTokenVerification?.valid) {
       setIsAuthenticated(true);
-    } else if (adminTokenVerification && !adminTokenVerification.valid) {
+    } else if (adminTokenVerification && !adminTokenVerification?.valid) {
       // Token expired or invalid
       localStorage.removeItem('adminToken');
       setIsAuthenticated(false);
