@@ -1,29 +1,15 @@
-import { Outlet, useLocation } from '@tanstack/react-router';
-import React, { useEffect } from 'react';
+import { Outlet } from '@tanstack/react-router';
 import { useApp } from '../contexts/AppContext';
 import AIChatWidget from './AIChatWidget';
 import AdminPanelNew from './admin/AdminPanelNew';
 import Background from './Background';
 import ErrorBoundary from './ErrorBoundary';
+import FloatingSocialButtons from './FloatingSocialButtons';
 import Header from './Header';
 import InstallPrompt from './InstallPrompt';
 
 const Layout = () => {
   const { language, audioRef, showAdmin, t } = useApp();
-  const location = useLocation();
-
-  // Handle hash navigation
-  useEffect(() => {
-    if (location.hash) {
-      // Wait for page to render
-      setTimeout(() => {
-        const element = document.querySelector(location.hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  }, [location.hash]);
 
   return (
     <div
@@ -51,6 +37,9 @@ const Layout = () => {
 
       {/* AI Chat Widget */}
       <AIChatWidget />
+
+      {/* Floating Social Buttons - Mobile Only */}
+      <FloatingSocialButtons />
 
       {/* 3D Background */}
       <Background />
