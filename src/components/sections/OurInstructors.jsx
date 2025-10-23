@@ -7,6 +7,8 @@ import { api } from '../../../convex/_generated/api';
 
 // Component to display image from Convex storage
 const StorageImage = ({ storageId, alt, className }) => {
+  const [imageKey, setImageKey] = useState(Date.now());
+  
   // Check if it's already a full URL or data URI
   const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
 
@@ -15,6 +17,11 @@ const StorageImage = ({ storageId, alt, className }) => {
     api.fileStorage?.getFileUrl,
     storageId && !isDirectUrl ? { storageId } : 'skip'
   );
+  
+  // Force image reload when storageId changes
+  useEffect(() => {
+    setImageKey(Date.now());
+  }, [storageId]);
 
   // No storage ID provided
   if (!storageId) {
@@ -27,9 +34,15 @@ const StorageImage = ({ storageId, alt, className }) => {
 
   // If it's already a URL (data URI or http), use it directly
   if (isDirectUrl) {
+    // Add cache-busting parameter for HTTP URLs
+    const cacheBustedUrl = storageId.startsWith('http') 
+      ? `${storageId}${storageId.includes('?') ? '&' : '?'}_t=${imageKey}`
+      : storageId;
+    
     return (
       <img
-        src={storageId}
+        key={imageKey}
+        src={cacheBustedUrl}
         alt={alt}
         className={className}
         onLoad={(e) => {
@@ -85,9 +98,13 @@ const StorageImage = ({ storageId, alt, className }) => {
   }
 
   // Successfully got URL from Convex
+  // Add cache-busting parameter to force reload
+  const cacheBustedUrl = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}_t=${imageKey}`;
+  
   return (
     <img
-      src={imageUrl}
+      key={imageKey}
+      src={cacheBustedUrl}
       alt={alt}
       className={className}
       onLoad={(e) => {
@@ -414,8 +431,9 @@ const OurInstructors = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Photo */}
-              <div className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full">
+              <div key={`photo-${selectedInstructor._id}`} className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full">
                 <StorageImage
+                  key={selectedInstructor._id}
                   storageId={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
                   alt={selectedInstructor.name}
                   className="w-full h-full object-cover rounded-lg"
