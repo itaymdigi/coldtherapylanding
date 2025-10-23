@@ -1,11 +1,11 @@
-import React, { useEffect, useId } from 'react';
+import React, { useEffect } from 'react';
 import OurInstructors from '../components/sections/OurInstructors';
 import { useApp } from '../contexts/AppContext';
 
 const HomePage = () => {
-  const homeId = useId();
-  const aboutId = useId();
-  const contactId = useId();
+  const homeId = 'home';
+  const aboutId = 'about';
+  const contactId = 'contact';
 
   const {
     t,

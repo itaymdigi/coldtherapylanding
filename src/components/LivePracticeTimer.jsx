@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Square, Timer, Thermometer, Heart, Star } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState, useId } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 
-export default function LivePracticeTimer({ user, token, language = 'he', onSessionSaved }) {
+export default function LivePracticeTimer({ language = 'he', gender = 'male', onSessionSaved }) {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -72,35 +72,102 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
 
   const t = translations[language];
 
-  // Voice announcements
-  const speak = (text, lang = 'he-IL') => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
+  const temperatureInputId = useId();
+  const ratingInputId = useId();
+  const notesTextareaId = useId();
 
-  const announceTime = (seconds) => {
+  const announceTime = useCallback((seconds) => {
+    const speak = (text, lang = 'he-IL') => {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        window.speechSynthesis.speak(utterance);
+      }
+    };
+
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
     if (language === 'he') {
-      if (remainingSeconds === 0) {
-        speak(`${minutes} דקות`, 'he-IL');
+      const isFemale = gender === 'female';
+      const you = isFemale ? 'את' : 'אתה';
+      const pastSuffix = isFemale ? 'ה' : '';
+      const presentSuffix = isFemale ? 'י' : '';
+      const pastSuffixPlural = 'ו';
+
+      let announcement = '';
+      let encouragement = '';
+
+      // Proper Hebrew grammar for minutes
+      if (minutes === 1) {
+        announcement = `דקה אחת עבר${pastSuffix}`;
+      } else if (minutes === 2) {
+        announcement = `שתי דקות עבר${pastSuffixPlural}`;
+      } else if (minutes > 2) {
+        announcement = `${minutes} דקות עבר${pastSuffixPlural}`;
+      }
+
+      // Add encouraging messages at milestones
+      if (minutes > 0) {
+        if (minutes === 1) {
+          encouragement = `כל הכבוד! ${you} מתחיל${isFemale ? 'ה' : ''} חזק`;
+        } else if (minutes === 2) {
+          encouragement = `שתי דקות כבר מאחור${isFemale ? 'יך' : 'יך'}! תמשיכ${presentSuffix} ככה`;
+        } else if (minutes === 3) {
+          encouragement = `מדהים! ${you} בשליטה מלאה`;
+        } else if (minutes === 5) {
+          encouragement = `חמש דקות של כוח! ${you} גיבור${isFemale ? 'ה' : ''}`;
+        } else if (minutes === 10) {
+          encouragement = `עשר דקות! זה כבר הישג אמיתי`;
+        } else if (minutes % 3 === 0) {
+          encouragement = `כל הכבוד! תמשיכ${presentSuffix} ככה`;
+        }
+      }
+
+      // Combine announcement and encouragement
+      const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
+
+      // Add seconds if not exact minutes
+      if (remainingSeconds > 0) {
+        const secondsText = remainingSeconds === 1 ? 'שנייה אחת' : `${remainingSeconds} שניות`;
+        speak(`${fullMessage}, ועוד ${secondsText}`, 'he-IL');
       } else {
-        speak(`${minutes} דקות ו ${remainingSeconds} שניות`, 'he-IL');
+        speak(fullMessage, 'he-IL');
       }
     } else {
+      // English version with encouragement
+      let announcement = '';
+      let encouragement = '';
+
       if (remainingSeconds === 0) {
-        speak(`${minutes} minutes`, 'en-US');
+        announcement = `${minutes} minutes completed`;
       } else {
-        speak(`${minutes} minutes and ${remainingSeconds} seconds`, 'en-US');
+        announcement = `${minutes} minutes and ${remainingSeconds} seconds`;
       }
+
+      // Add encouraging messages
+      if (minutes > 0) {
+        if (minutes === 1) {
+          encouragement = 'Great start! Keep going strong!';
+        } else if (minutes === 2) {
+          encouragement = 'Two minutes down! You\'re doing amazing!';
+        } else if (minutes === 3) {
+          encouragement = 'Fantastic! You\'ve got this under control!';
+        } else if (minutes === 5) {
+          encouragement = 'Five minutes of power! You\'re a champion!';
+        } else if (minutes === 10) {
+          encouragement = 'Ten minutes! That\'s a real achievement!';
+        } else if (minutes % 3 === 0) {
+          encouragement = 'Well done! Keep it up!';
+        }
+      }
+
+      const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
+      speak(fullMessage, 'en-US');
     }
-  };
+  }, [language, gender]);
 
   useEffect(() => {
     if (isRunning && !isPaused) {
@@ -127,7 +194,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, isPaused, language]);
+  }, [isRunning, isPaused, announceTime]);
 
   const handleStart = () => {
     setIsRunning(true);
@@ -167,7 +234,6 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
   const handleSave = async () => {
     try {
       const result = await saveSessionMutation({
-        token,
         duration: time,
         temperature: temperature ? parseFloat(temperature) : undefined,
         notes: notes || undefined,
@@ -242,6 +308,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
         <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 md:mb-6">
           {!isRunning ? (
             <button
+              type="button"
               onClick={handleStart}
               className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full hover:from-green-600 hover:to-emerald-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm md:text-base"
             >
@@ -252,6 +319,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
             <>
               {!isPaused ? (
                 <button
+                  type="button"
                   onClick={handlePause}
                   className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 md:py-3 px-4 md:px-6 rounded-full hover:from-yellow-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-xs md:text-sm"
                 >
@@ -260,6 +328,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={handleResume}
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-2 md:py-3 px-4 md:px-6 rounded-full hover:from-blue-600 hover:to-cyan-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-xs md:text-sm"
                 >
@@ -268,6 +337,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
                 </button>
               )}
               <button
+                type="button"
                 onClick={handleStop}
                 className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full hover:from-red-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm md:text-base"
               >
@@ -283,11 +353,12 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
       {showSaveForm && (
         <div className="space-y-4 animate-fadeIn">
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label htmlFor={temperatureInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
               <Thermometer size={18} />
               {t.temperature}
             </label>
             <input
+              id={temperatureInputId}
               type="number"
               value={temperature}
               onChange={(e) => setTemperature(e.target.value)}
@@ -298,7 +369,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label htmlFor={ratingInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
               <Heart size={18} />
               {t.mood}
             </label>
@@ -306,6 +377,7 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
               {['excellent', 'good', 'neutral', 'challenging'].map((m) => (
                 <button
                   key={m}
+                  type="button"
                   onClick={() => setMood(m)}
                   className={`py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
                     mood === m
@@ -321,17 +393,17 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
+            <label htmlFor={ratingInputId} className="block text-white/90 mb-2 text-sm font-medium flex items-center gap-2">
               <Star size={18} />
               {t.rating}
             </label>
-            <div className="flex justify-center gap-2">
+            <div id={ratingInputId} className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
+                  type="button"
                   onClick={() => setRating(star)}
                   className="transition-all transform hover:scale-110"
-                  type="button"
                 >
                   <Star
                     size={32}
@@ -347,8 +419,9 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">{t.notes}</label>
+            <label htmlFor={notesTextareaId} className="block text-white/90 mb-2 text-sm font-medium">{t.notes}</label>
             <textarea
+              id={notesTextareaId}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/50 transition-all resize-none"
@@ -359,12 +432,14 @@ export default function LivePracticeTimer({ user, token, language = 'he', onSess
 
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={handleSave}
               className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all transform hover:scale-105 shadow-lg"
             >
               {t.save}
             </button>
             <button
+              type="button"
               onClick={handleCancel}
               className="flex-1 bg-white/10 text-white font-bold py-3 px-6 rounded-lg hover:bg-white/20 transition-all"
             >

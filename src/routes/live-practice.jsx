@@ -1,12 +1,12 @@
+import { LogIn, LogOut, User, Activity, Home } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import AuthModal from '../components/AuthModal';
 import LivePracticeTimer from '../components/LivePracticeTimer';
 import SessionHistory from '../components/SessionHistory';
-import { LogIn, LogOut, User, Activity, Home } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/live-practice')({
   component: LivePracticePage,
@@ -20,6 +20,27 @@ function LivePracticePage() {
   const [language, setLanguage] = useState('he');
 
   const verifiedUser = useQuery(api.auth.verifyToken, token ? { token } : 'skip');
+
+  const handleAuthSuccess = useCallback((userData, userToken) => {
+    setUser(userData);
+    setToken(userToken);
+    setIsAuthModalOpen(false);
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    setUser(null);
+    setToken(null);
+  }, []);
+
+  const handleSessionSaved = useCallback(() => {
+    // Refresh history by switching tabs
+    if (activeTab === 'timer') {
+      setActiveTab('history');
+      setTimeout(() => setActiveTab('timer'), 100);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken');
@@ -39,7 +60,7 @@ function LivePracticePage() {
     } else if (verifiedUser && !user) {
       setUser(verifiedUser);
     }
-  }, [verifiedUser]);
+  }, [verifiedUser, token, user, handleLogout]);
 
   const translations = {
     he: {
@@ -68,27 +89,6 @@ function LivePracticePage() {
 
   const t = translations[language];
 
-  const handleAuthSuccess = (userData, userToken) => {
-    setUser(userData);
-    setToken(userToken);
-    setIsAuthModalOpen(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    setUser(null);
-    setToken(null);
-  };
-
-  const handleSessionSaved = () => {
-    // Refresh history by switching tabs
-    if (activeTab === 'timer') {
-      setActiveTab('history');
-      setTimeout(() => setActiveTab('timer'), 100);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Header */}
@@ -112,6 +112,7 @@ function LivePracticePage() {
             {/* Language Toggle & Auth */}
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => {
                   const newLang = language === 'en' ? 'he' : 'en';
                   setLanguage(newLang);
@@ -124,6 +125,7 @@ function LivePracticePage() {
 
               {user ? (
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all font-medium text-sm"
                 >
@@ -132,6 +134,7 @@ function LivePracticePage() {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={() => setIsAuthModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-lg hover:bg-cyan-500/30 transition-all font-medium text-sm"
                 >
@@ -163,6 +166,7 @@ function LivePracticePage() {
               {/* Tabs */}
               <div className="flex justify-center gap-4 mb-8">
                 <button
+                  type="button"
                   onClick={() => setActiveTab('timer')}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
                     activeTab === 'timer'
@@ -174,6 +178,7 @@ function LivePracticePage() {
                   {t.timer}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setActiveTab('history')}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
                     activeTab === 'history'
@@ -193,6 +198,7 @@ function LivePracticePage() {
                     user={user}
                     token={token}
                     language={language}
+                    gender={user.gender || 'male'}
                     onSessionSaved={handleSessionSaved}
                   />
                 ) : (
@@ -207,6 +213,7 @@ function LivePracticePage() {
                 <h2 className="text-2xl font-bold text-white mb-4">{t.title}</h2>
                 <p className="text-white/70 mb-8">{t.loginPrompt}</p>
                 <button
+                  type="button"
                   onClick={() => setIsAuthModalOpen(true)}
                   className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto"
                 >

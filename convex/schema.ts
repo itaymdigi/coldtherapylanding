@@ -125,6 +125,7 @@ export default defineSchema({
     email: v.string(),
     name: v.string(),
     phone: v.optional(v.string()),
+    gender: v.optional(v.string()), // "male" or "female"
     passwordHash: v.string(),
     createdAt: v.number(),
     lastLoginAt: v.optional(v.number()),

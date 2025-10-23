@@ -24,6 +24,7 @@ export const register = mutation({
     password: v.string(),
     name: v.string(),
     phone: v.optional(v.string()),
+    gender: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // Check if user already exists
@@ -41,6 +42,7 @@ export const register = mutation({
       email: args.email,
       name: args.name,
       phone: args.phone,
+      gender: args.gender || 'male',
       passwordHash: hashPassword(args.password),
       createdAt: Date.now(),
       totalSessions: 0,
@@ -64,6 +66,7 @@ export const register = mutation({
         email: args.email,
         name: args.name,
         phone: args.phone,
+        gender: args.gender || 'male',
       },
     };
   },
@@ -113,6 +116,7 @@ export const login = mutation({
         email: user.email,
         name: user.name,
         phone: user.phone,
+        gender: user.gender || 'male',
         totalSessions: user.totalSessions,
         totalDuration: user.totalDuration,
       },
@@ -145,6 +149,7 @@ export const verifyToken = query({
       email: user.email,
       name: user.name,
       phone: user.phone,
+      gender: user.gender || 'male',
       totalSessions: user.totalSessions,
       totalDuration: user.totalDuration,
       lastLoginAt: user.lastLoginAt,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useApp } from '../contexts/AppContext';
 
 const InstructorTrainingPage = () => {
@@ -44,13 +43,13 @@ const InstructorTrainingPage = () => {
                 rel="noopener noreferrer"
                 className="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300 text-center"
               >
-                📱 WhatsApp - הצטרף עכשיו
+                📱 {t.instructorWhatsApp}
               </a>
               <a
                 href="tel:+972524343975"
                 className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-lg rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300 text-center"
               >
-                📞 התקשר עכשיו
+                📞 {t.instructorCall}
               </a>
             </div>
           </div>
@@ -59,9 +58,9 @@ const InstructorTrainingPage = () => {
           <div className="mt-16 grid md:grid-cols-3 gap-6">
             <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-md p-6 rounded-2xl border border-cyan-400/30 hover:border-cyan-400 hover:scale-105 transition-all duration-500 scroll-reveal">
               <div className="text-5xl mb-4">🎓</div>
-              <h3 className="text-white font-bold text-xl mb-3">הכשרה מקצועית</h3>
+              <h3 className="text-white font-bold text-xl mb-3">{t.instructorBenefit1Title}</h3>
               <p className="text-blue-200">
-                למד את כל הטכניקות והפרוטוקולים המוכחים לניהול סדנאות טיפול בקור ונשימה
+                {t.instructorBenefit1Desc}
               </p>
             </div>
 
@@ -70,9 +69,9 @@ const InstructorTrainingPage = () => {
               style={{ transitionDelay: '0.1s' }}
             >
               <div className="text-5xl mb-4">💼</div>
-              <h3 className="text-white font-bold text-xl mb-3">בניית קריירה</h3>
+              <h3 className="text-white font-bold text-xl mb-3">{t.instructorBenefit2Title}</h3>
               <p className="text-blue-200">
-                קבל כלים לבניית עסק מצליח בתחום הבריאות הטבעית והוולנס
+                {t.instructorBenefit2Desc}
               </p>
             </div>
 
@@ -81,43 +80,43 @@ const InstructorTrainingPage = () => {
               style={{ transitionDelay: '0.2s' }}
             >
               <div className="text-5xl mb-4">🌟</div>
-              <h3 className="text-white font-bold text-xl mb-3">קהילה תומכת</h3>
-              <p className="text-blue-200">הצטרף לקהילה של מדריכים מוסמכים ובנה רשת מקצועית חזקה</p>
+              <h3 className="text-white font-bold text-xl mb-3">{t.instructorBenefit3Title}</h3>
+              <p className="text-blue-200">{t.instructorBenefit3Desc}</p>
             </div>
           </div>
 
           {/* What You'll Learn */}
           <div className="mt-16 bg-gradient-to-br from-cyan-900/20 to-blue-900/20 backdrop-blur-md p-8 sm:p-12 rounded-3xl border border-cyan-400/30 scroll-reveal">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 text-center">
-              מה תלמד בהכשרה?
+              {t.instructorLearnTitle}
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">טכניקות נשימה מתקדמות</h4>
-                  <p className="text-blue-200">פראניאמה, נשימה מעגלית, ושיטות נשימה ייחודיות</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn1Title}</h4>
+                  <p className="text-blue-200">{t.instructorLearn1Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">פרוטוקולי טיפול בקור</h4>
-                  <p className="text-blue-200">שילוב מבוקר של חשיפה לקור וחום</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn2Title}</h4>
+                  <p className="text-blue-200">{t.instructorLearn2Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">ניהול מרחבים מרפאים</h4>
-                  <p className="text-blue-200">כיצד להחזיק סדנאות בטוחות ומשנות חיים</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn3Title}</h4>
+                  <p className="text-blue-200">{t.instructorLearn3Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-3xl">✓</div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-2">בניית עסק מצליח</h4>
-                  <p className="text-blue-200">שיווק, תמחור, ובניית זהות מקצועית</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">{t.instructorLearn4Title}</h4>
+                  <p className="text-blue-200">{t.instructorLearn4Desc}</p>
                 </div>
               </div>
             </div>
@@ -125,9 +124,9 @@ const InstructorTrainingPage = () => {
 
           {/* Final CTA */}
           <div className="mt-16 text-center bg-gradient-to-r from-cyan-500/10 to-blue-600/10 backdrop-blur-md p-12 rounded-3xl border-2 border-cyan-400/30 scroll-reveal">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">מוכן להצטרף למהפכה?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t.instructorCTATitle}</h2>
             <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
-              הזמן המדויק ביותר להיכנס לתחום. הביקוש רק הולך לעלות.
+              {t.instructorCTADesc}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
@@ -136,13 +135,13 @@ const InstructorTrainingPage = () => {
                 rel="noopener noreferrer"
                 className="px-12 py-6 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-xl rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300"
               >
-                📱 WhatsApp
+                📱 {t.instructorWhatsApp}
               </a>
               <a
                 href="/#contact"
                 className="px-12 py-6 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xl rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300"
               >
-                📞 צור קשר
+                📞 {t.contact}
               </a>
             </div>
           </div>

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { Eye, EyeOff, X } from 'lucide-react';
+import { useState, useId } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-import { X, Eye, EyeOff } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,10 +10,18 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
     password: '',
     name: '',
     phone: '',
+    gender: 'male',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Generate unique IDs for form elements
+  const nameId = useId();
+  const genderId = useId();
+  const emailId = useId();
+  const passwordId = useId();
+  const phoneId = useId();
 
   const loginMutation = useMutation(api.auth.login);
   const registerMutation = useMutation(api.auth.register);
@@ -26,6 +34,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
       password: 'סיסמה',
       name: 'שם מלא',
       phone: 'טלפון (אופציונלי)',
+      gender: 'מגדר',
+      male: 'זכר',
+      female: 'נקבה',
       loginButton: 'התחבר',
       registerButton: 'הירשם',
       switchToRegister: 'אין לך חשבון? הירשם',
@@ -39,6 +50,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
       password: 'Password',
       name: 'Full Name',
       phone: 'Phone (optional)',
+      gender: 'Gender',
+      male: 'Male',
+      female: 'Female',
       loginButton: 'Login',
       registerButton: 'Register',
       switchToRegister: "Don't have an account? Register",
@@ -67,6 +81,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           password: formData.password,
           name: formData.name,
           phone: formData.phone || undefined,
+          gender: formData.gender,
         });
       }
 
@@ -100,6 +115,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <div className="bg-gradient-to-br from-blue-900/95 to-cyan-900/95 rounded-2xl shadow-2xl max-w-md w-full p-8 relative border border-cyan-500/30">
         <button
+          type="button"
           onClick={onClose}
           className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
         >
@@ -113,8 +129,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="block text-white/90 mb-2 text-sm font-medium">{t.name}</label>
+              <label htmlFor={nameId} className="block text-white/90 mb-2 text-sm font-medium">{t.name}</label>
               <input
+                id={nameId}
                 type="text"
                 name="name"
                 value={formData.name}
@@ -126,9 +143,26 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
             </div>
           )}
 
+          {!isLogin && (
+            <div>
+              <label htmlFor={genderId} className="block text-white/90 mb-2 text-sm font-medium">{t.gender}</label>
+              <select
+                id={genderId}
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/50 transition-all"
+              >
+                <option value="male">{t.male}</option>
+                <option value="female">{t.female}</option>
+              </select>
+            </div>
+          )}
+
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">{t.email}</label>
+            <label htmlFor={emailId} className="block text-white/90 mb-2 text-sm font-medium">{t.email}</label>
             <input
+              id={emailId}
               type="email"
               name="email"
               value={formData.email}
@@ -140,9 +174,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           </div>
 
           <div>
-            <label className="block text-white/90 mb-2 text-sm font-medium">{t.password}</label>
+            <label htmlFor={passwordId} className="block text-white/90 mb-2 text-sm font-medium">{t.password}</label>
             <div className="relative">
               <input
+                id={passwordId}
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
@@ -164,8 +199,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
 
           {!isLogin && (
             <div>
-              <label className="block text-white/90 mb-2 text-sm font-medium">{t.phone}</label>
+              <label htmlFor={phoneId} className="block text-white/90 mb-2 text-sm font-medium">{t.phone}</label>
               <input
+                id={phoneId}
                 type="tel"
                 name="phone"
                 value={formData.phone}
@@ -192,10 +228,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         </form>
 
         <button
+          type="button"
           onClick={() => {
             setIsLogin(!isLogin);
             setError('');
-            setFormData({ email: '', password: '', name: '', phone: '' });
+            setFormData({ email: '', password: '', name: '', phone: '', gender: 'male' });
           }}
           className="w-full mt-4 text-cyan-300 hover:text-cyan-200 transition-colors text-sm"
         >
