@@ -23,6 +23,7 @@ import type * as payments from "../payments.js";
 import type * as practiceSessions from "../practiceSessions.js";
 import type * as resetPassword from "../resetPassword.js";
 import type * as scheduleImages from "../scheduleImages.js";
+import type * as siteStats from "../siteStats.js";
 import type * as subscriptions from "../subscriptions.js";
 
 import type {
@@ -55,6 +56,7 @@ declare const fullApi: ApiFromModules<{
   practiceSessions: typeof practiceSessions;
   resetPassword: typeof resetPassword;
   scheduleImages: typeof scheduleImages;
+  siteStats: typeof siteStats;
   subscriptions: typeof subscriptions;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

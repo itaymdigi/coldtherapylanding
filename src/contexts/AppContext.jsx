@@ -19,6 +19,7 @@ export const AppProvider = ({ children }) => {
   const convexScheduleImage = useQuery(api.scheduleImages.getActiveScheduleImage);
   const convexDanPhoto = useQuery(api.danPhoto.getActiveDanPhoto);
   const convexHeroVideo = useQuery(api.heroVideo.getActiveHeroVideo);
+  const siteStats = useQuery(api.siteStats.getSiteStats);
 
   // Convex mutations
   const addGalleryImage = useMutation(api.galleryImages.addGalleryImage);
@@ -39,11 +40,24 @@ export const AppProvider = ({ children }) => {
   const [password, setPassword] = useState('');
   const [adminSection, setAdminSection] = useState('schedule');
   const [statsAnimated, setStatsAnimated] = useState(false);
-  const [statsSessions, setStatsSessions] = useState(0);
-  const [statsSatisfaction, setStatsSatisfaction] = useState(0);
-  const [statsClients, setStatsClients] = useState(0);
-  const [statsTemp, setStatsTemp] = useState(0);
+
+  // Initialize stats with real data from Convex or fallback to 0
+  const [statsSessions, setStatsSessions] = useState(siteStats?.totalSessions || 0);
+  const [statsSatisfaction, setStatsSatisfaction] = useState(siteStats?.satisfactionRate || 0);
+  const [statsClients, setStatsClients] = useState(siteStats?.totalClients || 0);
+  const [statsTemp, setStatsTemp] = useState(siteStats?.averageTemp || 0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Update stats when Convex data loads
+  useEffect(() => {
+    if (siteStats) {
+      setStatsSessions(siteStats.totalSessions);
+      setStatsSatisfaction(siteStats.satisfactionRate);
+      setStatsClients(siteStats.totalClients);
+      setStatsTemp(siteStats.averageTemp);
+      setStatsAnimated(true); // Mark as animated since we have real data
+    }
+  }, [siteStats]);
 
   // Refs
   const audioRef = useRef(null);
@@ -263,6 +277,9 @@ export const AppProvider = ({ children }) => {
     setIsAuthenticated,
     password,
     setPassword,
+    handleImageUpload,
+    handleLogin,
+    handleAdminClose,
     adminSection,
     setAdminSection,
     galleryImages,
@@ -271,13 +288,9 @@ export const AppProvider = ({ children }) => {
     statsAnimated,
     setStatsAnimated,
     statsSessions,
-    setStatsSessions,
     statsSatisfaction,
-    setStatsSatisfaction,
     statsClients,
-    setStatsClients,
     statsTemp,
-    setStatsTemp,
     mobileMenuOpen,
     setMobileMenuOpen,
     audioRef,
@@ -286,9 +299,6 @@ export const AppProvider = ({ children }) => {
     t,
     toggleMusic,
     scrollToPackages,
-    handleImageUpload,
-    handleLogin,
-    handleAdminClose,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

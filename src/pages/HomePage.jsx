@@ -1,5 +1,4 @@
 import React, { useEffect, useId } from 'react';
-import LivePractice from '../components/sections/LivePractice';
 import OurInstructors from '../components/sections/OurInstructors';
 import { useApp } from '../contexts/AppContext';
 
@@ -10,7 +9,6 @@ const HomePage = () => {
 
   const {
     t,
-    language,
     scrollToPackages,
     showPackages,
     packagesRef,
@@ -21,10 +19,6 @@ const HomePage = () => {
     statsTemp,
     statsAnimated,
     setStatsAnimated,
-    setStatsSessions,
-    setStatsSatisfaction,
-    setStatsClients,
-    setStatsTemp,
     danPhoto,
     heroVideo,
     scheduleImage,
@@ -32,7 +26,7 @@ const HomePage = () => {
     setOpenFaq,
   } = useApp();
 
-  // Counter animation for stats
+  // Counter animation for stats - DISABLED since we now use real data from Convex
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -40,53 +34,8 @@ const HomePage = () => {
           if (entry.isIntersecting && !statsAnimated) {
             setStatsAnimated(true);
 
-            // Animate sessions counter (500+)
-            let sessions = 0;
-            const sessionsInterval = setInterval(() => {
-              sessions += 10;
-              if (sessions >= 500) {
-                setStatsSessions(500);
-                clearInterval(sessionsInterval);
-              } else {
-                setStatsSessions(sessions);
-              }
-            }, 20);
-
-            // Animate satisfaction counter (98%)
-            let satisfaction = 0;
-            const satisfactionInterval = setInterval(() => {
-              satisfaction += 2;
-              if (satisfaction >= 98) {
-                setStatsSatisfaction(98);
-                clearInterval(satisfactionInterval);
-              } else {
-                setStatsSatisfaction(satisfaction);
-              }
-            }, 20);
-
-            // Animate clients counter (200+)
-            let clients = 0;
-            const clientsInterval = setInterval(() => {
-              clients += 5;
-              if (clients >= 200) {
-                setStatsClients(200);
-                clearInterval(clientsInterval);
-              } else {
-                setStatsClients(clients);
-              }
-            }, 20);
-
-            // Animate temp counter (3°C)
-            let temp = 0;
-            const tempInterval = setInterval(() => {
-              temp += 0.2;
-              if (temp >= 3) {
-                setStatsTemp(3);
-                clearInterval(tempInterval);
-              } else {
-                setStatsTemp(temp);
-              }
-            }, 50);
+            // Since we're using real data from Convex, we don't need animations
+            // The stats are already loaded with real values in AppContext
           }
         });
       },
@@ -101,10 +50,7 @@ const HomePage = () => {
   }, [
     statsAnimated,
     setStatsAnimated,
-    setStatsSessions,
-    setStatsSatisfaction,
-    setStatsClients,
-    setStatsTemp,
+    // Removed the animation setters since we use real data now
     statsRef,
   ]);
 
@@ -453,9 +399,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Live Practice Section */}
-      <LivePractice language={language} />
 
       {/* Why Ice Bath Section */}
       <div className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent">
