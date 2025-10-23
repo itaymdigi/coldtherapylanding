@@ -7,8 +7,8 @@ import { api } from '../../../convex/_generated/api';
 
 // Component to display image from Convex storage
 const StorageImage = ({ storageId, alt, className }) => {
-  const [imageKey, setImageKey] = useState(Date.now());
-  
+  const [imageKey, setImageKey] = useState(`${storageId}-${Date.now()}`);
+
   // Check if it's already a full URL or data URI
   const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
 
@@ -17,10 +17,10 @@ const StorageImage = ({ storageId, alt, className }) => {
     api.fileStorage?.getFileUrl,
     storageId && !isDirectUrl ? { storageId } : 'skip'
   );
-  
+
   // Force image reload when storageId changes
   useEffect(() => {
-    setImageKey(Date.now());
+    setImageKey(`${storageId}-${Date.now()}`);
   }, [storageId]);
 
   // No storage ID provided
@@ -35,10 +35,10 @@ const StorageImage = ({ storageId, alt, className }) => {
   // If it's already a URL (data URI or http), use it directly
   if (isDirectUrl) {
     // Add cache-busting parameter for HTTP URLs
-    const cacheBustedUrl = storageId.startsWith('http') 
-      ? `${storageId}${storageId.includes('?') ? '&' : '?'}_t=${imageKey}`
+    const cacheBustedUrl = storageId.startsWith('http')
+      ? `${storageId}${storageId.includes('?') ? '&' : '?'}cb=${storageId.split('/').pop()}&t=${imageKey.split('-').pop()}`
       : storageId;
-    
+
     return (
       <img
         key={imageKey}
@@ -99,8 +99,8 @@ const StorageImage = ({ storageId, alt, className }) => {
 
   // Successfully got URL from Convex
   // Add cache-busting parameter to force reload
-  const cacheBustedUrl = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}_t=${imageKey}`;
-  
+  const cacheBustedUrl = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}cb=${storageId}&t=${imageKey.split('-').pop()}`;
+
   return (
     <img
       key={imageKey}
