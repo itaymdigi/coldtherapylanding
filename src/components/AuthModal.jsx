@@ -80,7 +80,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
           email: formData.email,
           password: formData.password,
           name: formData.name,
-          phone: formData.phone || undefined,
+          phone: formData.phone || '', // Always provide a string value
           gender: formData.gender,
         });
       }

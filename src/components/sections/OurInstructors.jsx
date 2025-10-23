@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+
+import { useApp } from '../../contexts/AppContext';
 import { useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import { useApp } from '../../contexts/AppContext';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 // Default placeholder image as data URI (no external network call)
 const DEFAULT_INSTRUCTOR_PHOTO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23334155" width="800" height="600"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="32" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
@@ -11,6 +12,7 @@ const OurInstructors = () => {
   const { t } = useApp();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
+  const modalTitleId = useId();
   
   // Query instructors - will return undefined while loading or if function doesn't exist
   const instructors = useQuery(api.instructor?.getAllInstructors);
@@ -84,9 +86,17 @@ const OurInstructors = () => {
                   key={instructor._id}
                   className="min-w-full px-4"
                 >
-                  <div
+                  <button
+                    type="button"
                     onClick={() => setSelectedInstructor(instructor)}
-                    className="group cursor-pointer bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-[1.02]"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedInstructor(instructor);
+                      }
+                    }}
+                    className="group cursor-pointer bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-[1.02] w-full text-left"
+                    aria-label={`View ${instructor.name} details`}
                   >
                     {/* Instructor Photo */}
                     <div className="relative h-96 sm:h-[500px] overflow-hidden">
@@ -116,7 +126,7 @@ const OurInstructors = () => {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))}
             </div>
@@ -147,11 +157,17 @@ const OurInstructors = () => {
           {/* Dots Navigation */}
           {sortedInstructors.length > 1 && (
             <div className="flex justify-center gap-2 mt-8">
-              {sortedInstructors.map((_, index) => (
+              {sortedInstructors.map((instructor, index) => (
                 <button
-                  key={index}
+                  key={instructor._id}
                   type="button"
                   onClick={() => goToSlide(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      goToSlide(index);
+                    }
+                  }}
                   className={`transition-all duration-300 rounded-full ${
                     index === currentIndex
                       ? 'w-12 h-3 bg-gradient-to-r from-cyan-500 to-blue-500'
@@ -200,16 +216,33 @@ const OurInstructors = () => {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
           onClick={() => setSelectedInstructor(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setSelectedInstructor(null);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
         >
           <div
             className="relative max-w-4xl w-full bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-md rounded-3xl border-2 border-cyan-400/50 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={modalTitleId}
           >
             <button
               type="button"
               onClick={() => setSelectedInstructor(null)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedInstructor(null);
+                }
+              }}
               className="absolute top-4 right-4 z-10 p-2 bg-white/10 backdrop-blur-md rounded-full hover:bg-white/20 transition-all duration-300"
-              aria-label="Close"
+              aria-label="Close modal"
             >
               <X className="w-6 h-6 text-white" />
             </button>
@@ -227,7 +260,7 @@ const OurInstructors = () => {
 
               {/* Content */}
               <div className="p-8 flex flex-col justify-center">
-                <h3 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                <h3 id={modalTitleId} className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {selectedInstructor.name}
                 </h3>
                 <p className="text-cyan-400 text-xl font-medium mb-6">

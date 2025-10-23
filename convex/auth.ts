@@ -41,7 +41,7 @@ export const register = mutation({
     const userId = await ctx.db.insert('users', {
       email: args.email,
       name: args.name,
-      phone: args.phone,
+      phone: args.phone || '', // Provide empty string if no phone provided
       gender: args.gender || 'male',
       passwordHash: hashPassword(args.password),
       createdAt: Date.now(),
@@ -65,7 +65,7 @@ export const register = mutation({
         id: userId,
         email: args.email,
         name: args.name,
-        phone: args.phone,
+        phone: args.phone || '',
         gender: args.gender || 'male',
       },
     };
@@ -115,7 +115,7 @@ export const login = mutation({
         id: user._id,
         email: user.email,
         name: user.name,
-        phone: user.phone,
+        phone: user.phone || '',
         gender: user.gender || 'male',
         totalSessions: user.totalSessions,
         totalDuration: user.totalDuration,
@@ -148,7 +148,7 @@ export const verifyToken = query({
       id: user._id,
       email: user.email,
       name: user.name,
-      phone: user.phone,
+      phone: user.phone || '',
       gender: user.gender || 'male',
       totalSessions: user.totalSessions,
       totalDuration: user.totalDuration,

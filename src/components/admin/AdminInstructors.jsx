@@ -53,12 +53,9 @@ const AdminInstructors = () => {
 
   const handleSave = async () => {
     try {
-      // Ensure photoUrl has a default placeholder if empty
-      // Use a data URI instead of external URL to avoid network issues
-      const defaultPhoto = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E';
       const dataToSave = {
         ...formData,
-        photoUrl: formData.photoUrl || defaultPhoto,
+        photoUrl: formData.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E',
       };
 
       if (editingId) {
@@ -112,10 +109,13 @@ const AdminInstructors = () => {
         tags: ['profile', 'team'],
         description: `Profile photo for ${formData.name || 'instructor'}`,
       });
-      
-      // Store the storage ID - Convex will generate the URL when needed
-      setFormData({ ...formData, photoUrl: result.storageId });
-      
+
+      // Get the actual URL from the storage ID
+      if (result.storageId) {
+        // Use the storage ID directly for now - the URL resolution can happen in the display component
+        setFormData({ ...formData, photoUrl: result.storageId });
+      }
+
       alert('Image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading image:', error);

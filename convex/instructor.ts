@@ -5,7 +5,30 @@ import { mutation, query } from './_generated/server';
 export const getAllInstructors = query({
   handler: async (ctx) => {
     const instructors = await ctx.db.query('instructors').order('desc').collect();
-    return instructors;
+
+    // Resolve storage IDs to URLs for each instructor
+    const instructorsWithUrls = await Promise.all(
+      instructors.map(async (instructor) => {
+        let photoUrl = instructor.photoUrl;
+
+        // If photoUrl is a storage ID (not a full URL), resolve it
+        if (photoUrl && !photoUrl.startsWith('http') && !photoUrl.startsWith('data:')) {
+          try {
+            const url = await ctx.storage.getUrl(photoUrl);
+            photoUrl = url || instructor.photoUrl;
+          } catch {
+            // Keep the original photoUrl if URL resolution fails
+          }
+        }
+
+        return {
+          ...instructor,
+          photoUrl,
+        };
+      })
+    );
+
+    return instructorsWithUrls;
   },
 });
 
