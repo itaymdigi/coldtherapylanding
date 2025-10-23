@@ -4,6 +4,7 @@ import AdminDanPhoto from './AdminDanPhoto';
 import AdminGallery from './AdminGallery';
 import AdminInstructors from './AdminInstructors';
 import AdminSchedule from './AdminSchedule';
+import AdminSettings from './AdminSettings';
 
 const AdminPanelNew = () => {
   const { isAuthenticated, adminSection, setAdminSection, handleAdminClose } = useApp();
@@ -77,6 +78,17 @@ const AdminPanelNew = () => {
               >
                 👥 Instructors
               </button>
+              <button
+                type="button"
+                onClick={() => setAdminSection('settings')}
+                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${
+                  adminSection === 'settings'
+                    ? 'bg-cyan-500 text-white'
+                    : 'bg-white/10 text-blue-200 hover:bg-white/20'
+                }`}
+              >
+                ⚙️ Settings
+              </button>
             </div>
 
             {/* Section Content */}
@@ -84,6 +96,7 @@ const AdminPanelNew = () => {
             {adminSection === 'gallery' && <AdminGallery />}
             {adminSection === 'danPhoto' && <AdminDanPhoto />}
             {adminSection === 'instructors' && <AdminInstructors />}
+            {adminSection === 'settings' && <AdminSettings />}
 
             {/* Close Button */}
             <button

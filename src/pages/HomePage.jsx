@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import OurInstructors from '../components/sections/OurInstructors';
+import StatsCounter from '../components/StatsCounter';
 import { useApp } from '../contexts/AppContext';
 
 const HomePage = () => {
@@ -17,42 +17,12 @@ const HomePage = () => {
     statsSatisfaction,
     statsClients,
     statsTemp,
-    statsAnimated,
-    setStatsAnimated,
     danPhoto,
     heroVideo,
     scheduleImage,
     openFaq,
     setOpenFaq,
   } = useApp();
-
-  // Counter animation for stats - DISABLED since we now use real data from Convex
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !statsAnimated) {
-            setStatsAnimated(true);
-
-            // Since we're using real data from Convex, we don't need animations
-            // The stats are already loaded with real values in AppContext
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (statsRef.current) {
-      observer.observe(statsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [
-    statsAnimated,
-    setStatsAnimated,
-    // Removed the animation setters since we use real data now
-    statsRef,
-  ]);
 
   return (
     <>
@@ -366,7 +336,7 @@ const HomePage = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 scroll-reveal">
             <div className="text-center group cursor-pointer hover:scale-110 transition-transform duration-300">
               <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-1 sm:mb-2 group-hover:animate-pulse">
-                {statsSessions}+
+                <StatsCounter target={statsSessions} suffix="+" />
               </div>
               <div className="text-white text-sm sm:text-base md:text-lg group-hover:text-cyan-300 transition-colors duration-300">
                 {t.statsSessions}
@@ -374,7 +344,7 @@ const HomePage = () => {
             </div>
             <div className="text-center group cursor-pointer hover:scale-110 transition-transform duration-300">
               <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-1 sm:mb-2 group-hover:animate-pulse">
-                {statsSatisfaction}%
+                <StatsCounter target={statsSatisfaction} suffix="%" />
               </div>
               <div className="text-white text-sm sm:text-base md:text-lg group-hover:text-cyan-300 transition-colors duration-300">
                 {t.statsSatisfaction}
@@ -382,7 +352,7 @@ const HomePage = () => {
             </div>
             <div className="text-center group cursor-pointer hover:scale-110 transition-transform duration-300">
               <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-1 sm:mb-2 group-hover:animate-pulse">
-                {statsClients}+
+                <StatsCounter target={statsClients} suffix="+" />
               </div>
               <div className="text-white text-sm sm:text-base md:text-lg group-hover:text-cyan-300 transition-colors duration-300">
                 {t.statsClients}
@@ -390,7 +360,7 @@ const HomePage = () => {
             </div>
             <div className="text-center group cursor-pointer hover:scale-110 transition-transform duration-300">
               <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-1 sm:mb-2 group-hover:animate-pulse">
-                {statsTemp.toFixed(1)}°C
+                <StatsCounter target={statsTemp} suffix="°C" decimals={1} />
               </div>
               <div className="text-white text-sm sm:text-base md:text-lg group-hover:text-cyan-300 transition-colors duration-300">
                 {t.statsTemp}
@@ -678,27 +648,6 @@ const HomePage = () => {
             </a>
           </div>
 
-          <div className="mt-8 text-center">
-            <h3 className="text-white font-bold text-2xl mb-6">{t.followUs}</h3>
-            <div className="flex gap-4 justify-center">
-              <a
-                href="https://wa.me/972524343975"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300 pointer-events-auto"
-              >
-                WhatsApp
-              </a>
-              <a
-                href="https://www.instagram.com/dan_hayat/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-110 transition-all duration-300 pointer-events-auto"
-              >
-                Instagram
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </>

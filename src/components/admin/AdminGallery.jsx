@@ -5,6 +5,8 @@ import { api } from '../../../convex/_generated/api';
 const AdminGallery = () => {
   const [galleryForm, setGalleryForm] = useState({ url: '', altText: '' });
   const [editingGalleryId, setEditingGalleryId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState('');
 
   // Generate unique IDs for form inputs
   const urlInputId = useId();
@@ -18,6 +20,16 @@ const AdminGallery = () => {
 
   const handleGallerySubmit = async (e) => {
     e.preventDefault();
+
+    // Validate URL format
+    try {
+      new URL(galleryForm.url);
+    } catch {
+      alert('❌ Please enter a valid image URL starting with https://');
+      return;
+    }
+
+    setIsLoading(true);
     try {
       if (editingGalleryId) {
         await updateGalleryImage({
@@ -37,21 +49,29 @@ const AdminGallery = () => {
       // Reset form
       setGalleryForm({ url: '', altText: '' });
       setEditingGalleryId(null);
+      setImagePreview('');
     } catch (error) {
       console.error('Error saving gallery image:', error);
       alert(`❌ Failed to save gallery image: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDeleteGalleryImage = async (imageId) => {
-    if (confirm('Are you sure you want to delete this gallery image?')) {
+  const handleUrlChange = (e) => {
+    const url = e.target.value;
+    setGalleryForm({ ...galleryForm, url });
+
+    // Update preview if URL is valid
+    if (url) {
       try {
-        await deleteGalleryImage({ id: imageId });
-        alert('✅ Gallery image deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting gallery image:', error);
-        alert('❌ Failed to delete gallery image.');
+        new URL(url);
+        setImagePreview(url);
+      } catch {
+        setImagePreview('');
       }
+    } else {
+      setImagePreview('');
     }
   };
 
@@ -72,7 +92,7 @@ const AdminGallery = () => {
             type="url"
             required
             value={galleryForm.url}
-            onChange={(e) => setGalleryForm({ ...galleryForm, url: e.target.value })}
+            onChange={handleUrlChange}
             placeholder="https://example.com/image.jpg"
             className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
           />
@@ -92,12 +112,40 @@ const AdminGallery = () => {
           />
         </div>
 
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="space-y-2">
+            <label className="block text-white text-sm font-semibold">
+              Image Preview
+            </label>
+            <div className="relative">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-40 object-cover rounded-lg border-2 border-cyan-400/30"
+                onError={() => setImagePreview('')}
+                onLoad={() => {
+                  // Image loaded successfully
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+            disabled={isLoading}
+            className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {editingGalleryId ? '💾 Update Image' : '➕ Add Image'}
+            {isLoading ? (
+              <>
+                <span className="inline-block animate-spin mr-2">⏳</span>
+                {editingGalleryId ? 'Updating...' : 'Adding...'}
+              </>
+            ) : (
+              <>{editingGalleryId ? '💾 Update Image' : '➕ Add Image'}</>
+            )}
           </button>
           {editingGalleryId && (
             <button
@@ -105,6 +153,7 @@ const AdminGallery = () => {
               onClick={() => {
                 setEditingGalleryId(null);
                 setGalleryForm({ url: '', altText: '' });
+                setImagePreview('');
               }}
               className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
             >
@@ -130,21 +179,24 @@ const AdminGallery = () => {
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2">
                 <button
                   type="button"
+                  disabled={isLoading}
                   onClick={() => {
                     setGalleryForm({
                       url: image.url,
                       altText: image.altText || '',
                     });
                     setEditingGalleryId(image._id);
+                    setImagePreview(image.url);
                   }}
-                  className="px-3 py-1 bg-blue-500/80 text-white rounded-lg hover:bg-blue-500 transition-all text-sm"
+                  className="px-3 py-1 bg-blue-500/80 text-white rounded-lg hover:bg-blue-500 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   ✏️ Edit
                 </button>
                 <button
                   type="button"
+                  disabled={isLoading}
                   onClick={() => handleDeleteGalleryImage(image._id)}
-                  className="px-3 py-1 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all text-sm"
+                  className="px-3 py-1 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   🗑️ Delete
                 </button>

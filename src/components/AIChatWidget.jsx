@@ -25,7 +25,7 @@ const AIChatWidget = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -119,7 +119,7 @@ const AIChatWidget = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 p-3 sm:p-4 rounded-full shadow-lg transition-all duration-300 ${
+        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 p-4 sm:p-4 rounded-full shadow-lg transition-all duration-300 ${
           isOpen
             ? 'bg-red-500 hover:bg-red-600'
             : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
@@ -127,15 +127,15 @@ const AIChatWidget = () => {
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
         {isOpen ? (
-          <X className="w-5 h-5 sm:w-6 sm:h-6" />
+          <X className="w-6 h-6 sm:w-6 sm:h-6" />
         ) : (
-          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+          <MessageCircle className="w-6 h-6 sm:w-6 sm:h-6" />
         )}
       </button>
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-x-4 bottom-20 sm:bottom-24 sm:right-6 sm:left-auto z-50 sm:w-96 w-auto h-[500px] sm:h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
+        <div className="fixed inset-x-4 bottom-24 sm:bottom-24 sm:right-6 sm:left-auto z-50 sm:w-96 w-auto h-[500px] sm:h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
           {/* Header */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">

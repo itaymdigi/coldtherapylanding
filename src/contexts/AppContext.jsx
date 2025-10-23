@@ -31,25 +31,73 @@ export const AppProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [adminSection, setAdminSection] = useState('schedule');
-  const [statsAnimated, setStatsAnimated] = useState(false);
-
-  // Initialize stats with real data from Convex or fallback to 0
-  const [statsSessions, setStatsSessions] = useState(siteStats?.totalSessions || 0);
-  const [statsSatisfaction, setStatsSatisfaction] = useState(siteStats?.satisfactionRate || 0);
-  const [statsClients, setStatsClients] = useState(siteStats?.totalClients || 0);
-  const [statsTemp, setStatsTemp] = useState(siteStats?.averageTemp || 0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Update stats when Convex data loads
-  useEffect(() => {
-    if (siteStats) {
-      setStatsSessions(siteStats.totalSessions);
-      setStatsSatisfaction(siteStats.satisfactionRate);
-      setStatsClients(siteStats.totalClients);
-      setStatsTemp(siteStats.averageTemp);
-      setStatsAnimated(true); // Mark as animated since we have real data
+  // Load stats animation setting from localStorage on mount
+  const [statsAnimationEnabled, setStatsAnimationEnabled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('statsAnimationEnabled');
+      // If no saved value, default to true and save it
+      if (saved === null) {
+        localStorage.setItem('statsAnimationEnabled', 'true');
+        return true;
+      }
+      return saved === 'true';
     }
-  }, [siteStats]);
+    return true;
+  });
+
+  // Initialize stats with manual values (from localStorage) or Convex data
+  const [statsSessions, setStatsSessions] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const manualStats = localStorage.getItem('manualStats');
+      if (manualStats) {
+        const parsed = JSON.parse(manualStats);
+        return parsed.sessions || 0;
+      }
+    }
+    return siteStats?.totalSessions || 0;
+  });
+
+  const [statsSatisfaction, setStatsSatisfaction] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const manualStats = localStorage.getItem('manualStats');
+      if (manualStats) {
+        const parsed = JSON.parse(manualStats);
+        return parsed.satisfaction || 0;
+      }
+    }
+    return siteStats?.satisfactionRate || 0;
+  });
+
+  const [statsClients, setStatsClients] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const manualStats = localStorage.getItem('manualStats');
+      if (manualStats) {
+        const parsed = JSON.parse(manualStats);
+        return parsed.clients || 0;
+      }
+    }
+    return siteStats?.totalClients || 0;
+  });
+
+  const [statsTemp, setStatsTemp] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const manualStats = localStorage.getItem('manualStats');
+      if (manualStats) {
+        const parsed = JSON.parse(manualStats);
+        return parsed.temp || 0;
+      }
+    }
+    return siteStats?.averageTemp || 0;
+  });
+
+  // Save stats animation setting to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('statsAnimationEnabled', statsAnimationEnabled);
+    }
+  }, [statsAnimationEnabled]);
 
   // Refs
   const audioRef = useRef(null);
@@ -316,17 +364,21 @@ export const AppProvider = ({ children }) => {
     galleryImages,
     danPhoto,
     heroVideo,
-    statsAnimated,
-    setStatsAnimated,
     statsSessions,
     statsSatisfaction,
     statsClients,
     statsTemp,
+    setStatsSessions,
+    setStatsSatisfaction,
+    setStatsClients,
+    setStatsTemp,
+    statsAnimationEnabled,
+    setStatsAnimationEnabled,
     mobileMenuOpen,
     setMobileMenuOpen,
+    statsRef,
     audioRef,
     packagesRef,
-    statsRef,
     t,
     toggleMusic,
     scrollToPackages,

@@ -8,25 +8,29 @@
  * @module
  */
 
-import type * as auth from '../auth.js';
-import type * as bookings from '../bookings.js';
-import type * as breathingVideos from '../breathingVideos.js';
-import type * as chatbotBooking from '../chatbotBooking.js';
-import type * as chatbotKnowledge from '../chatbotKnowledge.js';
-import type * as danPhoto from '../danPhoto.js';
-import type * as fileStorage from '../fileStorage.js';
-import type * as galleryImages from '../galleryImages.js';
-import type * as heroVideo from '../heroVideo.js';
-import type * as instructor from '../instructor.js';
-import type * as media from '../media.js';
-import type * as payments from '../payments.js';
-import type * as practiceSessions from '../practiceSessions.js';
-import type * as resetPassword from '../resetPassword.js';
-import type * as scheduleImages from '../scheduleImages.js';
-import type * as siteStats from '../siteStats.js';
-import type * as subscriptions from '../subscriptions.js';
+import type * as auth from "../auth.js";
+import type * as bookings from "../bookings.js";
+import type * as breathingVideos from "../breathingVideos.js";
+import type * as chatbotBooking from "../chatbotBooking.js";
+import type * as chatbotKnowledge from "../chatbotKnowledge.js";
+import type * as danPhoto from "../danPhoto.js";
+import type * as fileStorage from "../fileStorage.js";
+import type * as galleryImages from "../galleryImages.js";
+import type * as heroVideo from "../heroVideo.js";
+import type * as instructor from "../instructor.js";
+import type * as media from "../media.js";
+import type * as payments from "../payments.js";
+import type * as practiceSessions from "../practiceSessions.js";
+import type * as resetPassword from "../resetPassword.js";
+import type * as scheduleImages from "../scheduleImages.js";
+import type * as siteStats from "../siteStats.js";
+import type * as subscriptions from "../subscriptions.js";
 
-import type { ApiFromModules, FilterApi, FunctionReference } from 'convex/server';
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -57,10 +61,13 @@ declare const fullApi: ApiFromModules<{
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
-export declare const api: FilterApi<typeof fullApiWithMounts, FunctionReference<any, 'public'>>;
+export declare const api: FilterApi<
+  typeof fullApiWithMounts,
+  FunctionReference<any, "public">
+>;
 export declare const internal: FilterApi<
   typeof fullApiWithMounts,
-  FunctionReference<any, 'internal'>
+  FunctionReference<any, "internal">
 >;
 
 export declare const components: {};
