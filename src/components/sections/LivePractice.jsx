@@ -202,6 +202,7 @@ export default function LivePractice({ language = 'he' }) {
                 <LivePracticeTimer
                   language={language}
                   gender={user?.gender || 'male'}
+                  token={token}
                   onSessionSaved={handleSessionSaved}
                 />
               ) : (

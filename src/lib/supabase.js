@@ -47,12 +47,14 @@ export const query = {
    * Get all records from a table
    */
   async getAll(table, options = {}) {
-    const { orderBy = 'created_at', ascending = false, limit } = options;
+    const { orderBy, ascending = false, limit } = options;
     
-    let queryBuilder = supabase
-      .from(table)
-      .select('*')
-      .order(orderBy, { ascending });
+    let queryBuilder = supabase.from(table).select('*');
+    
+    // Only apply ordering if orderBy is specified
+    if (orderBy) {
+      queryBuilder = queryBuilder.order(orderBy, { ascending });
+    }
     
     if (limit) {
       queryBuilder = queryBuilder.limit(limit);

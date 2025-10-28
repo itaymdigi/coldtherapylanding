@@ -145,7 +145,7 @@ export default function SessionHistory({ token, language = 'he' }) {
     return emojis[mood] || '';
   };
 
-  if (!stats || !sessions) {
+  if (loading || !stats || !sessions) {
     return (
       <div className="text-center text-white/70 py-8">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
@@ -235,7 +235,7 @@ export default function SessionHistory({ token, language = 'he' }) {
           <div className="space-y-3">
             {sessions.map((session) => (
               <div
-                key={session._id}
+                key={session.id}
                 className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 backdrop-blur-sm rounded-xl p-4 border border-cyan-500/30 hover:border-cyan-400/50 transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -248,7 +248,7 @@ export default function SessionHistory({ token, language = 'he' }) {
                         </span>
                       </div>
 
-                      {session.personalBest && (
+                      {session.personal_best && (
                         <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full text-xs font-bold border border-yellow-500/30 flex items-center gap-1">
                           <Trophy size={14} />
                           {t.personalBest}
@@ -256,7 +256,7 @@ export default function SessionHistory({ token, language = 'he' }) {
                       )}
 
                       <span className="text-white/50 text-sm">
-                        {formatDate(session.completedAt)}
+                        {formatDate(session.completed_at)}
                       </span>
                     </div>
 
@@ -279,7 +279,7 @@ export default function SessionHistory({ token, language = 'he' }) {
                         <div className="flex items-center gap-1 text-white/70">
                           {[...Array(5)].map((_, i) => (
                             <Star
-                              key={`star-${session._id}-${i}`}
+                              key={`star-${session.id}-${i}`}
                               size={16}
                               className={`${
                                 i < session.rating
@@ -301,8 +301,8 @@ export default function SessionHistory({ token, language = 'he' }) {
 
                   <button
                     type="button"
-                    onClick={() => handleDelete(session._id)}
-                    disabled={deletingId === session._id}
+                    onClick={() => handleDelete(session.id)}
+                    disabled={deletingId === session.id}
                     className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-500/10 rounded-lg disabled:opacity-50"
                   >
                     <Trash2 size={18} />
