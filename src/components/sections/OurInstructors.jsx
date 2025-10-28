@@ -7,8 +7,8 @@ import { useApp } from '../../contexts/AppContext';
 const StorageImage = ({ storageId, alt, className }) => {
   const [imageKey, setImageKey] = useState(`${storageId}-${Date.now()}`);
 
-  // Check if it's already a full URL or data URI
-  const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
+  // Check if it's already a full URL or data URI or relative path
+  const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http') || storageId.startsWith('/'));
 
   // For Supabase, images are direct URLs, no need to query
   const imageUrl = null; // Not needed with Supabase
@@ -29,10 +29,10 @@ const StorageImage = ({ storageId, alt, className }) => {
     );
   }
 
-  // If it's already a URL (data URI or http), use it directly
+  // If it's already a URL (data URI, http, or relative path), use it directly
   if (isDirectUrl) {
-    // Add cache-busting parameter for HTTP URLs
-    const cacheBustedUrl = storageId.startsWith('http')
+    // Add cache-busting parameter for HTTP URLs and relative paths
+    const cacheBustedUrl = (storageId.startsWith('http') || storageId.startsWith('/'))
       ? `${storageId}${storageId.includes('?') ? '&' : '?'}cb=${storageId.split('/').pop()}&t=${imageKey.split('-').pop()}`
       : storageId;
 
@@ -253,16 +253,69 @@ const OurInstructors = () => {
         {/* Carousel Container */}
         <div className="relative max-w-6xl mx-auto">
           {/* Main Carousel */}
-          <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: '500px' }}>
+          <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: '400px' }}>
             <div
-              className="flex transition-transform duration-500 ease-out"
+              ref={(el) => {
+                if (el && !el.dataset.touchSetup) {
+                  el.dataset.touchSetup = 'true';
+                  let startX = 0;
+                  let currentX = 0;
+                  let isDragging = false;
+
+                  const handleTouchStart = (e) => {
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                    el.style.transition = 'none';
+                  };
+
+                  const handleTouchMove = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    currentX = e.touches[0].clientX;
+                    const diff = currentX - startX;
+                    const translateX = -(currentIndex * 100) + (diff / el.offsetWidth) * 100;
+                    el.style.transform = `translateX(${translateX}%)`;
+                  };
+
+                  const handleTouchEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    el.style.transition = 'transform 0.3s ease-out';
+                    
+                    const diff = currentX - startX;
+                    const threshold = el.offsetWidth * 0.2; // 20% of width to trigger slide
+                    
+                    if (Math.abs(diff) > threshold) {
+                      if (diff > 0 && currentIndex > 0) {
+                        prevSlide();
+                      } else if (diff < 0 && currentIndex < sortedInstructors.length - 1) {
+                        nextSlide();
+                      } else {
+                        // Snap back to current position
+                        goToSlide(currentIndex);
+                      }
+                    } else {
+                      // Snap back to current position
+                      goToSlide(currentIndex);
+                    }
+                    
+                    startX = 0;
+                    currentX = 0;
+                  };
+
+                  el.addEventListener('touchstart', handleTouchStart, { passive: false });
+                  el.addEventListener('touchmove', handleTouchMove, { passive: false });
+                  el.addEventListener('touchend', handleTouchEnd);
+                }
+              }}
+              className="flex transition-transform duration-500 ease-out will-change-transform"
               style={{
                 transform: `translateX(-${currentIndex * 100}%)`,
                 width: `${sortedInstructors.length * 100}%`,
               }}
             >
               {sortedInstructors.map((instructor) => (
-                <div key={instructor.id} className="min-w-full px-4">
+                <div key={instructor.id} className="min-w-full px-2 sm:px-4">
                   <button
                     type="button"
                     onClick={() => setSelectedInstructor(instructor)}
@@ -272,27 +325,27 @@ const OurInstructors = () => {
                         setSelectedInstructor(instructor);
                       }
                     }}
-                    className="group cursor-pointer bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-[1.02] w-full text-left"
+                    className="group cursor-pointer bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-[1.02] w-full text-left ring-2 ring-transparent hover:ring-cyan-500/20"
                     aria-label={`View ${instructor.name} details`}
                   >
                     {/* Instructor Photo */}
-                    <div className="relative h-96 sm:h-[500px] overflow-hidden">
+                    <div className="relative h-80 sm:h-96 md:h-[500px] overflow-hidden">
                       <StorageImage
-                        storageId={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                        storageId={instructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
                         alt={instructor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                       {/* Name and Title Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-12">
-                        <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 lg:p-12">
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
                           {instructor.name}
                         </h3>
-                        <p className="text-cyan-400 text-xl sm:text-2xl font-medium mb-4">
+                        <p className="text-cyan-400 text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-4">
                           {instructor.title}
                         </p>
-                        <p className="text-white/90 text-base sm:text-lg leading-relaxed line-clamp-3">
+                        <p className="text-white/90 text-sm sm:text-base md:text-lg leading-relaxed line-clamp-2 sm:line-clamp-3">
                           {instructor.bio}
                         </p>
                       </div>
@@ -315,10 +368,10 @@ const OurInstructors = () => {
                     prevSlide();
                   }
                 }}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+                className="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group touch-manipulation"
                 aria-label="Previous instructor"
               >
-                <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
               </button>
               <button
                 type="button"
@@ -329,10 +382,10 @@ const OurInstructors = () => {
                     nextSlide();
                   }
                 }}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+                className="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group touch-manipulation"
                 aria-label="Next instructor"
               >
-                <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
               </button>
             </>
           )}
@@ -342,7 +395,7 @@ const OurInstructors = () => {
             <div className="flex justify-center gap-2 mt-8">
               {sortedInstructors.map((instructor, index) => (
                 <button
-                  key={instructor._id}
+                  key={instructor.id}
                   type="button"
                   onClick={() => goToSlide(index)}
                   onKeyDown={(e) => {
@@ -370,10 +423,10 @@ const OurInstructors = () => {
 
           {/* Thumbnail Preview */}
           {sortedInstructors.length > 1 && (
-            <div className="mt-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
               {sortedInstructors.map((instructor, index) => (
                 <button
-                  key={instructor._id}
+                  key={instructor.id}
                   type="button"
                   onClick={() => goToSlide(index)}
                   onKeyDown={(e) => {
@@ -388,20 +441,20 @@ const OurInstructors = () => {
                       goToSlide(index);
                     }
                   }}
-                  className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+                  className={`relative aspect-square rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all duration-300 touch-manipulation ${
                     index === currentIndex
-                      ? 'border-cyan-500 scale-105'
+                      ? 'border-cyan-500 scale-105 shadow-lg shadow-cyan-500/30'
                       : 'border-white/20 hover:border-white/50 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <StorageImage
-                    storageId={instructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                    storageId={instructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
                     alt={instructor.name}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-2">
-                    <p className="text-white text-xs font-semibold truncate">{instructor.name}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-2">
+                    <p className="text-white text-xs sm:text-xs font-semibold truncate">{instructor.name}</p>
                   </div>
                 </button>
               ))}
@@ -447,12 +500,12 @@ const OurInstructors = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Photo */}
               <div
-                key={`photo-${selectedInstructor._id}`}
+                key={`photo-${selectedInstructor.id}`}
                 className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full"
               >
                 <StorageImage
-                  key={selectedInstructor._id}
-                  storageId={selectedInstructor.photoUrl || DEFAULT_INSTRUCTOR_PHOTO}
+                  key={selectedInstructor.id}
+                  storageId={selectedInstructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
                   alt={selectedInstructor.name}
                   className="w-full h-full object-cover rounded-lg"
                 />

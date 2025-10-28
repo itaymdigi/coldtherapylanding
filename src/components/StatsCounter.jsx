@@ -25,7 +25,7 @@ const StatsCounter = ({ target, suffix = '', duration = 2000, decimals = 0 }) =>
       const progress = Math.min(elapsed / duration, 1);
 
       // Easing function for smooth animation (ease-out)
-      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const easeOut = 1 - (1 - progress) ** 3;
 
       const currentValue = startValue + (endValue - startValue) * easeOut;
 

@@ -1,5 +1,5 @@
 import { Loader2, MessageCircle, Send, X } from 'lucide-react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const AIChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const AIChatWidget = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [scrollToBottom]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {

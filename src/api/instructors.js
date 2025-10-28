@@ -46,7 +46,7 @@ export async function uploadInstructorPhoto(file) {
   const fileName = `${Date.now()}-${file.name}`;
   const filePath = `instructors/${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('assets')
     .upload(filePath, file, {
       cacheControl: '3600',

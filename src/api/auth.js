@@ -192,7 +192,7 @@ export async function adminLogin({ email, password }) {
       user: mapDbUserToProfile(profile)
     };
   } catch (error) {
-    throw new Error('Admin login failed: ' + error.message);
+    throw new Error(`Admin login failed: ${error.message}`);
   }
 }
 
@@ -219,11 +219,11 @@ export async function verifyAdminToken({ token }) {
 }
 
 // Admin logout
-export async function adminLogout({ token }) {
+export async function adminLogout() {
   try {
     await supabaseAuth.signOut();
     return { success: true };
   } catch (error) {
-    throw new Error('Logout failed: ' + error.message);
+    throw new Error(`Logout failed: ${error.message}`);
   }
 }

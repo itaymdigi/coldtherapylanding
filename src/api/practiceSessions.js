@@ -13,7 +13,7 @@ async function requireAuthenticatedUser() {
     }
     return user;
   } catch (error) {
-    throw new Error('Authentication required: ' + error.message);
+    throw new Error(`Authentication required: ${error.message}`);
   }
 }
 
@@ -69,7 +69,7 @@ export async function saveSession({
 }
 
 // Get user's session history
-export async function getUserSessions({ token, limit = 50 } = {}) {
+export async function getUserSessions({ limit = 50 } = {}) {
   // For Supabase auth, we don't need the token parameter in the API call
   // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();
@@ -85,7 +85,7 @@ export async function getUserSessions({ token, limit = 50 } = {}) {
 }
 
 // Get user statistics
-export async function getUserStats({ token } = {}) {
+export async function getUserStats() {
   // For Supabase auth, we don't need the token parameter in the API call
   // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();
@@ -155,7 +155,7 @@ export async function getUserStats({ token } = {}) {
 }
 
 // Delete a session
-export async function deleteSession({ token, sessionId }) {
+export async function deleteSession({ sessionId }) {
   // For Supabase auth, we don't need the token parameter in the API call
   // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();

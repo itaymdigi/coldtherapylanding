@@ -68,7 +68,7 @@ export async function uploadScheduleImage(file) {
   const fileName = `${Date.now()}-${file.name}`;
   const filePath = `schedule/${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('assets')
     .upload(filePath, file, {
       cacheControl: '3600',

@@ -52,7 +52,7 @@ export async function uploadDanPhoto(file) {
   const fileName = `dan-photo-${Date.now()}.${file.name.split('.').pop()}`;
   const filePath = `about/${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('assets')
     .upload(filePath, file, {
       cacheControl: '3600',

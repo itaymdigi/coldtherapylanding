@@ -29,8 +29,16 @@ const VideoPlayer = ({
 
   return (
     <div 
+      role="button"
+      tabIndex={0}
       className={`relative cursor-pointer group ${className}`}
       onClick={handlePlay}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handlePlay();
+        }
+      }}
     >
       <img
         src={thumbnail}

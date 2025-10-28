@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router';
-import React from 'react';
 import { useApp } from '../contexts/AppContext';
 
 const Header = () => {

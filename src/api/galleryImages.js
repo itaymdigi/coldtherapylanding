@@ -3,7 +3,7 @@
  * Enhanced with admin operations
  */
 
-import { supabase, query, mutation } from '../lib/supabase';
+import { supabase, mutation } from '../lib/supabase';
 
 // Get all gallery images
 export const getGalleryImages = async () => {
@@ -62,7 +62,7 @@ export async function uploadGalleryImage(file) {
   const fileName = `${Date.now()}-${file.name}`;
   const filePath = `gallery/${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('assets')
     .upload(filePath, file, {
       cacheControl: '3600',

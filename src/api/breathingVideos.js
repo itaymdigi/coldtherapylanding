@@ -150,7 +150,7 @@ export async function uploadVideoThumbnail(file) {
   const fileName = `thumbnail-${Date.now()}.${file.name.split('.').pop()}`;
   const filePath = `breathing-videos/${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('assets')
     .upload(filePath, file, {
       cacheControl: '3600',
