@@ -10,8 +10,22 @@ export const AppProvider = ({ children }) => {
   const [openFaq, setOpenFaq] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(() => {
+    // Check localStorage first, then default to Hebrew
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('language');
+      return savedLanguage || 'he';
+    }
+    return 'he';
+  });
   const [scheduleImage, setScheduleImage] = useState(null);
+
+  // Save language preference to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', language);
+    }
+  }, [language]);
 
   // Admin state
   const [showAdmin, setShowAdmin] = useState(false);
