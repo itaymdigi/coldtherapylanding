@@ -42,9 +42,19 @@ const Gallery = () => {
         </p>
 
         {loading ? (
-          <div className="text-center py-12 text-blue-200">
-            <div className="text-6xl mb-4">⏳</div>
-            <p className="text-xl">Loading gallery...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 scroll-reveal">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="relative overflow-hidden rounded-2xl border-2 border-cyan-400/30"
+              >
+                <div className="w-full h-64 sm:h-72 bg-gradient-to-br from-cyan-900/50 to-blue-900/50 animate-pulse">
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-4xl text-cyan-400/50">🖼️</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-12 text-red-200">
@@ -72,6 +82,20 @@ const Gallery = () => {
                     alt={image.alt_text || 'Gallery image'}
                     className="w-full h-64 sm:h-72 object-cover"
                     loading="lazy"
+                    onLoad={(e) => {
+                      console.log('✅ Image loaded successfully:', image.url);
+                      e.target.style.opacity = '1';
+                    }}
+                    onError={(e) => {
+                      console.log('❌ Image failed to load, using fallback:', image.url);
+                      // Use a reliable fallback image
+                      e.target.src = `https://picsum.photos/seed/${image.id}/800/600.jpg`;
+                      e.target.onerror = () => {
+                        // Ultimate fallback
+                        e.target.src = 'https://via.placeholder.com/800x600/0ea5e9/ffffff?text=Cold+Therapy';
+                      };
+                    }}
+                    style={{ opacity: '0', transition: 'opacity 0.3s ease-in-out' }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 left-0 right-0 p-4">
