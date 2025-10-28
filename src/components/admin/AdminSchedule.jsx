@@ -230,7 +230,7 @@ const AdminSchedule = () => {
           >
             {isLoading && (
               <>
-                <span className="inline-block animate-spin mr-2">⏳</span>
+                <span className="inline-block animate-pulse mr-2">Loading</span>
                 {editingScheduleId ? 'Updating...' : 'Adding...'}
               </>
             )}
@@ -274,7 +274,7 @@ const AdminSchedule = () => {
                   <h5 className="text-white font-semibold">{schedule.title}</h5>
                   {schedule.is_active && (
                     <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
-                      ✓ Active
+                      Active
                     </span>
                   )}
                 </div>
@@ -289,7 +289,7 @@ const AdminSchedule = () => {
                       disabled={isLoading}
                       className="px-3 py-1 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-all text-sm disabled:opacity-50"
                     >
-                      ✓ Set Active
+                      Set Active
                     </button>
                   )}
                   <button
@@ -298,7 +298,7 @@ const AdminSchedule = () => {
                     disabled={isLoading}
                     className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all text-sm disabled:opacity-50"
                   >
-                    ✏️ Edit
+                    Edit
                   </button>
                   <button
                     type="button"
@@ -306,7 +306,7 @@ const AdminSchedule = () => {
                     disabled={isLoading}
                     className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all text-sm disabled:opacity-50"
                   >
-                    🗑️ Delete
+                    Delete
                   </button>
                 </div>
               </div>

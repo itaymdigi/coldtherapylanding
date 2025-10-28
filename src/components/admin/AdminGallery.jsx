@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { 
   getGalleryImages, 
   addGalleryImage, 
@@ -260,13 +260,14 @@ const AdminGallery = () => {
             disabled={isLoading || isUploading}
             className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isLoading && (
               <>
-                <span className="inline-block animate-spin mr-2">⏳</span>
+                <span className="inline-block animate-pulse mr-2">Loading</span>
                 {editingGalleryId ? 'Updating...' : 'Adding...'}
               </>
-            ) : (
-              {editingGalleryId ? '💾 Update Image' : '➕ Add Image'}
+            )}
+            {!isLoading && (
+              editingGalleryId ? 'Update Image' : 'Add Image'
             )}
           </button>
           {editingGalleryId && (
@@ -305,7 +306,7 @@ const AdminGallery = () => {
                   onClick={() => handleEditGalleryImage(image)}
                   className="px-3 py-1 bg-blue-500/80 text-white rounded-lg hover:bg-blue-500 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  ✏️ Edit
+                  Edit
                 </button>
                 <button
                   type="button"
@@ -313,7 +314,7 @@ const AdminGallery = () => {
                   onClick={() => handleDeleteGalleryImage(image.id)}
                   className="px-3 py-1 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  🗑️ Delete
+                  Delete
                 </button>
               </div>
             </div>
@@ -321,7 +322,7 @@ const AdminGallery = () => {
         </div>
         {galleryImages?.length === 0 && (
           <div className="text-center py-8 text-blue-200">
-            <div className="text-4xl mb-2">🖼️</div>
+            <div className="text-4xl mb-2">Gallery</div>
             <p>No gallery images yet. Add your first image above!</p>
           </div>
         )}
