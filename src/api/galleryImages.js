@@ -3,7 +3,7 @@
  * Enhanced with admin operations
  */
 
-import { supabase, mutation } from '../lib/supabase';
+import { mutation, storageClient, supabase } from '../lib/supabase';
 
 // Get all gallery images
 export const getGalleryImages = async () => {
@@ -65,7 +65,7 @@ export async function uploadGalleryImage(file) {
     
     console.log('Uploading gallery file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-    const { data, error } = await supabase.storage
+    const { data, error } = await storageClient.storage
       .from('assets')
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -81,7 +81,7 @@ export async function uploadGalleryImage(file) {
     console.log('Gallery upload successful:', data);
     
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = storageClient.storage
       .from('assets')
       .getPublicUrl(filePath);
     
@@ -102,7 +102,7 @@ export async function deleteGalleryImageFile(url) {
     
     const filePath = `gallery/${pathMatch[1]}`;
     
-    const { error } = await supabase.storage
+    const { error } = await storageClient.storage
       .from('assets')
       .remove([filePath]);
       

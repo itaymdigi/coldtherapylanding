@@ -3,7 +3,7 @@
  * Enhanced with admin operations
  */
 
-import { supabase, query, mutation } from '../lib/supabase';
+import { mutation, query, storageClient, supabase } from '../lib/supabase';
 
 // Get active schedule image
 export async function getActiveScheduleImage() {
@@ -71,7 +71,7 @@ export async function uploadScheduleImage(file) {
     
     console.log('Uploading schedule file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-    const { data, error } = await supabase.storage
+    const { data, error } = await storageClient.storage
       .from('assets')
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -87,7 +87,7 @@ export async function uploadScheduleImage(file) {
     console.log('Schedule upload successful:', data);
     
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = storageClient.storage
       .from('assets')
       .getPublicUrl(filePath);
     

@@ -57,6 +57,18 @@ if (!isTestEnv) {
   console.log('✅ Supabase client initialized successfully');
 }
 
+// Dedicated storage client for file uploads (no global headers)
+export const storageClient = createClient(effectiveSupabaseUrl, effectiveSupabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  db: {
+    schema: 'public',
+  },
+  // No global headers to avoid interfering with file uploads
+});
+
 // Helper functions to match Convex patterns
 
 /**
