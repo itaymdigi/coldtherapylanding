@@ -289,6 +289,8 @@ export const AppProvider = ({ children }) => {
     setMobileMenuOpen,
     scheduleImage,
     setScheduleImage,
+    danPhoto: '/20250906_123005.jpg', // Fallback to local image
+    heroVideo: '/dan_logo.mp4', // Fallback to local video
     
     // Refs
     statsRef,

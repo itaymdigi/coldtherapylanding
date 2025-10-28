@@ -45,6 +45,15 @@ const InstallPrompt = () => {
     // Initial check
     checkIfInstalled();
 
+    // In development, trigger install prompt automatically for testing
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        console.log('🔧 Development: Auto-triggering install prompt for testing');
+        setShowPrompt(true);
+      }, 2000);
+      return; // Skip real event listeners in development
+    }
+
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e) => {
       console.log('🔄 BeforeInstallPrompt event fired');
@@ -53,28 +62,29 @@ const InstallPrompt = () => {
 
       // Show prompt after 3 seconds
       setTimeout(() => {
-        const dismissed = localStorage.getItem('pwa-install-dismissed');
-        const dismissedTime = localStorage.getItem('pwa-install-dismissed-time');
+        // Temporarily bypass dismissal for testing
+        // const dismissed = localStorage.getItem('pwa-install-dismissed');
+        // const dismissedTime = localStorage.getItem('pwa-install-dismissed-time');
 
-        // Check if dismissed less than 7 days ago
-        if (dismissed && dismissedTime) {
-          const dismissedDate = new Date(parseInt(dismissedTime));
-          const daysSinceDismissed = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
+        // // Check if dismissed less than 7 days ago
+        // if (dismissed && dismissedTime) {
+        //   const dismissedDate = new Date(parseInt(dismissedTime));
+        //   const daysSinceDismissed = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-          if (daysSinceDismissed < 7) {
-            console.log('⏰ Install prompt dismissed recently, not showing');
-            return;
-          } else {
-            // Clear old dismissal
-            localStorage.removeItem('pwa-install-dismissed');
-            localStorage.removeItem('pwa-install-dismissed-time');
-          }
-        }
+        //   if (daysSinceDismissed < 7) {
+        //     console.log('⏰ Install prompt dismissed recently, not showing');
+        //     return;
+        //   } else {
+        //     // Clear old dismissal
+        //     localStorage.removeItem('pwa-install-dismissed');
+        //     localStorage.removeItem('pwa-install-dismissed-time');
+        //   }
+        // }
 
-        if (!dismissed) {
-          console.log('✅ Showing install prompt');
-          setShowPrompt(true);
-        }
+        // if (!dismissed) {
+        console.log('✅ Showing install prompt (test mode)');
+        setShowPrompt(true);
+        // }
       }, 3000);
     };
 
@@ -96,6 +106,12 @@ const InstallPrompt = () => {
   }, []);
 
   const handleInstallClick = async () => {
+    // In development without real install prompt, show a message
+    if (process.env.NODE_ENV === 'development' && !deferredPrompt) {
+      alert('🔧 Development Mode: In production, this would install the PWA app on your device!');
+      return;
+    }
+
     if (!deferredPrompt) return;
 
     // Show install prompt
@@ -131,9 +147,29 @@ const InstallPrompt = () => {
     );
   };
 
+  // Development: Add manual trigger for testing
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      // Add keyboard shortcut to show install prompt (Ctrl+Shift+I)
+      const handleKeyPress = (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+          console.log('🔧 Development: Manually triggering install prompt');
+          setShowPrompt(true);
+        }
+      };
+      window.addEventListener('keydown', handleKeyPress);
+      return () => window.removeEventListener('keydown', handleKeyPress);
+    }
+  }, []);
+
   // Don't show if already installed or no prompt available
-  if (isInstalled || !showPrompt || !deferredPrompt) {
-    return null;
+  if (isInstalled || !showPrompt) {
+    // In development, always show prompt for testing
+    if (process.env.NODE_ENV === 'development' && showPrompt) {
+      // Continue
+    } else {
+      return null;
+    }
   }
 
   return (
