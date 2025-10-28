@@ -1,136 +1,11 @@
 /**
  * Authentication API
- * Replaces convex/auth.ts
+ * Refactored to rely on Supabase Auth sessions
  */
 
-import { supabase, query, mutation } from '../lib/supabase';
-// Note: bcryptjs is only used server-side. For browser, we'll use simple hashing temporarily
-// In production, password hashing should be done server-side via Supabase Edge Functions
+import { auth as supabaseAuth, query, mutation } from '../lib/supabase.js';
 
-// Simple hash function using Web Crypto API (browser-compatible)
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-}
-
-function generateToken() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-// Register new user
-export async function register({ email, password, name, phone, gender }) {
-  // Check if user already exists
-  const { data: existingUsers } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email);
-
-  if (existingUsers && existingUsers.length > 0) {
-    throw new Error('User with this email already exists');
-  }
-
-  // Simple hash for now (in production, use Supabase Auth or Edge Functions)
-  const passwordHash = await hashPassword(password);
-
-  // Create new user
-  const user = await mutation.insert('users', {
-    email,
-    name,
-    phone: phone || null,
-    gender: gender || null,
-    password_hash: passwordHash,
-    created_at: new Date().toISOString(),
-    total_sessions: 0,
-    total_duration: 0,
-  });
-
-  // Create session token
-  const token = generateToken();
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 30); // 30 days
-
-  await mutation.insert('session_tokens', {
-    user_id: user.id,
-    token,
-    expires_at: expiresAt.toISOString(),
-    created_at: new Date().toISOString(),
-  });
-
-  return {
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-    },
-  };
-}
-
-// Login user
-export async function login({ email, password }) {
-  // Find user
-  const { data: users } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email);
-
-  if (!users || users.length === 0) {
-    throw new Error('Invalid email or password');
-  }
-
-  const user = users[0];
-
-  // Verify password
-  const hashedInput = await hashPassword(password);
-  const isValid = hashedInput === user.password_hash;
-  if (!isValid) {
-    throw new Error('Invalid email or password');
-  }
-
-  // Update last login
-  await mutation.update('users', user.id, {
-    last_login_at: new Date().toISOString(),
-  });
-
-  // Create session token
-  const token = generateToken();
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 30); // 30 days
-
-  await mutation.insert('session_tokens', {
-    user_id: user.id,
-    token,
-    expires_at: expiresAt.toISOString(),
-    created_at: new Date().toISOString(),
-  });
-
-  return {
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-    },
-  };
-}
-
-// Verify token and get user
-export async function verifyToken({ token }) {
-  const { data: sessionToken, error } = await supabase
-    .from('session_tokens')
-    .select('*')
-    .eq('token', token)
-    .single();
-
-  if (error || !sessionToken || new Date(sessionToken.expires_at) < new Date()) {
-    return null;
-  }
-
-  const user = await query.getById('users', sessionToken.user_id);
+function mapDbUserToProfile(user) {
   if (!user) {
     return null;
   }
@@ -146,9 +21,111 @@ export async function verifyToken({ token }) {
   };
 }
 
-// Logout user
-export async function logout({ token }) {
-  await mutation.deleteWhere('session_tokens', { token });
+async function upsertUserProfile({ id, email, name, phone, gender }) {
+  if (!id || !email) {
+    throw new Error('Missing required user identifiers');
+  }
+
+  try {
+    const existingUser = await query.getById('users', id);
+    await mutation.update('users', id, {
+      email,
+      name: name || existingUser?.name || null,
+      phone: phone || existingUser?.phone || null,
+      gender: gender || existingUser?.gender || null,
+      last_login_at: new Date().toISOString(),
+    });
+  } catch {
+    await mutation.insert('users', {
+      id,
+      email,
+      name: name || null,
+      phone: phone || null,
+      gender: gender || null,
+      created_at: new Date().toISOString(),
+      total_sessions: 0,
+      total_duration: 0,
+    });
+  }
+}
+
+export async function register({ email, password, name, phone, gender }) {
+  const { data, error } = await supabaseAuth.signUp(email, password, {
+    name,
+    phone,
+    gender,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  const authUser = data?.user;
+  const session = data?.session;
+
+  if (!authUser || !session) {
+    throw new Error('Registration incomplete. Please confirm your email.');
+  }
+
+  await upsertUserProfile({
+    id: authUser.id,
+    email: authUser.email,
+    name,
+    phone,
+    gender,
+  });
+
+  const profile = await query.getById('users', authUser.id);
+
+  return {
+    token: session.access_token,
+    user: mapDbUserToProfile(profile),
+  };
+}
+
+export async function login({ email, password, name, phone, gender }) {
+  const { data, error } = await supabaseAuth.signIn(email, password);
+
+  if (error) {
+    throw error;
+  }
+
+  const authUser = data?.user;
+  const session = data?.session;
+
+  if (!authUser || !session) {
+    throw new Error('Unable to sign in. Please try again.');
+  }
+
+  await upsertUserProfile({
+    id: authUser.id,
+    email: authUser.email,
+    name: name || authUser.user_metadata?.name,
+    phone: phone || authUser.user_metadata?.phone,
+    gender: gender || authUser.user_metadata?.gender,
+  });
+
+  const profile = await query.getById('users', authUser.id);
+
+  return {
+    token: session.access_token,
+    user: mapDbUserToProfile(profile),
+  };
+}
+
+export async function getCurrentUser() {
+  const user = await supabaseAuth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const profile = await query.getById('users', user.id);
+  return mapDbUserToProfile(profile);
+}
+
+export async function logout() {
+  await supabaseAuth.signOut();
   return { success: true };
 }
 

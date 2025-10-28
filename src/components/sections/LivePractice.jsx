@@ -1,6 +1,6 @@
 import { Activity, LogIn, LogOut, User } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { verifyToken as verifyTokenApi } from '../../api/auth';
+import { getCurrentUser, logout as logoutApi } from '../../api/auth';
 import AuthModal from '../AuthModal';
 import LivePracticeTimer from '../LivePracticeTimer';
 import SessionHistory from '../SessionHistory';
@@ -10,27 +10,24 @@ const SECTION_ID = 'live-practice';
 export default function LivePractice({ language = 'he' }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [activeTab, setActiveTab] = useState('timer'); // 'timer' or 'history'
-
+  const [activeTab, setActiveTab] = useState('timer');
   const [isVerifying, setIsVerifying] = useState(false);
-  const [hasVerifiedToken, setHasVerifiedToken] = useState(false);
+  const [hasVerifiedSession, setHasVerifiedSession] = useState(false);
 
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+  const handleLogout = useCallback(async () => {
+    try {
+      await logoutApi();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
     setUser(null);
-    setToken(null);
     setActiveTab('timer');
-    setHasVerifiedToken(false);
+    setHasVerifiedSession(false);
   }, []);
 
-  const handleAuthSuccess = useCallback((userData, authToken) => {
+  const handleAuthSuccess = useCallback((userData) => {
     setUser(userData);
-    setToken(authToken);
-    localStorage.setItem('authToken', authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setHasVerifiedToken(true);
+    setHasVerifiedSession(true);
   }, []);
 
   const handleSessionSaved = () => {
@@ -39,58 +36,34 @@ export default function LivePractice({ language = 'he' }) {
   };
 
   useEffect(() => {
-    // Check for stored token
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      setHasVerifiedToken(false);
-    } else if (storedToken) {
-      setToken(storedToken);
-      setHasVerifiedToken(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    async function verifyStoredToken(currentToken) {
+    async function loadCurrentUser() {
       try {
         setIsVerifying(true);
-        const verified = await verifyTokenApi({ token: currentToken });
-        if (!verified) {
-          // Direct logout without using handleLogout callback
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
+        const profile = await getCurrentUser();
+        if (!profile) {
           setUser(null);
-          setToken(null);
           setActiveTab('timer');
-          setHasVerifiedToken(false);
+          setHasVerifiedSession(true);
           return;
         }
-        setUser(verified);
-        localStorage.setItem('user', JSON.stringify(verified));
-        setHasVerifiedToken(true);
+        setUser(profile);
+        setHasVerifiedSession(true);
       } catch (error) {
-        console.error('Token verification failed:', error);
-        // Direct logout without using handleLogout callback
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
+        console.error('Failed to load current user:', error);
         setUser(null);
-        setToken(null);
         setActiveTab('timer');
-        setHasVerifiedToken(false);
+        setHasVerifiedSession(true);
       } finally {
         setIsVerifying(false);
       }
     }
 
-    if (!token || isVerifying || hasVerifiedToken) {
+    if (isVerifying || hasVerifiedSession) {
       return;
     }
 
-    verifyStoredToken(token);
-  }, [token, isVerifying, hasVerifiedToken]);
+    loadCurrentUser();
+  }, [isVerifying, hasVerifiedSession]);
 
   const translations = {
     he: {
@@ -116,7 +89,6 @@ export default function LivePractice({ language = 'he' }) {
   };
 
   const t = translations[language];
-
 
   return (
     <section id={SECTION_ID} className="relative z-20 py-20 px-4 overflow-hidden">
@@ -168,7 +140,7 @@ export default function LivePractice({ language = 'he' }) {
         </div>
 
         {/* Main Content */}
-        {user && token ? (
+        {user ? (
           <div className="space-y-8">
             {/* Tabs */}
             <div className="flex justify-center gap-4">
@@ -201,12 +173,11 @@ export default function LivePractice({ language = 'he' }) {
               {activeTab === 'timer' ? (
                 <LivePracticeTimer
                   language={language}
-                  gender={user?.gender || 'male'}
-                  token={token}
+                  gender={user.gender || 'male'}
                   onSessionSaved={handleSessionSaved}
                 />
               ) : (
-                <SessionHistory token={token} language={language} />
+                <SessionHistory language={language} />
               )}
             </div>
           </div>

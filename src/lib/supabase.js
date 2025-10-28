@@ -5,20 +5,39 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const isTestEnv = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
 
-if (!supabaseUrl || !supabaseAnonKey) {
+const readEnvVar = (name) => {
+  if (typeof import.meta !== 'undefined' && import.meta.env && name in import.meta.env) {
+    return import.meta.env[name];
+  }
+
+  if (typeof process !== 'undefined' && process.env && process.env[name]) {
+    return process.env[name];
+  }
+
+  return undefined;
+};
+
+const supabaseUrl = readEnvVar('VITE_SUPABASE_URL');
+const supabaseAnonKey = readEnvVar('VITE_SUPABASE_ANON_KEY');
+
+const effectiveSupabaseUrl = supabaseUrl || (isTestEnv ? 'http://localhost:54321' : undefined);
+const effectiveSupabaseAnonKey = supabaseAnonKey || (isTestEnv ? 'test-anon-key' : undefined);
+
+if (!effectiveSupabaseUrl || !effectiveSupabaseAnonKey) {
   console.error('Missing Supabase environment variables:', {
-    hasUrl: !!supabaseUrl,
-    hasKey: !!supabaseAnonKey,
+    hasUrl: !!effectiveSupabaseUrl,
+    hasKey: !!effectiveSupabaseAnonKey,
   });
   throw new Error('Missing Supabase environment variables. Please check your .env file.');
 }
 
-console.log('✅ Initializing Supabase client...');
+if (!isTestEnv) {
+  console.log('✅ Initializing Supabase client...');
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(effectiveSupabaseUrl, effectiveSupabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -35,7 +54,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-console.log('✅ Supabase client initialized successfully');
+if (!isTestEnv) {
+  console.log('✅ Supabase client initialized successfully');
+}
 
 // Helper functions to match Convex patterns
 

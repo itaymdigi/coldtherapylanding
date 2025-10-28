@@ -3,11 +3,18 @@
  * Replaces convex/practiceSessions.ts
  */
 
-import { supabase, query, mutation } from '../lib/supabase';
+import { auth, query, mutation } from '../lib/supabase.js';
+
+async function requireAuthenticatedUser() {
+  const user = await auth.getUser();
+  if (!user) {
+    throw new Error('Not authenticated');
+  }
+  return user;
+}
 
 // Save a completed practice session
 export async function saveSession({
-  token,
   duration,
   temperature,
   notes,
@@ -15,18 +22,9 @@ export async function saveSession({
   rating,
   pauseCount,
 }) {
-  // Verify token
-  const { data: sessionToken, error: tokenError } = await supabase
-    .from('session_tokens')
-    .select('*')
-    .eq('token', token)
-    .single();
+  const authUser = await requireAuthenticatedUser();
 
-  if (tokenError || !sessionToken || new Date(sessionToken.expires_at) < new Date()) {
-    throw new Error('Invalid or expired token');
-  }
-
-  const user = await query.getById('users', sessionToken.user_id);
+  const user = await query.getById('users', authUser.id);
   if (!user) {
     throw new Error('User not found');
   }
@@ -34,7 +32,7 @@ export async function saveSession({
   // Check if this is a personal best
   const previousSessions = await query.getWhere(
     'practice_sessions',
-    { user_id: sessionToken.user_id },
+    { user_id: authUser.id },
     { orderBy: 'completed_at' }
   );
 
@@ -42,7 +40,7 @@ export async function saveSession({
 
   // Create session record
   const session = await mutation.insert('practice_sessions', {
-    user_id: sessionToken.user_id,
+    user_id: authUser.id,
     duration,
     temperature: temperature || null,
     notes: notes || null,
@@ -54,7 +52,7 @@ export async function saveSession({
   });
 
   // Update user stats
-  await mutation.update('users', sessionToken.user_id, {
+  await mutation.update('users', authUser.id, {
     total_sessions: user.total_sessions + 1,
     total_duration: user.total_duration + duration,
   });
@@ -67,23 +65,14 @@ export async function saveSession({
 }
 
 // Get user's session history
-export async function getUserSessions({ token, limit = 50 }) {
-  // Verify token
-  const { data: sessionToken, error: tokenError } = await supabase
-    .from('session_tokens')
-    .select('*')
-    .eq('token', token)
-    .single();
-
-  if (tokenError || !sessionToken || new Date(sessionToken.expires_at) < new Date()) {
-    return null;
-  }
+export async function getUserSessions({ limit = 50 } = {}) {
+  const authUser = await requireAuthenticatedUser();
 
   // Get sessions
   const { data: sessions, error } = await supabase
     .from('practice_sessions')
     .select('*')
-    .eq('user_id', sessionToken.user_id)
+    .eq('user_id', authUser.id)
     .order('completed_at', { ascending: false })
     .limit(limit);
 
@@ -92,19 +81,10 @@ export async function getUserSessions({ token, limit = 50 }) {
 }
 
 // Get user statistics
-export async function getUserStats({ token }) {
-  // Verify token
-  const { data: sessionToken, error: tokenError } = await supabase
-    .from('session_tokens')
-    .select('*')
-    .eq('token', token)
-    .single();
+export async function getUserStats() {
+  const authUser = await requireAuthenticatedUser();
 
-  if (tokenError || !sessionToken || new Date(sessionToken.expires_at) < new Date()) {
-    return null;
-  }
-
-  const user = await query.getById('users', sessionToken.user_id);
+  const user = await query.getById('users', authUser.id);
   if (!user) {
     return null;
   }
@@ -112,7 +92,7 @@ export async function getUserStats({ token }) {
   // Get all sessions
   const sessions = await query.getWhere(
     'practice_sessions',
-    { user_id: sessionToken.user_id },
+    { user_id: authUser.id },
     { orderBy: 'completed_at' }
   );
 
@@ -169,17 +149,8 @@ export async function getUserStats({ token }) {
 }
 
 // Delete a session
-export async function deleteSession({ token, sessionId }) {
-  // Verify token
-  const { data: sessionToken, error: tokenError } = await supabase
-    .from('session_tokens')
-    .select('*')
-    .eq('token', token)
-    .single();
-
-  if (tokenError || !sessionToken || new Date(sessionToken.expires_at) < new Date()) {
-    throw new Error('Invalid or expired token');
-  }
+export async function deleteSession({ sessionId }) {
+  const authUser = await requireAuthenticatedUser();
 
   const session = await query.getById('practice_sessions', sessionId);
   if (!session) {
@@ -187,17 +158,17 @@ export async function deleteSession({ token, sessionId }) {
   }
 
   // Verify ownership
-  if (session.user_id !== sessionToken.user_id) {
+  if (session.user_id !== authUser.id) {
     throw new Error('Unauthorized');
   }
 
-  const user = await query.getById('users', sessionToken.user_id);
+  const user = await query.getById('users', authUser.id);
   if (!user) {
     throw new Error('User not found');
   }
 
   // Update user stats
-  await mutation.update('users', sessionToken.user_id, {
+  await mutation.update('users', authUser.id, {
     total_sessions: Math.max(0, user.total_sessions - 1),
     total_duration: Math.max(0, user.total_duration - session.duration),
   });

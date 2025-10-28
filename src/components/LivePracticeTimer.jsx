@@ -5,7 +5,6 @@ import * as api from '../api';
 export default function LivePracticeTimer({
   language = 'he',
   gender = 'male',
-  token,
   onSessionSaved,
 }) {
   const [time, setTime] = useState(0);
@@ -251,7 +250,6 @@ export default function LivePracticeTimer({
   const handleSave = async () => {
     try {
       const result = await api.saveSession({
-        token,
         duration: time,
         temperature: temperature ? parseFloat(temperature) : undefined,
         notes: notes || undefined,
