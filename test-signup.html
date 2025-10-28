@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Signup - Cold Therapy</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #06b6d4;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #06b6d4;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: white;
+        }
+        button {
+            background: linear-gradient(to right, #06b6d4, #3b82f6);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #10b981;
+            border: 1px solid #059669;
+        }
+        .error {
+            background: #ef4444;
+            border: 1px solid #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧊 Test User Signup</h1>
+    <p>Test the fixed RLS policies for user registration</p>
+
+    <form id="signupForm">
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" id="name" required value="Test User">
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" required value="test@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="password" required value="test123">
+        </div>
+        <div class="form-group">
+            <label>Phone (optional):</label>
+            <input type="tel" id="phone" value="0501234567">
+        </div>
+        <div class="form-group">
+            <label>Gender:</label>
+            <select id="gender" style="width: 100%; padding: 10px; background: #2a2a2a; color: white; border: 1px solid #06b6d4; border-radius: 5px;">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://hqumvakozmicqfrbjssr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdW12YWtvem1pY3FmcmJqc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2MzYxNjUsImV4cCI6MjA3NzIxMjE2NX0.GdNY6Kf-LkIZ1DPQkq8ezphzliWBacbC64XSW54qc5Y';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateToken() {
+            return Math.random().toString(36).substring(2) + Date.now().toString(36);
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = '';
+            resultDiv.textContent = 'Processing...';
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+            const gender = document.getElementById('gender').value;
+
+            try {
+                // Check if user exists
+                const { data: existingUsers, error: checkError } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('email', email);
+
+                if (checkError) {
+                    throw new Error(`Check error: ${checkError.message}`);
+                }
+
+                if (existingUsers && existingUsers.length > 0) {
+                    throw new Error('User with this email already exists');
+                }
+
+                // Hash password
+                const passwordHash = await hashPassword(password);
+
+                // Create user
+                const { data: user, error: insertError } = await supabase
+                    .from('users')
+                    .insert({
+                        email,
+                        name,
+                        phone: phone || null,
+                        gender: gender || null,
+                        password_hash: passwordHash,
+                        created_at: new Date().toISOString(),
+                        total_sessions: 0,
+                        total_duration: 0,
+                    })
+                    .select()
+                    .single();
+
+                if (insertError) {
+                    throw new Error(`Insert error: ${insertError.message}`);
+                }
+
+                // Create session token
+                const token = generateToken();
+                const expiresAt = new Date();
+                expiresAt.setDate(expiresAt.getDate() + 30);
+
+                const { data: sessionToken, error: tokenError } = await supabase
+                    .from('session_tokens')
+                    .insert({
+                        user_id: user.id,
+                        token,
+                        expires_at: expiresAt.toISOString(),
+                        created_at: new Date().toISOString(),
+                    })
+                    .select()
+                    .single();
+
+                if (tokenError) {
+                    throw new Error(`Token error: ${tokenError.message}`);
+                }
+
+                resultDiv.className = 'success';
+                resultDiv.innerHTML = `
+                    <h3>✅ Registration Successful!</h3>
+                    <p><strong>User ID:</strong> ${user.id}</p>
+                    <p><strong>Name:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Token:</strong> ${token.substring(0, 20)}...</p>
+                    <p><strong>Expires:</strong> ${new Date(sessionToken.expires_at).toLocaleString()}</p>
+                `;
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `
+                    <h3>❌ Registration Failed</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

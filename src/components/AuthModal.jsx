@@ -83,12 +83,14 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
         });
       }
 
-      if (result.success) {
+      if (result?.token && result?.user) {
         // Store token in localStorage
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('user', JSON.stringify(result.user));
         onSuccess(result.user, result.token);
         onClose();
+      } else {
+        throw new Error('Invalid response from server');
       }
     } catch (err) {
       console.error('Auth error:', err);
