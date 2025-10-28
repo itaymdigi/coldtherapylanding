@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getGalleryImages } from '../../api/galleryImages';
+import { supabase } from '../../lib/supabase';
 
 // Navigation ID for this section - must be static for anchor links to work
 const GALLERY_SECTION_ID = 'gallery';
 
-const Gallery = () => {
+const GalleryDebug = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,15 +12,25 @@ const Gallery = () => {
   useEffect(() => {
     async function loadGalleryImages() {
       try {
-        console.log('🖼️ Loading gallery images...');
+        console.log('🖼️ DEBUG: Loading gallery images directly from Supabase...');
         setError(null);
-        const images = await getGalleryImages();
-        console.log('📸 Gallery images loaded:', images);
-        setGalleryImages(images || []); // Ensure it's always an array
+        
+        // Direct Supabase call - bypassing API layer for debugging
+        const { data, error } = await supabase
+          .from('gallery_images')
+          .select('*')
+          .order('order', { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+
+        console.log('📸 DEBUG: Gallery images loaded directly:', data);
+        setGalleryImages(data || []);
       } catch (error) {
-        console.error('❌ Error loading gallery images:', error);
+        console.error('❌ DEBUG: Error loading gallery images:', error);
         setError(error.message);
-        setGalleryImages([]); // Set empty array on error to prevent undefined issues
+        setGalleryImages([]);
       } finally {
         setLoading(false);
       }
@@ -34,8 +44,17 @@ const Gallery = () => {
       className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent"
     >
       <div className="max-w-6xl mx-auto">
+        {/* Debug Info */}
+        <div className="mb-8 p-4 bg-gray-800 rounded-lg">
+          <h3 className="text-xl font-bold text-yellow-400 mb-2">Debug Info:</h3>
+          <p className="text-green-400">Loading: {loading ? 'Yes' : 'No'}</p>
+          <p className="text-red-400">Error: {error || 'None'}</p>
+          <p className="text-blue-400">Images Count: {galleryImages.length}</p>
+          <p className="text-purple-400">Supabase URL: {import.meta.env.VITE_SUPABASE_URL}</p>
+        </div>
+
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-3 sm:mb-4 px-4 scroll-reveal">
-          Gallery
+          Gallery (DEBUG)
         </h2>
         <p className="text-blue-200 text-center mb-8 sm:mb-12 md:mb-16 text-base sm:text-lg px-4 scroll-reveal">
           See our cold therapy sessions in action and meet our community
@@ -72,6 +91,8 @@ const Gallery = () => {
                     alt={image.alt_text || 'Gallery image'}
                     className="w-full h-64 sm:h-72 object-cover"
                     loading="lazy"
+                    onLoad={() => console.log('✅ Image loaded:', image.url)}
+                    onError={() => console.log('❌ Image failed:', image.url)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -80,14 +101,18 @@ const Gallery = () => {
                       )}
                     </div>
                   </div>
+                  {/* Debug overlay */}
+                  <div className="absolute top-0 left-0 bg-black/70 text-xs p-2 text-green-400">
+                    ID: {image.id.substring(0, 8)}...
+                  </div>
                 </div>
               ))}
           </div>
         ) : (
           <div className="text-center py-12 text-blue-200 scroll-reveal">
             <div className="text-6xl mb-4">🖼️</div>
-            <p className="text-xl mb-2">Gallery Coming Soon</p>
-            <p className="text-base">Check back soon to see our cold therapy sessions and community photos!</p>
+            <p className="text-xl mb-2">No Gallery Images Found</p>
+            <p className="text-base">Check the database for gallery_images data!</p>
           </div>
         )}
       </div>
@@ -95,4 +120,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;
+export default GalleryDebug;

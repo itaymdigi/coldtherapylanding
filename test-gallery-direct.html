@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Direct Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Direct Gallery Test</h1>
+        
+        <div class="mb-8">
+            <button onclick="testDirectConnection()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold">
+                Test Direct Supabase Connection
+            </button>
+            <button onclick="testViaAPI()" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold ml-4">
+                Test Via API Function
+            </button>
+        </div>
+
+        <div id="results" class="space-y-4"></div>
+        
+        <div id="gallery" class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Gallery Images</h2>
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="text-center py-8 text-gray-400">
+                    <div class="text-6xl mb-4">⏳</div>
+                    <p class="text-xl">Click test buttons above</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Console Log</h2>
+            <div class="bg-gray-800 rounded-lg p-4 h-60 overflow-y-auto font-mono text-sm">
+                <div id="console-output">Ready for testing...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://hqumvakozmicqfrbjssr.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdW12YWtvem1pY3FmcmJqc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2MzYxNjUsImV4cCI6MjA3NzIxMjE2NX0.GdNY6Kf-LkIZ1DPQkq8ezphzliWBacbC64XSW54qc5Y';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        function log(message, isError = false) {
+            const console = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = isError ? 'text-red-400' : 'text-green-400';
+            div.textContent = `[${timestamp}] ${message}`;
+            console.appendChild(div);
+            console.scrollTop = console.scrollHeight;
+            console.log(message);
+        }
+
+        function showResult(title, content, isSuccess = true) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `p-4 rounded-lg ${isSuccess ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`;
+            div.innerHTML = `<strong class="font-bold">${title}:</strong> ${content}`;
+            results.appendChild(div);
+        }
+
+        async function testDirectConnection() {
+            log('🔍 Testing direct Supabase connection...');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('gallery_images')
+                    .select('*')
+                    .order('order', { ascending: true });
+
+                if (error) {
+                    throw error;
+                }
+
+                log(`✅ Direct connection successful! Found ${data.length} images`);
+                showResult('Direct Connection', `Success - ${data.length} images found`, true);
+                displayGallery(data);
+                
+            } catch (error) {
+                log(`❌ Direct connection failed: ${error.message}`, true);
+                showResult('Direct Connection', `Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testViaAPI() {
+            log('🔍 Testing via API function (simulating React component)...');
+            
+            try {
+                // Simulate the query.getAll function from the API
+                const queryBuilder = supabase.from('gallery_images').select('*');
+                const orderedQuery = queryBuilder.order('order', { ascending: true });
+                const { data, error } = await orderedQuery;
+
+                if (error) {
+                    throw error;
+                }
+
+                log(`✅ API simulation successful! Found ${data.length} images`);
+                showResult('API Simulation', `Success - ${data.length} images found`, true);
+                displayGallery(data);
+                
+            } catch (error) {
+                log(`❌ API simulation failed: ${error.message}`, true);
+                showResult('API Simulation', `Failed: ${error.message}`, false);
+            }
+        }
+
+        function displayGallery(images) {
+            const grid = document.getElementById('gallery-grid');
+            
+            if (images.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-400">
+                        <div class="text-6xl mb-4">🖼️</div>
+                        <p class="text-xl">No images found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = images.map(image => `
+                <div class="relative group overflow-hidden rounded-xl border-2 border-cyan-400/30 hover:border-cyan-400 hover:scale-105 transition-all duration-300">
+                    <img
+                        src="${image.url}"
+                        alt="${image.alt_text || 'Gallery image'}"
+                        class="w-full h-64 object-cover"
+                        onload="log('✅ Image loaded: ${image.url}')"
+                        onerror="log('❌ Image failed to load: ${image.url}', true)"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
+                            <p class="text-white text-sm font-medium">${image.alt_text || 'Gallery image'}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            log(`🖼️ Gallery displayed with ${images.length} images`);
+        }
+
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Page loaded - ready for testing');
+            log('📊 Supabase URL: ' + supabaseUrl);
+        });
+
+        // Monitor for any errors
+        window.addEventListener('error', (event) => {
+            log(`🚨 JavaScript error: ${event.message}`, true);
+        });
+    </script>
+</body>
+</html>

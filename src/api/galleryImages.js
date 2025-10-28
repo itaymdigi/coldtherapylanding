@@ -7,10 +7,18 @@ import { query, mutation } from '../lib/supabase';
 
 // Get all gallery images
 export async function getGalleryImages() {
-  return await query.getAll('gallery_images', {
-    orderBy: 'order',
-    ascending: true,
-  });
+  try {
+    console.log('🔍 Fetching gallery images from Supabase...');
+    const images = await query.getAll('gallery_images', {
+      orderBy: 'order',
+      ascending: true,
+    });
+    console.log('✅ Gallery images fetched successfully:', images.length, 'images');
+    return images;
+  } catch (error) {
+    console.error('❌ Error in getGalleryImages:', error);
+    throw error;
+  }
 }
 
 // Add a new gallery image
