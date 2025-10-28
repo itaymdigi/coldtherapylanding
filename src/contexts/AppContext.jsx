@@ -82,7 +82,9 @@ export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState('he'); // 'en' or 'he' - Default to Hebrew
   const [showAdmin, setShowAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(''); // Legacy - will be removed
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [adminSection, setAdminSection] = useState('schedule');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -375,19 +377,23 @@ export const AppProvider = ({ children }) => {
 
   const handleLogin = async () => {
     try {
-      const result = await api.adminLogin({ password });
+      const result = await api.adminLogin({ email: adminEmail, password: adminPassword });
       if (result.token) {
         // Store token in localStorage
         localStorage.setItem('adminToken', result.token);
         setIsAuthenticated(true);
-        setPassword('');
+        setAdminEmail('');
+        setAdminPassword('');
       }
     } catch (error) {
       console.error('Admin login failed:', error);
-      alert(t?.wrongPassword || 'Wrong password!');
-      setPassword('');
+      alert(error.message || 'Login failed!');
+      setAdminPassword('');
     }
   };
+
+  // New admin login handler (alias for handleLogin)
+  const handleAdminLogin = handleLogin;
 
   const handleAdminClose = async () => {
     // Logout from server
@@ -424,6 +430,11 @@ export const AppProvider = ({ children }) => {
     setIsAuthenticated,
     password,
     setPassword,
+    adminEmail,
+    setAdminEmail,
+    adminPassword,
+    setAdminPassword,
+    handleAdminLogin,
     handleImageUpload,
     handleLogin,
     handleAdminClose,

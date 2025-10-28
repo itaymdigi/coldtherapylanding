@@ -18,10 +18,11 @@ function mapDbUserToProfile(user) {
     gender: user.gender,
     totalSessions: user.total_sessions,
     totalDuration: user.total_duration,
+    isAdmin: user.is_admin,
   };
 }
 
-async function upsertUserProfile({ id, email, name, phone, gender }) {
+async function upsertUserProfile({ id, email, name, phone, gender, is_admin }) {
   if (!id || !email) {
     throw new Error('Missing required user identifiers');
   }
@@ -33,6 +34,7 @@ async function upsertUserProfile({ id, email, name, phone, gender }) {
       name: name || existingUser?.name || null,
       phone: phone || existingUser?.phone || null,
       gender: gender || existingUser?.gender || null,
+      is_admin: is_admin !== undefined ? is_admin : existingUser?.is_admin || false,
       last_login_at: new Date().toISOString(),
     });
   } catch {
@@ -42,6 +44,7 @@ async function upsertUserProfile({ id, email, name, phone, gender }) {
       name: name || null,
       phone: phone || null,
       gender: gender || null,
+      is_admin: is_admin || false,
       created_at: new Date().toISOString(),
       total_sessions: 0,
       total_duration: 0,
@@ -49,11 +52,12 @@ async function upsertUserProfile({ id, email, name, phone, gender }) {
   }
 }
 
-export async function register({ email, password, name, phone, gender }) {
+export async function register({ email, password, name, phone, gender, is_admin }) {
   const data = await supabaseAuth.signUp(email, password, {
     name,
     phone,
     gender,
+    is_admin,
   });
 
   const authUser = data?.user;
@@ -69,6 +73,7 @@ export async function register({ email, password, name, phone, gender }) {
     name,
     phone,
     gender,
+    is_admin,
   });
 
   const profile = await query.getById('users', authUser.id);
@@ -79,7 +84,7 @@ export async function register({ email, password, name, phone, gender }) {
   };
 }
 
-export async function login({ email, password, name, phone, gender }) {
+export async function login({ email, password, name, phone, gender, is_admin }) {
   const data = await supabaseAuth.signIn(email, password);
 
   const authUser = data?.user;
@@ -95,6 +100,7 @@ export async function login({ email, password, name, phone, gender }) {
     name: name || authUser.user_metadata?.name,
     phone: phone || authUser.user_metadata?.phone,
     gender: gender || authUser.user_metadata?.gender,
+    is_admin: is_admin !== undefined ? is_admin : authUser.user_metadata?.is_admin,
   });
 
   const profile = await query.getById('users', authUser.id);
@@ -155,51 +161,69 @@ export async function verifyToken({ token }) {
   }
 }
 
-// Admin login
-export async function adminLogin({ password }) {
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+// Admin login using Supabase Auth
+export async function adminLogin({ email, password }) {
+  try {
+    // Use regular Supabase auth to sign in
+    const data = await supabaseAuth.signIn(email, password);
+    
+    const authUser = data?.user;
+    const session = data?.session;
 
-  if (password !== ADMIN_PASSWORD) {
-    throw new Error('Invalid admin password');
+    if (!authUser || !session) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Check if user is admin
+    const profile = await query.getById('users', authUser.id);
+    if (!profile || !profile.is_admin) {
+      // Sign out the user since they're not admin
+      await supabaseAuth.signOut();
+      throw new Error('Access denied. User is not an administrator.');
+    }
+
+    // Update last login
+    await mutation.update('users', authUser.id, {
+      last_login_at: new Date().toISOString(),
+    });
+
+    return { 
+      token: session.access_token,
+      user: mapDbUserToProfile(profile)
+    };
+  } catch (error) {
+    throw new Error('Admin login failed: ' + error.message);
   }
-
-  // Create admin session token
-  const token = generateToken();
-  const expiresAt = new Date();
-  expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours
-
-  await mutation.insert('admin_sessions', {
-    token,
-    created_at: new Date().toISOString(),
-    expires_at: expiresAt.toISOString(),
-    last_activity_at: new Date().toISOString(),
-  });
-
-  return { token };
 }
 
 // Verify admin token
 export async function verifyAdminToken({ token }) {
-  const { data: adminSession, error } = await supabase
-    .from('admin_sessions')
-    .select('*')
-    .eq('token', token)
-    .single();
+  try {
+    // Verify the Supabase auth token
+    const authUser = await supabaseAuth.getUser(token);
+    
+    if (!authUser) {
+      return false;
+    }
 
-  if (error || !adminSession || new Date(adminSession.expires_at) < new Date()) {
+    // Check if user is admin in the database
+    const profile = await query.getById('users', authUser.id);
+    if (!profile || !profile.is_admin) {
+      return false;
+    }
+
+    return true;
+  } catch {
     return false;
   }
-
-  // Update last activity
-  await mutation.update('admin_sessions', adminSession.id, {
-    last_activity_at: new Date().toISOString(),
-  });
-
-  return true;
 }
 
 // Admin logout
 export async function adminLogout({ token }) {
-  await mutation.deleteWhere('admin_sessions', { token });
-  return { success: true };
+  try {
+    await supabaseAuth.signOut();
+    return { success: true };
+  } catch (error) {
+    throw new Error('Logout failed: ' + error.message);
+  }
 }
