@@ -82,7 +82,7 @@ export const query = {
    * Get records with filter
    */
   async getWhere(table, filters, options = {}) {
-    const { orderBy = 'created_at', ascending = false, limit } = options;
+    const { orderBy, ascending = false, limit } = options;
     
     let queryBuilder = supabase.from(table).select('*');
     
@@ -91,7 +91,10 @@ export const query = {
       queryBuilder = queryBuilder.eq(key, value);
     });
     
-    queryBuilder = queryBuilder.order(orderBy, { ascending });
+    // Only apply ordering if orderBy is specified
+    if (orderBy) {
+      queryBuilder = queryBuilder.order(orderBy, { ascending });
+    }
     
     if (limit) {
       queryBuilder = queryBuilder.limit(limit);

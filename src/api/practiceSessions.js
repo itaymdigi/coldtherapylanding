@@ -32,9 +32,11 @@ export async function saveSession({
   }
 
   // Check if this is a personal best
-  const previousSessions = await query.getWhere('practice_sessions', {
-    user_id: sessionToken.user_id,
-  });
+  const previousSessions = await query.getWhere(
+    'practice_sessions',
+    { user_id: sessionToken.user_id },
+    { orderBy: 'completed_at' }
+  );
 
   const isPersonalBest = previousSessions.every((session) => session.duration < duration);
 
@@ -108,9 +110,11 @@ export async function getUserStats({ token }) {
   }
 
   // Get all sessions
-  const sessions = await query.getWhere('practice_sessions', {
-    user_id: sessionToken.user_id,
-  });
+  const sessions = await query.getWhere(
+    'practice_sessions',
+    { user_id: sessionToken.user_id },
+    { orderBy: 'completed_at' }
+  );
 
   // Calculate stats
   const longestSession = Math.max(...sessions.map((s) => s.duration), 0);
