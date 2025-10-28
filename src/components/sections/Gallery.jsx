@@ -14,6 +14,7 @@ const Gallery = () => {
       try {
         console.log('🖼️ Loading gallery images...');
         setError(null);
+        // Force fresh data by adding cache-busting
         const images = await getGalleryImages();
         console.log('📸 Gallery images loaded:', images);
         setGalleryImages(images || []); // Ensure it's always an array
