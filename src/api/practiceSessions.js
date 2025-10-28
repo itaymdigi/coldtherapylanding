@@ -46,7 +46,7 @@ export async function saveSession({
     notes: notes || null,
     mood: mood || null,
     rating: rating || null,
-    completed_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
     pause_count: pauseCount,
     personal_best: isPersonalBest,
   });
@@ -82,7 +82,7 @@ export async function getUserSessions({ token, limit = 50 }) {
     .from('practice_sessions')
     .select('*')
     .eq('user_id', sessionToken.user_id)
-    .order('completed_at', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(limit);
 
   if (error) throw error;
@@ -121,7 +121,7 @@ export async function getUserStats({ token }) {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const recentSessions = sessions.filter(
-    (s) => new Date(s.completed_at) > sevenDaysAgo
+    (s) => new Date(s.created_at) > sevenDaysAgo
   );
 
   // Get current streak
@@ -130,7 +130,7 @@ export async function getUserStats({ token }) {
   today.setHours(0, 0, 0, 0);
 
   const sortedSessions = [...sessions].sort(
-    (a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
   for (let i = 0; i < 30; i++) {
@@ -142,7 +142,7 @@ export async function getUserStats({ token }) {
     dayEnd.setHours(23, 59, 59, 999);
 
     const hasSession = sortedSessions.some((s) => {
-      const sessionDate = new Date(s.completed_at);
+      const sessionDate = new Date(s.created_at);
       return sessionDate >= checkDate && sessionDate <= dayEnd;
     });
 
