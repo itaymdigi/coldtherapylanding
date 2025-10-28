@@ -6,11 +6,15 @@
 import { auth, query, mutation } from '../lib/supabase.js';
 
 async function requireAuthenticatedUser() {
-  const user = await auth.getUser();
-  if (!user) {
-    throw new Error('Not authenticated');
+  try {
+    const user = await auth.getUser();
+    if (!user) {
+      throw new Error('Not authenticated');
+    }
+    return user;
+  } catch (error) {
+    throw new Error('Authentication required: ' + error.message);
   }
-  return user;
 }
 
 // Save a completed practice session
@@ -65,23 +69,25 @@ export async function saveSession({
 }
 
 // Get user's session history
-export async function getUserSessions({ limit = 50 } = {}) {
+export async function getUserSessions({ token, limit = 50 } = {}) {
+  // For Supabase auth, we don't need the token parameter in the API call
+  // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();
 
   // Get sessions
-  const { data: sessions, error } = await supabase
-    .from('practice_sessions')
-    .select('*')
-    .eq('user_id', authUser.id)
-    .order('completed_at', { ascending: false })
-    .limit(limit);
+  const sessions = await query.getWhere(
+    'practice_sessions',
+    { user_id: authUser.id },
+    { orderBy: 'completed_at', ascending: false, limit }
+  );
 
-  if (error) throw error;
-  return sessions || [];
+  return sessions;
 }
 
 // Get user statistics
-export async function getUserStats() {
+export async function getUserStats({ token } = {}) {
+  // For Supabase auth, we don't need the token parameter in the API call
+  // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();
 
   const user = await query.getById('users', authUser.id);
@@ -149,7 +155,9 @@ export async function getUserStats() {
 }
 
 // Delete a session
-export async function deleteSession({ sessionId }) {
+export async function deleteSession({ token, sessionId }) {
+  // For Supabase auth, we don't need the token parameter in the API call
+  // The auth.getUser() will use the stored session
   const authUser = await requireAuthenticatedUser();
 
   const session = await query.getById('practice_sessions', sessionId);
