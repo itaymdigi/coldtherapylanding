@@ -3,7 +3,12 @@
  * Replaces convex/galleryImages.ts
  */
 
-import { query, mutation, supabase } from '../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Create Supabase client directly to avoid import issues
+const supabaseUrl = 'https://hqumvakozmicqfrbjssr.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdW12YWtvem1pY3FmcmJqc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2MzYxNjUsImV4cCI6MjA3NzIxMjE2NX0.GdNY6Kf-LkIZ1DPQkq8ezphzliWBacbC64XSW54qc5Y';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Get all gallery images
 export const getGalleryImages = async () => {

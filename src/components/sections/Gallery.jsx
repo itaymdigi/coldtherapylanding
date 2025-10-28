@@ -57,7 +57,7 @@ const Gallery = () => {
     >
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-3 sm:mb-4 px-4 scroll-reveal">
-          Gallery ✨ Updated
+          Gallery
         </h2>
         <p className="text-blue-200 text-center mb-8 sm:mb-12 md:mb-16 text-base sm:text-lg px-4 scroll-reveal">
           See our cold therapy sessions in action and meet our community
