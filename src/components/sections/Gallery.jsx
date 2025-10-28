@@ -17,7 +17,22 @@ const Gallery = () => {
         // Force fresh data by adding cache-busting
         const images = await getGalleryImages();
         console.log('📸 Gallery images loaded:', images);
-        setGalleryImages(images || []); // Ensure it's always an array
+        
+        // Debug: Log actual URLs from Supabase
+        if (images && images.length > 0) {
+          console.log('🔗 Image URLs from Supabase:', images.map(img => img.url));
+        }
+        
+        // If no images from Supabase, use fallback
+        if (!images || images.length === 0) {
+          console.log('⚠️ No images from Supabase, using fallback');
+          setGalleryImages([
+            { id: '1', url: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=600&fit=crop&auto=format&q=80', alt_text: 'Cold therapy session in progress' },
+            { id: '2', url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&auto=format&q=80', alt_text: 'Ice bath preparation' }
+          ]);
+        } else {
+          setGalleryImages(images);
+        }
       } catch (error) {
         console.error('❌ Error loading gallery images:', error);
         setError(error.message);
