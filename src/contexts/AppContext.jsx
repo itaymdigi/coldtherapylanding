@@ -76,7 +76,6 @@ export const AppProvider = ({ children }) => {
 
   // UI State
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showPackages, setShowPackages] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -282,7 +281,6 @@ export const AppProvider = ({ children }) => {
   };
 
   const scrollToPackages = () => {
-    setShowPackages(true);
     setTimeout(() => {
       packagesRef.current?.scrollIntoView({
         behavior: 'smooth',
@@ -411,8 +409,6 @@ export const AppProvider = ({ children }) => {
   const value = {
     isPlaying,
     setIsPlaying,
-    showPackages,
-    setShowPackages,
     openFaq,
     setOpenFaq,
     selectedImage,

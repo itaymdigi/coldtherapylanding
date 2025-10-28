@@ -6,12 +6,12 @@ import { useApp } from '../contexts/AppContext';
 const HomePage = () => {
   const homeId = 'home';
   const aboutId = 'about';
+  const packagesId = 'packages';
   const contactId = 'contact';
 
   const {
     t,
     scrollToPackages,
-    showPackages,
     packagesRef,
     statsRef,
     statsSessions,
@@ -210,123 +210,122 @@ const HomePage = () => {
       </div>
 
       {/* Packages Section - MOVED DOWN after value is established */}
-      {showPackages && (
-        <div
-          ref={packagesRef}
-          className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent"
-        >
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-3 sm:mb-4 px-4">
-              {t?.packagesTitle || 'Choose Your Path'}
-            </h2>
-            <p className="text-blue-200 text-center mb-8 sm:mb-12 md:mb-16 text-base sm:text-lg px-4">
-              {t?.packagesSubtitle || 'Select the perfect plan to unlock your ultimate potential'}
-            </p>
+      <div
+        id={packagesId}
+        ref={packagesRef}
+        className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent"
+      >
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-3 sm:mb-4 px-4">
+            {t?.packagesTitle || 'Choose Your Path'}
+          </h2>
+          <p className="text-blue-200 text-center mb-8 sm:mb-12 md:mb-16 text-base sm:text-lg px-4">
+            {t?.packagesSubtitle || 'Select the perfect plan to unlock your ultimate potential'}
+          </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto pointer-events-auto">
-              {/* Package 1: 10 Entries */}
-              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-400/40 hover:border-cyan-400/80 hover:scale-105 transition-all duration-300">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2">{t?.package1Title || 'Starter Pack'}</h3>
-                  <div className="text-5xl font-bold text-cyan-400 mb-6">₪{t?.package1Price || '700'}</div>
-                  <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t?.package1Feature1 || '10 powerful sessions - valid for 3 months'}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t?.package1Feature2 || 'Full access: Ice bath, sauna, hot/cold showers...'}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t?.package1Feature3 || 'Expert-led breathing & cold therapy workshops'}</span>
-                    </li>
-                  </ul>
-                  <button
-                    type="button"
-                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
-                  >
-                    {t?.bookNow || 'Book Now'}
-                  </button>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto pointer-events-auto">
+            {/* Package 1: 10 Entries */}
+            <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-400/40 hover:border-cyan-400/80 hover:scale-105 transition-all duration-300">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">{t?.package1Title || 'Starter Pack'}</h3>
+                <div className="text-5xl font-bold text-cyan-400 mb-6">₪{t?.package1Price || '700'}</div>
+                <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t?.package1Feature1 || '10 powerful sessions - valid for 3 months'}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t?.package1Feature2 || 'Full access: Ice bath, sauna, hot/cold showers...'}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t?.package1Feature3 || 'Expert-led breathing & cold therapy workshops'}</span>
+                  </li>
+                </ul>
+                <button
+                  type="button"
+                  className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                >
+                  {t?.bookNow || 'Book Now'}
+                </button>
               </div>
+            </div>
 
-              {/* Package 2: 6 Months - Most Popular */}
-              <div className="bg-gradient-to-br from-cyan-800/50 to-blue-800/50 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-300/60 hover:border-cyan-300 hover:scale-105 transition-all duration-300 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold">
-                  {t?.package2Subtitle || 'Most Popular'}
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2">{t?.package2Title || '6-Month Elite Access'}</h3>
-                  <div className="text-5xl font-bold text-cyan-300 mb-2">₪{t?.package2Price || '1500'}</div>
-                  <div className="text-sm text-cyan-200 mb-6">{t?.package2PriceNote || 'Only 250 ₪/month'}</div>
-                  <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
-                    <li className="flex items-start">
-                      <span className="text-cyan-300 mr-2 mt-1">•</span>
-                      <span>{t.package2Feature1}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-300 mr-2 mt-1">•</span>
-                      <span>{t.package2Feature2}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-300 mr-2 mt-1">•</span>
-                      <span>{t.package2Feature3}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-300 mr-2 mt-1">•</span>
-                      <span>{t.package2Feature4}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-300 mr-2 mt-1">•</span>
-                      <span>{t.package2Feature5}</span>
-                    </li>
-                  </ul>
-                  <button
-                    type="button"
-                    className="w-full py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
-                  >
-                    {t?.getStarted || 'Start Now'}
-                  </button>
-                </div>
+            {/* Package 2: 6 Months - Most Popular */}
+            <div className="bg-gradient-to-br from-cyan-800/50 to-blue-800/50 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-300/60 hover:border-cyan-300 hover:scale-105 transition-all duration-300 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                {t?.package2Subtitle || 'Most Popular'}
               </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">{t?.package2Title || '6-Month Elite Access'}</h3>
+                <div className="text-5xl font-bold text-cyan-300 mb-2">₪{t?.package2Price || '1500'}</div>
+                <div className="text-sm text-cyan-200 mb-6">{t?.package2PriceNote || 'Only 250 ₪/month'}</div>
+                <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-cyan-300 mr-2 mt-1">•</span>
+                    <span>{t.package2Feature1}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-300 mr-2 mt-1">•</span>
+                    <span>{t.package2Feature2}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-300 mr-2 mt-1">•</span>
+                    <span>{t.package2Feature3}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-300 mr-2 mt-1">•</span>
+                    <span>{t.package2Feature4}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-300 mr-2 mt-1">•</span>
+                    <span>{t.package2Feature5}</span>
+                  </li>
+                </ul>
+                <button
+                  type="button"
+                  className="w-full py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                >
+                  {t?.getStarted || 'Start Now'}
+                </button>
+              </div>
+            </div>
 
-              {/* Package 3: Monthly Pass */}
-              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-400/40 hover:border-cyan-400/80 hover:scale-105 transition-all duration-300 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold">
-                  {t.package3Subtitle}
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2">{t.package3Title}</h3>
-                  <div className="text-5xl font-bold text-cyan-400 mb-2">₪{t.package3Price}</div>
-                  <div className="text-sm text-cyan-200 mb-6">{t.package3PriceNote}</div>
-                  <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t.package3Feature1}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t.package3Feature2}</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-cyan-400 mr-2 mt-1">•</span>
-                      <span>{t.package3Feature3}</span>
-                    </li>
-                  </ul>
-                  <button
-                    type="button"
-                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
-                  >
-                    {t.bookNow}
-                  </button>
-                </div>
+            {/* Package 3: Monthly Pass */}
+            <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-lg p-8 rounded-3xl border-2 border-cyan-400/40 hover:border-cyan-400/80 hover:scale-105 transition-all duration-300 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold">
+                {t.package3Subtitle}
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">{t.package3Title}</h3>
+                <div className="text-5xl font-bold text-cyan-400 mb-2">₪{t.package3Price}</div>
+                <div className="text-sm text-cyan-200 mb-6">{t.package3PriceNote}</div>
+                <ul className="text-left space-y-3 mb-8 text-blue-100 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t.package3Feature1}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t.package3Feature2}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-cyan-400 mr-2 mt-1">•</span>
+                    <span>{t.package3Feature3}</span>
+                  </li>
+                </ul>
+                <button
+                  type="button"
+                  className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+                >
+                  {t.bookNow}
+                </button>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Stats Counter Section */}
       <div
