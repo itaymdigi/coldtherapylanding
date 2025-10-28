@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import * as api from '../../api';
 import { useApp } from '../../contexts/AppContext';
-import { useId } from 'react';
 
 const AdminSettings = () => {
   const { statsAnimationEnabled, setStatsAnimationEnabled, statsSessions, statsSatisfaction, statsClients, statsTemp, setStatsSessions, setStatsSatisfaction, setStatsClients, setStatsTemp } = useApp();
@@ -34,23 +34,36 @@ const AdminSettings = () => {
     setEditMode(true);
   };
 
-  const handleSaveStats = () => {
+  const handleSaveStats = async () => {
     // Validate inputs
     if (tempStats.sessions < 0 || tempStats.satisfaction < 0 || tempStats.satisfaction > 100 || tempStats.clients < 0 || tempStats.temp < -50 || tempStats.temp > 50) {
       alert('Please enter valid values (Sessions/Clients ≥ 0, Satisfaction 0-100%, Temperature -50°C to 50°C)');
       return;
     }
 
-    // Update the stats
-    setStatsSessions(tempStats.sessions);
-    setStatsSatisfaction(tempStats.satisfaction);
-    setStatsClients(tempStats.clients);
-    setStatsTemp(tempStats.temp);
+    try {
+      await api.updateSiteStats({
+        totalSessions: tempStats.sessions,
+        satisfactionRate: tempStats.satisfaction,
+        totalClients: tempStats.clients,
+        averageTemp: tempStats.temp,
+      });
 
-    // Save to localStorage as backup
-    localStorage.setItem('manualStats', JSON.stringify(tempStats));
+      // Update the stats in context
+      setStatsSessions(tempStats.sessions);
+      setStatsSatisfaction(tempStats.satisfaction);
+      setStatsClients(tempStats.clients);
+      setStatsTemp(tempStats.temp);
 
-    setEditMode(false);
+      // Save to localStorage as backup
+      localStorage.setItem('manualStats', JSON.stringify(tempStats));
+
+      setEditMode(false);
+      alert('✅ Statistics updated successfully!');
+    } catch (error) {
+      console.error('Failed to update site stats:', error);
+      alert(error.message || 'Failed to update statistics. Please try again.');
+    }
   };
 
   const handleCancelEdit = () => {

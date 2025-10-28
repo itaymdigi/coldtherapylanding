@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 import { 
-  getGalleryImages, 
-  addGalleryImage, 
+  addGalleryImage,
   deleteGalleryImage,
   deleteGalleryImageFile,
+  getGalleryImages,
   updateGalleryImage,
   uploadGalleryImage
 } from '../../api/galleryImages';

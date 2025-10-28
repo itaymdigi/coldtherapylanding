@@ -23,11 +23,22 @@ export async function getSiteStats() {
     };
   }
   
-  return data ? JSON.parse(data.value) : {
-    totalSessions: 0,
-    satisfactionRate: 0,
-    totalClients: 0,
-    averageTemp: 0,
+  if (!data) {
+    return {
+      sessions: 0,
+      satisfaction: 0,
+      clients: 0,
+      temp: 0,
+    };
+  }
+
+  const parsed = JSON.parse(data.value);
+
+  return {
+    sessions: parsed.sessions ?? parsed.totalSessions ?? 0,
+    satisfaction: parsed.satisfaction ?? parsed.satisfactionRate ?? 0,
+    clients: parsed.clients ?? parsed.totalClients ?? 0,
+    temp: parsed.temp ?? parsed.averageTemp ?? 0,
   };
 }
 

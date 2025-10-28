@@ -194,12 +194,7 @@ const OurInstructors = () => {
 
   // Sort instructors by order
   const sortedInstructors = [...(instructors || [])].sort((a, b) => a.order - b.order);
-
-  // Debug logging
-  console.log('=== Carousel Debug ===');
-  console.log('Instructors:', instructors);
-  console.log('Sorted instructors:', sortedInstructors);
-  console.log('Sorted instructors length:', sortedInstructors.length);
+  const currentInstructor = sortedInstructors[currentIndex] || null;
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % sortedInstructors.length);
@@ -252,109 +247,42 @@ const OurInstructors = () => {
 
         {/* Carousel Container */}
         <div className="relative max-w-6xl mx-auto">
-          {/* Main Carousel */}
-          <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: '400px' }}>
-            <div
-              ref={(el) => {
-                if (el && !el.dataset.touchSetup) {
-                  el.dataset.touchSetup = 'true';
-                  let startX = 0;
-                  let currentX = 0;
-                  let isDragging = false;
-
-                  const handleTouchStart = (e) => {
-                    startX = e.touches[0].clientX;
-                    isDragging = true;
-                    el.style.transition = 'none';
-                  };
-
-                  const handleTouchMove = (e) => {
-                    if (!isDragging) return;
+          {currentInstructor && (
+            <div className="relative overflow-hidden rounded-3xl bg-white/5 backdrop-blur-md border border-white/10" style={{ minHeight: '420px' }}>
+              <button
+                type="button"
+                onClick={() => setSelectedInstructor(currentInstructor)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    currentX = e.touches[0].clientX;
-                    const diff = currentX - startX;
-                    const translateX = -(currentIndex * 100) + (diff / el.offsetWidth) * 100;
-                    el.style.transform = `translateX(${translateX}%)`;
-                  };
-
-                  const handleTouchEnd = () => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    el.style.transition = 'transform 0.3s ease-out';
-                    
-                    const diff = currentX - startX;
-                    const threshold = el.offsetWidth * 0.2; // 20% of width to trigger slide
-                    
-                    if (Math.abs(diff) > threshold) {
-                      if (diff > 0 && currentIndex > 0) {
-                        prevSlide();
-                      } else if (diff < 0 && currentIndex < sortedInstructors.length - 1) {
-                        nextSlide();
-                      } else {
-                        // Snap back to current position
-                        goToSlide(currentIndex);
-                      }
-                    } else {
-                      // Snap back to current position
-                      goToSlide(currentIndex);
-                    }
-                    
-                    startX = 0;
-                    currentX = 0;
-                  };
-
-                  el.addEventListener('touchstart', handleTouchStart, { passive: false });
-                  el.addEventListener('touchmove', handleTouchMove, { passive: false });
-                  el.addEventListener('touchend', handleTouchEnd);
-                }
-              }}
-              className="flex transition-transform duration-500 ease-out will-change-transform"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-                width: `${sortedInstructors.length * 100}%`,
-              }}
-            >
-              {sortedInstructors.map((instructor) => (
-                <div key={instructor.id} className="min-w-full px-2 sm:px-4">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedInstructor(instructor)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setSelectedInstructor(instructor);
-                      }
-                    }}
-                    className="group cursor-pointer bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-[1.02] w-full text-left ring-2 ring-transparent hover:ring-cyan-500/20"
-                    aria-label={`View ${instructor.name} details`}
-                  >
-                    {/* Instructor Photo */}
-                    <div className="relative h-80 sm:h-96 md:h-[500px] overflow-hidden">
-                      <StorageImage
-                        storageId={instructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
-                        alt={instructor.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-                      {/* Name and Title Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 lg:p-12">
-                        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
-                          {instructor.name}
-                        </h3>
-                        <p className="text-cyan-400 text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-4">
-                          {instructor.title}
-                        </p>
-                        <p className="text-white/90 text-sm sm:text-base md:text-lg leading-relaxed line-clamp-2 sm:line-clamp-3">
-                          {instructor.bio}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
+                    setSelectedInstructor(currentInstructor);
+                  }
+                }}
+                className="group w-full text-left"
+                aria-label={`View ${currentInstructor.name} details`}
+              >
+                <div className="relative h-80 sm:h-96 md:h-[520px]">
+                  <StorageImage
+                    storageId={currentInstructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
+                    alt={currentInstructor.name}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 px-6 sm:px-8 md:px-12 pb-10">
+                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
+                      {currentInstructor.name}
+                    </h3>
+                    <p className="text-cyan-400 text-lg sm:text-xl md:text-2xl font-semibold mb-4">
+                      {currentInstructor.title}
+                    </p>
+                    <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed line-clamp-3">
+                      {currentInstructor.bio}
+                    </p>
+                  </div>
                 </div>
-              ))}
+              </button>
             </div>
-          </div>
+          )}
 
           {/* Navigation Arrows */}
           {sortedInstructors.length > 1 && (

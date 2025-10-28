@@ -60,6 +60,43 @@ export const AppProvider = ({ children }) => {
   const audioRef = useRef(null);
   const packagesRef = useRef(null);
 
+  // Hydrate stats from Supabase (with localStorage fallback)
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadStats = async () => {
+      const manualStats = typeof window !== 'undefined'
+        ? JSON.parse(localStorage.getItem('manualStats') || 'null')
+        : null;
+
+      try {
+        const stats = await api.getSiteStats();
+
+        if (!isMounted || !stats) return;
+
+        setStatsSessions(stats.sessions ?? manualStats?.sessions ?? 0);
+        setStatsSatisfaction(stats.satisfaction ?? manualStats?.satisfaction ?? 0);
+        setStatsClients(stats.clients ?? manualStats?.clients ?? 0);
+        setStatsTemp(stats.temp ?? manualStats?.temp ?? 0);
+      } catch (error) {
+        console.error('Failed to load site stats:', error);
+
+        if (isMounted && manualStats) {
+          setStatsSessions(manualStats.sessions ?? 0);
+          setStatsSatisfaction(manualStats.satisfaction ?? 0);
+          setStatsClients(manualStats.clients ?? 0);
+          setStatsTemp(manualStats.temp ?? 0);
+        }
+      }
+    };
+
+    loadStats();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Translations
   const t = translations[language] || translations.en || {
     footer: '© 2025 Cold Therapy by Dan Hayat. All rights reserved.',
