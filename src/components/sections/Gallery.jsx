@@ -109,13 +109,9 @@ const Gallery = () => {
                       e.target.style.opacity = '1';
                     }}
                     onError={(e) => {
-                      console.log('❌ Image failed to load, using fallback:', image.url);
-                      // Use a reliable fallback image
-                      e.target.src = `https://picsum.photos/seed/${image.id}/800/600.jpg`;
-                      e.target.onerror = () => {
-                        // Ultimate fallback
-                        e.target.src = 'https://via.placeholder.com/800x600/0ea5e9/ffffff?text=Cold+Therapy';
-                      };
+                      console.log('❌ Image failed to load:', image.url);
+                      // Don't use fallbacks - let the error show naturally
+                      // This prevents placeholder images from replacing actual Supabase content
                     }}
                     style={{ opacity: '0', transition: 'opacity 0.3s ease-in-out' }}
                   />
