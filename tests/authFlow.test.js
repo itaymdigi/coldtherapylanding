@@ -37,7 +37,7 @@ import { __mocks } from '../src/lib/supabase';
 
 const { auth: authMock, query: queryMock, mutation: mutationMock } = __mocks;
 
-import { getCurrentUser, login, logout, register } from '../src/api/auth';
+import { getCurrentUser, login, logout, register, verifyToken } from '../src/api/auth';
 
 describe('auth API with Supabase Auth', () => {
   beforeEach(() => {
@@ -47,16 +47,13 @@ describe('auth API with Supabase Auth', () => {
   describe('register', () => {
     it('signs up user via Supabase Auth and creates profile record', async () => {
       authMock.signUp.mockResolvedValue({
-        data: {
-          user: {
-            id: 'user-123',
-            email: 'test@example.com',
-          },
-          session: {
-            access_token: 'token-abc',
-          },
+        user: {
+          id: 'user-123',
+          email: 'test@example.com',
         },
-        error: null,
+        session: {
+          access_token: 'token-abc',
+        },
       });
 
       queryMock.getById
@@ -124,16 +121,13 @@ describe('auth API with Supabase Auth', () => {
   describe('login', () => {
     it('signs in existing user and updates profile metadata', async () => {
       authMock.signIn.mockResolvedValue({
-        data: {
-          user: {
-            id: 'user-456',
-            email: 'existing@example.com',
-          },
-          session: {
-            access_token: 'token-login',
-          },
+        user: {
+          id: 'user-456',
+          email: 'existing@example.com',
         },
-        error: null,
+        session: {
+          access_token: 'token-login',
+        },
       });
 
       queryMock.getById.mockResolvedValue({
@@ -234,6 +228,49 @@ describe('auth API with Supabase Auth', () => {
       await logout();
 
       expect(authMock.signOut).toHaveBeenCalled();
+    });
+  });
+
+  describe('verifyToken', () => {
+    it('returns mapped profile when token is valid', async () => {
+      authMock.getUser.mockResolvedValue({
+        id: 'user-999',
+        email: 'token@example.com',
+      });
+
+      queryMock.getById.mockResolvedValue({
+        id: 'user-999',
+        email: 'token@example.com',
+        name: 'Token User',
+        phone: '+972123456',
+        gender: 'male',
+        total_sessions: 3,
+        total_duration: 180,
+      });
+
+      const result = await verifyToken({ token: 'valid-token' });
+
+      expect(authMock.getUser).toHaveBeenCalledWith('valid-token');
+      expect(queryMock.getById).toHaveBeenCalledWith('users', 'user-999');
+      expect(result).toEqual({
+        id: 'user-999',
+        email: 'token@example.com',
+        name: 'Token User',
+        phone: '+972123456',
+        gender: 'male',
+        totalSessions: 3,
+        totalDuration: 180,
+      });
+    });
+
+    it('returns null when token is invalid or lookup fails', async () => {
+      authMock.getUser.mockResolvedValue(null);
+
+      const result = await verifyToken({ token: 'invalid-token' });
+
+      expect(authMock.getUser).toHaveBeenCalledWith('invalid-token');
+      expect(queryMock.getById).not.toHaveBeenCalled();
+      expect(result).toBeNull();
     });
   });
 });

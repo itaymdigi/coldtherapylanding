@@ -344,8 +344,8 @@ export const auth = {
   /**
    * Get current user
    */
-  async getUser() {
-    const { data: { user }, error } = await supabase.auth.getUser();
+  async getUser(accessToken) {
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
     if (error) throw error;
     return user;
   },

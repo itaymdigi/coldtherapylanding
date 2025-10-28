@@ -50,15 +50,11 @@ async function upsertUserProfile({ id, email, name, phone, gender }) {
 }
 
 export async function register({ email, password, name, phone, gender }) {
-  const { data, error } = await supabaseAuth.signUp(email, password, {
+  const data = await supabaseAuth.signUp(email, password, {
     name,
     phone,
     gender,
   });
-
-  if (error) {
-    throw error;
-  }
 
   const authUser = data?.user;
   const session = data?.session;
@@ -84,11 +80,7 @@ export async function register({ email, password, name, phone, gender }) {
 }
 
 export async function login({ email, password, name, phone, gender }) {
-  const { data, error } = await supabaseAuth.signIn(email, password);
-
-  if (error) {
-    throw error;
-  }
+  const data = await supabaseAuth.signIn(email, password);
 
   const authUser = data?.user;
   const session = data?.session;
@@ -127,6 +119,40 @@ export async function getCurrentUser() {
 export async function logout() {
   await supabaseAuth.signOut();
   return { success: true };
+}
+
+export async function verifyToken({ token }) {
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const authUser = await supabaseAuth.getUser(token);
+
+    if (!authUser) {
+      return null;
+    }
+
+    let profile;
+
+    try {
+      profile = await query.getById('users', authUser.id);
+    } catch {
+      await upsertUserProfile({
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.user_metadata?.name,
+        phone: authUser.user_metadata?.phone,
+        gender: authUser.user_metadata?.gender,
+      });
+
+      profile = await query.getById('users', authUser.id);
+    }
+
+    return mapDbUserToProfile(profile);
+  } catch {
+    return null;
+  }
 }
 
 // Admin login
