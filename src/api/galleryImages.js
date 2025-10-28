@@ -3,7 +3,7 @@
  * Replaces convex/galleryImages.ts
  */
 
-import { query, mutation } from '../lib/supabase';
+import { query, mutation, supabase } from '../lib/supabase';
 
 // Get all gallery images
 export const getGalleryImages = async () => {
