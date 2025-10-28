@@ -1,5 +1,10 @@
 import { useApp } from '../../contexts/AppContext';
 import AdminAuth from './AdminAuth';
+import AdminSchedule from './AdminSchedule';
+import AdminGallery from './AdminGallery';
+import AdminDanPhoto from './AdminDanPhoto';
+import AdminInstructors from './AdminInstructors';
+import AdminSettings from './AdminSettings';
 
 const AdminPanelNew = () => {
   const { isAuthenticated, adminSection, setAdminSection, handleAdminClose } = useApp();
@@ -106,28 +111,20 @@ const AdminPanelNew = () => {
 
 // Separate component to avoid Convex imports being loaded when not authenticated
 const AuthenticatedAdminContent = ({ adminSection }) => {
-  // Simple stub components to avoid Convex import errors
-  const AdminStub = ({ title }) => (
-    <div className="p-8 text-center text-white">
-      <h2 className="text-2xl font-bold mb-4">{title} - Under Maintenance</h2>
-      <p>This admin section is being migrated to Supabase.</p>
-    </div>
-  );
-
-  // Render the appropriate admin section stub
+  // Render the appropriate admin section
   switch (adminSection) {
     case 'schedule':
-      return <AdminStub title="Schedule Management" />;
+      return <AdminSchedule />;
     case 'gallery':
-      return <AdminStub title="Gallery Management" />;
+      return <AdminGallery />;
     case 'danPhoto':
-      return <AdminStub title="Dan's Photo Management" />;
+      return <AdminDanPhoto />;
     case 'instructors':
-      return <AdminStub title="Instructors Management" />;
+      return <AdminInstructors />;
     case 'settings':
-      return <AdminStub title="Settings" />;
+      return <AdminSettings />;
     default:
-      return <AdminStub title="Schedule Management" />;
+      return <AdminSchedule />;
   }
 };
 
