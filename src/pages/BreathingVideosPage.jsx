@@ -1,12 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import * as api from '../api';
 import { useApp } from '../contexts/AppContext';
+import VideoPlayer from '../components/VideoPlayer';
 
 const BreathingVideosPage = () => {
   const { t } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [userEmail, setUserEmail] = useState(''); // In real app, get from auth
+
+  // Helper function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url) => {
+    if (!url) return null;
+    
+    // Handle different YouTube URL formats
+    const patterns = [
+      /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/,
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/,
+      /(?:youtube\.com\/.*[?&]v=)([a-zA-Z0-9_-]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    
+    return null;
+  };
 
   // Helper function to ensure URL is in embed format with sound enabled
   const ensureEmbedUrl = (url) => {
@@ -338,14 +358,25 @@ const BreathingVideosPage = () => {
               <div className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-xl rounded-3xl border-2 border-cyan-400/50 overflow-hidden">
                 {/* Video Player */}
                 <div className="aspect-video bg-black">
-                  <iframe
-                    className="w-full h-full"
-                    src={ensureEmbedUrl(selectedVideo.videoUrl)}
-                    title={selectedVideo.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  ></iframe>
+                  {(() => {
+                    const videoId = getYouTubeVideoId(selectedVideo.videoUrl);
+                    return videoId ? (
+                      <VideoPlayer
+                        videoId={videoId}
+                        title={selectedVideo.title}
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <iframe
+                        className="w-full h-full"
+                        src={ensureEmbedUrl(selectedVideo.videoUrl)}
+                        title={selectedVideo.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      ></iframe>
+                    );
+                  })()}
                 </div>
 
                 {/* Video Info */}

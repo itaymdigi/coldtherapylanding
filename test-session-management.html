@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Management Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .session-list { margin-top: 20px; }
+        .session-item { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
+        .error { color: red; margin: 10px 0; }
+        .success { color: green; margin: 10px 0; }
+        .tabs { display: flex; margin-bottom: 20px; }
+        .tab { padding: 10px 15px; cursor: pointer; border: 1px solid #ddd; border-bottom: none; }
+        .tab.active { background: #007bff; color: white; }
+        .tab-content { display: none; border: 1px solid #ddd; padding: 20px; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Session Management Test</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('auth')">Authentication</div>
+        <div class="tab" onclick="showTab('sessions')">Sessions</div>
+    </div>
+
+    <div id="auth" class="tab-content active">
+        <h2>Login / Register</h2>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="test@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="password" placeholder="password">
+        </div>
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" id="name" placeholder="Test User">
+        </div>
+        <button onclick="register()">Register</button>
+        <button onclick="login()">Login</button>
+        <button onclick="logout()">Logout</button>
+        <button onclick="checkAuth()">Check Auth</button>
+        <div id="auth-status"></div>
+    </div>
+
+    <div id="sessions" class="tab-content">
+        <h2>Manage Sessions</h2>
+        
+        <h3>Add Session</h3>
+        <div class="form-group">
+            <label>Duration (seconds):</label>
+            <input type="number" id="duration" placeholder="180">
+        </div>
+        <div class="form-group">
+            <label>Temperature (°C):</label>
+            <input type="number" step="0.1" id="temperature" placeholder="3.5">
+        </div>
+        <div class="form-group">
+            <label>Mood:</label>
+            <select id="mood">
+                <option value="">Select mood</option>
+                <option value="excellent">Excellent</option>
+                <option value="good">Good</option>
+                <option value="neutral">Neutral</option>
+                <option value="challenging">Challenging</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Rating (1-5):</label>
+            <input type="number" min="1" max="5" id="rating" placeholder="4">
+        </div>
+        <div class="form-group">
+            <label>Notes:</label>
+            <textarea id="notes" placeholder="How did you feel?"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Session ID to Update/Delete:</label>
+            <input type="text" id="sessionId" placeholder="UUID from session list">
+        </div>
+        
+        <button onclick="addSession()">Add Session</button>
+        <button onclick="updateSession()">Update Session</button>
+        <button onclick="deleteSession()">Delete Session</button>
+        <button onclick="loadSessions()">Refresh Sessions</button>
+        
+        <div id="session-status"></div>
+        
+        <h3>Your Sessions</h3>
+        <div id="sessions-list" class="session-list"></div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://hqumvakozmicqfrbjssr.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdW12YWtvem1pY3FmcmJqc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAyNjc0MTcsImV4cCI6MjA0NTg0MzQxN30.Mg4UKokQRWkzZQK1L5YAw0yfTBw7A6bLo3YjKb_JnNk';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        let currentUser = null;
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function status(message, isError = false) {
+            const div = document.createElement('div');
+            div.className = isError ? 'error' : 'success';
+            div.textContent = message;
+            return div;
+        }
+
+        async function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: { name }
+                    }
+                });
+
+                if (error) throw error;
+
+                document.getElementById('auth-status').appendChild(status('Registration successful!'));
+                await checkAuth();
+            } catch (error) {
+                document.getElementById('auth-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                document.getElementById('auth-status').appendChild(status('Login successful!'));
+                await checkAuth();
+            } catch (error) {
+                document.getElementById('auth-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                currentUser = null;
+                document.getElementById('auth-status').appendChild(status('Logged out successfully!'));
+                document.getElementById('sessions-list').innerHTML = '';
+            } catch (error) {
+                document.getElementById('auth-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error) throw error;
+                
+                currentUser = user;
+                if (user) {
+                    document.getElementById('auth-status').appendChild(status(`Logged in as: ${user.email}`));
+                    await loadSessions();
+                } else {
+                    document.getElementById('auth-status').appendChild(status('Not authenticated'));
+                }
+            } catch (error) {
+                document.getElementById('auth-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function addSession() {
+            if (!currentUser) {
+                document.getElementById('session-status').appendChild(status('Please login first', true));
+                return;
+            }
+
+            const sessionData = {
+                user_id: currentUser.id,
+                duration: parseInt(document.getElementById('duration').value) || 180,
+                temperature: parseFloat(document.getElementById('temperature').value) || null,
+                mood: document.getElementById('mood').value || null,
+                rating: parseInt(document.getElementById('rating').value) || null,
+                notes: document.getElementById('notes').value || null,
+                completed_at: new Date().toISOString()
+            };
+
+            try {
+                const { data, error } = await supabase
+                    .from('practice_sessions')
+                    .insert(sessionData)
+                    .select();
+
+                if (error) throw error;
+
+                document.getElementById('session-status').appendChild(status('Session added successfully!'));
+                await loadSessions();
+            } catch (error) {
+                document.getElementById('session-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function updateSession() {
+            const sessionId = document.getElementById('sessionId').value;
+            if (!sessionId) {
+                document.getElementById('session-status').appendChild(status('Please enter a session ID', true));
+                return;
+            }
+
+            const updates = {
+                temperature: parseFloat(document.getElementById('temperature').value) || undefined,
+                mood: document.getElementById('mood').value || undefined,
+                rating: parseInt(document.getElementById('rating').value) || undefined,
+                notes: document.getElementById('notes').value || undefined,
+            };
+
+            // Remove undefined values
+            Object.keys(updates).forEach(key => {
+                if (updates[key] === undefined) delete updates[key];
+            });
+
+            try {
+                const { data, error } = await supabase
+                    .from('practice_sessions')
+                    .update(updates)
+                    .eq('id', sessionId)
+                    .select();
+
+                if (error) throw error;
+
+                document.getElementById('session-status').appendChild(status('Session updated successfully!'));
+                await loadSessions();
+            } catch (error) {
+                document.getElementById('session-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function deleteSession() {
+            const sessionId = document.getElementById('sessionId').value;
+            if (!sessionId) {
+                document.getElementById('session-status').appendChild(status('Please enter a session ID', true));
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('practice_sessions')
+                    .delete()
+                    .eq('id', sessionId);
+
+                if (error) throw error;
+
+                document.getElementById('session-status').appendChild(status('Session deleted successfully!'));
+                await loadSessions();
+            } catch (error) {
+                document.getElementById('session-status').appendChild(status(error.message, true));
+            }
+        }
+
+        async function loadSessions() {
+            if (!currentUser) {
+                document.getElementById('sessions-list').innerHTML = '<p>Please login to view sessions</p>';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('practice_sessions')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('completed_at', { ascending: false });
+
+                if (error) throw error;
+
+                const sessionsList = document.getElementById('sessions-list');
+                if (data.length === 0) {
+                    sessionsList.innerHTML = '<p>No sessions found</p>';
+                    return;
+                }
+
+                sessionsList.innerHTML = data.map(session => `
+                    <div class="session-item">
+                        <strong>ID:</strong> ${session.id}<br>
+                        <strong>Duration:</strong> ${session.duration}s<br>
+                        <strong>Temperature:</strong> ${session.temperature || 'N/A'}°C<br>
+                        <strong>Mood:</strong> ${session.mood || 'N/A'}<br>
+                        <strong>Rating:</strong> ${session.rating || 'N/A'}/5<br>
+                        <strong>Notes:</strong> ${session.notes || 'N/A'}<br>
+                        <strong>Completed:</strong> ${new Date(session.completed_at).toLocaleString()}<br>
+                        <strong>Personal Best:</strong> ${session.personal_best ? 'Yes' : 'No'}
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('sessions-list').appendChild(status(error.message, true));
+            }
+        }
+
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>

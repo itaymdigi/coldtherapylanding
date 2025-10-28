@@ -1,6 +1,7 @@
 import OurInstructors from '../components/sections/OurInstructors';
 import Gallery from '../components/sections/Gallery';
 import StatsCounter from '../components/StatsCounter';
+import VideoPlayer from '../components/VideoPlayer';
 import { useApp } from '../contexts/AppContext';
 
 const HomePage = () => {
@@ -453,28 +454,22 @@ const HomePage = () => {
 
           <div className="relative rounded-3xl overflow-hidden border-4 border-cyan-400/30 mb-8 group scroll-reveal hover:border-cyan-400 hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-500">
             <div className="aspect-video">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/1uerS5JjjRI"
+              <VideoPlayer
+                videoId="1uerS5JjjRI"
                 title="Cold Therapy - Main Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+                className="w-full h-full"
+              />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="relative rounded-2xl overflow-hidden border-2 border-cyan-400/30 group cursor-pointer hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-500 scroll-reveal">
+            <div className="relative rounded-2xl overflow-hidden border-2 border-cyan-400/30 group hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-500 scroll-reveal">
               <div className="aspect-video">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/bdWnPq7MuWE"
+                <VideoPlayer
+                  videoId="bdWnPq7MuWE"
                   title="Cold Therapy Session"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+                  className="w-full h-full"
+                />
               </div>
             </div>
 

@@ -186,3 +186,37 @@ export async function deleteSession({ token, sessionId }) {
 
   return { success: true };
 }
+
+// Update a session
+export async function updateSession({ sessionId, updates }) {
+  const authUser = await requireAuthenticatedUser();
+
+  const session = await query.getById('practice_sessions', sessionId);
+  if (!session) {
+    throw new Error('Session not found');
+  }
+
+  // Verify ownership
+  if (session.user_id !== authUser.id) {
+    throw new Error('Unauthorized');
+  }
+
+  // Update only allowed fields
+  const allowedUpdates = {
+    notes: updates.notes,
+    mood: updates.mood, 
+    rating: updates.rating,
+    temperature: updates.temperature,
+  };
+
+  // Remove undefined values
+  Object.keys(allowedUpdates).forEach(key => {
+    if (allowedUpdates[key] === undefined) {
+      delete allowedUpdates[key];
+    }
+  });
+
+  const updatedSession = await mutation.update('practice_sessions', sessionId, allowedUpdates);
+
+  return updatedSession;
+}
