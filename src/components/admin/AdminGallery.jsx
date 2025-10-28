@@ -1,11 +1,11 @@
-import React, { useId, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import { 
   getGalleryImages, 
   addGalleryImage, 
-  updateGalleryImage, 
   deleteGalleryImage,
-  uploadGalleryImage,
-  deleteGalleryImageFile
+  deleteGalleryImageFile,
+  updateGalleryImage,
+  uploadGalleryImage
 } from '../../api/galleryImages';
 
 const AdminGallery = () => {
@@ -22,19 +22,19 @@ const AdminGallery = () => {
   const altInputId = useId();
   const fileInputId = useId();
 
-  // Load gallery images on component mount
-  useEffect(() => {
-    loadGalleryImages();
-  }, []);
-
-  const loadGalleryImages = async () => {
+  const loadGalleryImages = useCallback(async () => {
     try {
       const images = await getGalleryImages();
       setGalleryImages(images);
     } catch (error) {
       console.error('Error loading gallery images:', error);
     }
-  };
+  }, []);
+
+  // Load gallery images on component mount
+  useEffect(() => {
+    loadGalleryImages();
+  }, [loadGalleryImages]);
 
   const handleGallerySubmit = async (e) => {
     e.preventDefault();
@@ -113,7 +113,7 @@ const AdminGallery = () => {
       alert('✅ Image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('❌ Failed to upload image: ' + error.message);
+      alert(`❌ Failed to upload image: ${error.message}`);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -157,7 +157,7 @@ const AdminGallery = () => {
       await deleteGalleryImage(imageId);
       
       // Delete file from storage if it's a Supabase URL
-      if (image && image.url.includes('supabase.co')) {
+      if (image?.url.includes('supabase.co')) {
         await deleteGalleryImageFile(image.url);
       }
       
@@ -165,7 +165,7 @@ const AdminGallery = () => {
       await loadGalleryImages();
     } catch (error) {
       console.error('Error deleting gallery image:', error);
-      alert('❌ Failed to delete gallery image: ' + error.message);
+      alert(`❌ Failed to delete gallery image: ${error.message}`);
     }
   };
 
@@ -266,7 +266,7 @@ const AdminGallery = () => {
                 {editingGalleryId ? 'Updating...' : 'Adding...'}
               </>
             ) : (
-              <>{editingGalleryId ? '💾 Update Image' : '➕ Add Image'}</>
+              {editingGalleryId ? '💾 Update Image' : '➕ Add Image'}
             )}
           </button>
           {editingGalleryId && (

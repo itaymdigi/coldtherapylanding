@@ -43,24 +43,37 @@ export async function deleteInstructor(id) {
 
 // Upload instructor photo to Supabase Storage
 export async function uploadInstructorPhoto(file) {
-  const fileName = `${Date.now()}-${file.name}`;
-  const filePath = `instructors/${fileName}`;
-  
-  const { error } = await supabase.storage
-    .from('assets')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
+  try {
+    const fileName = `${Date.now()}-${file.name}`;
+    const filePath = `instructors/${fileName}`;
     
-  if (error) throw error;
-  
-  // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('assets')
-    .getPublicUrl(filePath);
+    console.log('Uploading file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-  return publicUrl;
+    const { data, error } = await supabase.storage
+      .from('assets')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type
+      });
+    
+    if (error) {
+      console.error('Supabase storage error:', error);
+      throw new Error(`Storage upload failed: ${error.message}`);
+    }
+    
+    console.log('Upload successful:', data);
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('assets')
+      .getPublicUrl(filePath);
+    
+    return publicUrl;
+  } catch (error) {
+    console.error('Upload error details:', error);
+    throw error;
+  }
 }
 
 // Delete instructor photo file from Supabase Storage

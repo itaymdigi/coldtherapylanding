@@ -59,24 +59,37 @@ export async function deleteGalleryImage(id) {
 
 // Upload image to Supabase Storage
 export async function uploadGalleryImage(file) {
-  const fileName = `${Date.now()}-${file.name}`;
-  const filePath = `gallery/${fileName}`;
-  
-  const { error } = await supabase.storage
-    .from('assets')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
+  try {
+    const fileName = `${Date.now()}-${file.name}`;
+    const filePath = `gallery/${fileName}`;
     
-  if (error) throw error;
-  
-  // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('assets')
-    .getPublicUrl(filePath);
+    console.log('Uploading gallery file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-  return publicUrl;
+    const { data, error } = await supabase.storage
+      .from('assets')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type
+      });
+    
+    if (error) {
+      console.error('Supabase storage error:', error);
+      throw new Error(`Storage upload failed: ${error.message}`);
+    }
+    
+    console.log('Gallery upload successful:', data);
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('assets')
+      .getPublicUrl(filePath);
+    
+    return publicUrl;
+  } catch (error) {
+    console.error('Gallery upload error details:', error);
+    throw error;
+  }
 }
 
 // Delete image from Supabase Storage

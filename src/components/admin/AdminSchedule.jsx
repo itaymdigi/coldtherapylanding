@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { 
-  getAllScheduleImages,
   addScheduleImage,
-  updateScheduleImage,
   deleteScheduleImage,
+  deleteScheduleImageFile,
+  getAllScheduleImages,
   setActiveSchedule,
-  uploadScheduleImage,
-  deleteScheduleImageFile
+  updateScheduleImage,
+  uploadScheduleImage
 } from '../../api/scheduleImages';
 
 const AdminSchedule = () => {
@@ -19,21 +19,24 @@ const AdminSchedule = () => {
   const [scheduleImages, setScheduleImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputId = React.useId();
+  const fileInputId = useId();
+  const urlInputId = useId();
+  const titleInputId = useId();
+  const descriptionInputId = useId();
 
-  // Load schedule images on component mount
-  useEffect(() => {
-    loadScheduleImages();
-  }, []);
-
-  const loadScheduleImages = async () => {
+  const loadScheduleImages = useCallback(async () => {
     try {
       const images = await getAllScheduleImages();
       setScheduleImages(images);
     } catch (error) {
       console.error('Error loading schedule images:', error);
     }
-  };
+  }, []);
+
+  // Load schedule images on component mount
+  useEffect(() => {
+    loadScheduleImages();
+  }, [loadScheduleImages]);
 
   const handleScheduleSubmit = async (e) => {
     e.preventDefault();
@@ -68,7 +71,7 @@ const AdminSchedule = () => {
       await loadScheduleImages();
     } catch (error) {
       console.error('Error saving schedule:', error);
-      alert('❌ Failed to save schedule: ' + error.message);
+      alert(`❌ Failed to save schedule: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +108,7 @@ const AdminSchedule = () => {
       alert('✅ Schedule image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading schedule image:', error);
-      alert('❌ Failed to upload schedule image: ' + error.message);
+      alert(`❌ Failed to upload schedule image: ${error.message}`);
     } finally {
       setIsUploading(false);
     }
@@ -142,7 +145,7 @@ const AdminSchedule = () => {
       await deleteScheduleImage(scheduleId);
       
       // Delete file from storage if it's a Supabase URL
-      if (schedule && schedule.url.includes('supabase.co')) {
+      if (schedule?.url.includes('supabase.co')) {
         await deleteScheduleImageFile(schedule.url);
       }
       
@@ -180,8 +183,9 @@ const AdminSchedule = () => {
         </div>
 
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Image URL *</label>
+          <label htmlFor={urlInputId} className="block text-white text-sm font-semibold mb-2">Image URL *</label>
           <input
+            id={urlInputId}
             type="url"
             required
             value={scheduleForm.url}
@@ -192,8 +196,9 @@ const AdminSchedule = () => {
         </div>
 
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Title *</label>
+          <label htmlFor={titleInputId} className="block text-white text-sm font-semibold mb-2">Title *</label>
           <input
+            id={titleInputId}
             type="text"
             required
             value={scheduleForm.title}
@@ -204,10 +209,11 @@ const AdminSchedule = () => {
         </div>
 
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">
+          <label htmlFor={descriptionInputId} className="block text-white text-sm font-semibold mb-2">
             Description (Optional)
           </label>
           <textarea
+            id={descriptionInputId}
             value={scheduleForm.description}
             onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
             placeholder="Additional details..."
@@ -222,13 +228,14 @@ const AdminSchedule = () => {
             disabled={isLoading || isUploading}
             className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isLoading && (
               <>
                 <span className="inline-block animate-spin mr-2">⏳</span>
                 {editingScheduleId ? 'Updating...' : 'Adding...'}
               </>
-            ) : (
-              <>{editingScheduleId ? '💾 Update Schedule' : '➕ Add Schedule'}</>
+            )}
+            {!isLoading && (
+              editingScheduleId ? 'Update Schedule' : 'Add Schedule'
             )}
           </button>
           {editingScheduleId && (
@@ -277,6 +284,7 @@ const AdminSchedule = () => {
                 <div className="flex gap-2 mt-3">
                   {!schedule.is_active && (
                     <button
+                      type="button"
                       onClick={() => handleSetActiveSchedule(schedule.id)}
                       disabled={isLoading}
                       className="px-3 py-1 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-all text-sm disabled:opacity-50"
@@ -285,6 +293,7 @@ const AdminSchedule = () => {
                     </button>
                   )}
                   <button
+                    type="button"
                     onClick={() => handleEditSchedule(schedule)}
                     disabled={isLoading}
                     className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all text-sm disabled:opacity-50"
@@ -292,6 +301,7 @@ const AdminSchedule = () => {
                     ✏️ Edit
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDeleteScheduleImage(schedule.id)}
                     disabled={isLoading}
                     className="px-3 py-1 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all text-sm disabled:opacity-50"

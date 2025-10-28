@@ -3,7 +3,7 @@
  * Enhanced with admin operations and file upload
  */
 
-import { supabase, query, mutation } from '../lib/supabase';
+import { mutation, query, supabase } from '../lib/supabase';
 
 // Get active Dan photo
 export async function getActiveDanPhoto() {
@@ -49,24 +49,37 @@ export async function deleteDanPhoto(id) {
 
 // Upload Dan photo to Supabase Storage
 export async function uploadDanPhoto(file) {
-  const fileName = `dan-photo-${Date.now()}.${file.name.split('.').pop()}`;
-  const filePath = `about/${fileName}`;
-  
-  const { error } = await supabase.storage
-    .from('assets')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
+  try {
+    const fileName = `dan-photo-${Date.now()}.${file.name.split('.').pop()}`;
+    const filePath = `about/${fileName}`;
     
-  if (error) throw error;
-  
-  // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('assets')
-    .getPublicUrl(filePath);
+    console.log('Uploading Dan photo file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-  return publicUrl;
+    const { data, error } = await supabase.storage
+      .from('assets')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type
+      });
+    
+    if (error) {
+      console.error('Supabase storage error:', error);
+      throw new Error(`Storage upload failed: ${error.message}`);
+    }
+    
+    console.log('Dan photo upload successful:', data);
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('assets')
+      .getPublicUrl(filePath);
+    
+    return publicUrl;
+  } catch (error) {
+    console.error('Dan photo upload error details:', error);
+    throw error;
+  }
 }
 
 // Delete Dan photo file from Supabase Storage

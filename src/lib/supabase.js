@@ -49,7 +49,6 @@ export const supabase = createClient(effectiveSupabaseUrl, effectiveSupabaseAnon
     headers: {
       'x-application-name': 'cold-therapy-landing',
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
     },
   },
 });

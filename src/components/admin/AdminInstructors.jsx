@@ -155,7 +155,7 @@ const AdminInstructors = () => {
       alert('✅ Instructor photo uploaded successfully!');
     } catch (error) {
       console.error('Error uploading instructor photo:', error);
-      alert('❌ Failed to upload instructor photo: ' + error.message);
+      alert(`❌ Failed to upload instructor photo: ${error.message}`);
     } finally {
       setIsUploading(false);
     }

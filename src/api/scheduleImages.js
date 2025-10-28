@@ -65,24 +65,37 @@ export async function setActiveSchedule({ id }) {
 
 // Upload schedule image to Supabase Storage
 export async function uploadScheduleImage(file) {
-  const fileName = `${Date.now()}-${file.name}`;
-  const filePath = `schedule/${fileName}`;
-  
-  const { error } = await supabase.storage
-    .from('assets')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
+  try {
+    const fileName = `${Date.now()}-${file.name}`;
+    const filePath = `schedule/${fileName}`;
     
-  if (error) throw error;
-  
-  // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('assets')
-    .getPublicUrl(filePath);
+    console.log('Uploading schedule file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-  return publicUrl;
+    const { data, error } = await supabase.storage
+      .from('assets')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type
+      });
+    
+    if (error) {
+      console.error('Supabase storage error:', error);
+      throw new Error(`Storage upload failed: ${error.message}`);
+    }
+    
+    console.log('Schedule upload successful:', data);
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('assets')
+      .getPublicUrl(filePath);
+    
+    return publicUrl;
+  } catch (error) {
+    console.error('Schedule upload error details:', error);
+    throw error;
+  }
 }
 
 // Delete schedule image file from Supabase Storage
