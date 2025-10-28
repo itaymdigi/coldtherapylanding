@@ -65,6 +65,12 @@ const Header = () => {
                 {t?.packages || 'Packages'}
               </Link>
               <Link
+                to="/#instructors"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t?.instructors || 'Our Instructors'}
+              </Link>
+              <Link
                 to="/#gallery"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
@@ -83,7 +89,7 @@ const Header = () => {
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-sm font-semibold text-white"
               >
-                {language === 'en' ? '🇺🇸' : '🇮🇱'}
+                {language === 'en' ? '🇮🇱' : '🇺🇸'}
               </button>
 
               {/* Music Toggle */}
@@ -94,14 +100,6 @@ const Header = () => {
               >
                 {isPlaying ? '🔇' : '🎵'}
               </button>
-
-              {/* Admin Link */}
-              <Link
-                to="/admin"
-                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
-              >
-                🔧 Admin
-              </Link>
 
               {/* Admin Button */}
               <button
@@ -122,7 +120,7 @@ const Header = () => {
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-sm"
               >
-                {language === 'en' ? '🇺🇸' : '🇮🇱'}
+                {language === 'en' ? '🇮🇱' : '🇺🇸'}
               </button>
 
               {/* Music Toggle Mobile */}
@@ -224,6 +222,13 @@ const Header = () => {
                 {t?.packages || 'Packages'}
               </Link>
               <Link
+                to="/#instructors"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
+              >
+                {t?.instructors || 'Our Instructors'}
+              </Link>
+              <Link
                 to="/#gallery"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
@@ -236,13 +241,6 @@ const Header = () => {
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t?.contact || 'Contact'}
-              </Link>
-              <Link
-                to="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
-              >
-                🔧 Admin
               </Link>
             </div>
           </div>

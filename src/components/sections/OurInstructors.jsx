@@ -235,7 +235,7 @@ const OurInstructors = () => {
   }
 
   return (
-    <section className="py-16 sm:py-20 relative overflow-hidden">
+    <section id="instructors" className="py-16 sm:py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent pointer-events-none" />
 
