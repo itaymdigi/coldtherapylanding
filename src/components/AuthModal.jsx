@@ -1,7 +1,6 @@
-import { useMutation } from 'convex/react';
 import { Eye, EyeOff, X } from 'lucide-react';
 import { useId, useState } from 'react';
-import { api } from '../../convex/_generated/api';
+import * as api from '../api';
 
 export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,8 +22,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
   const passwordId = useId();
   const phoneId = useId();
 
-  const loginMutation = useMutation(api.auth.login);
-  const registerMutation = useMutation(api.auth.register);
+  // Supabase mutations are now async functions
 
   const translations = {
     he: {
@@ -71,12 +69,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess, language = 'he' 
     try {
       let result;
       if (isLogin) {
-        result = await loginMutation({
+        result = await api.login({
           email: formData.email,
           password: formData.password,
         });
       } else {
-        result = await registerMutation({
+        result = await api.register({
           email: formData.email,
           password: formData.password,
           name: formData.name,

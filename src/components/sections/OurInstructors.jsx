@@ -1,7 +1,6 @@
-import { useQuery } from 'convex/react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
-import { api } from '../../../convex/_generated/api';
+import * as api from '../../api';
 import { useApp } from '../../contexts/AppContext';
 
 // Component to display image from Convex storage
@@ -11,11 +10,8 @@ const StorageImage = ({ storageId, alt, className }) => {
   // Check if it's already a full URL or data URI
   const isDirectUrl = storageId && (storageId.startsWith('data:') || storageId.startsWith('http'));
 
-  // Query the fileStorage API to get proper URL for storage IDs
-  const imageUrl = useQuery(
-    api.fileStorage?.getFileUrl,
-    storageId && !isDirectUrl ? { storageId } : 'skip'
-  );
+  // For Supabase, images are direct URLs, no need to query
+  const imageUrl = null; // Not needed with Supabase
 
   // Force image reload when storageId changes
   useEffect(() => {
@@ -161,8 +157,21 @@ const OurInstructors = () => {
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const modalTitleId = useId();
 
-  // Query instructors - will return undefined while loading or if function doesn't exist
-  const instructors = useQuery(api.instructor?.getAllInstructors);
+  // Query instructors from Supabase
+  const [instructors, setInstructors] = useState(undefined);
+  
+  useEffect(() => {
+    async function loadInstructors() {
+      try {
+        const data = await api.getAllInstructors();
+        setInstructors(data);
+      } catch (error) {
+        console.error('Error loading instructors:', error);
+        setInstructors([]);
+      }
+    }
+    loadInstructors();
+  }, []);
 
   // Handle escape key for modal
   useEffect(() => {
@@ -253,7 +262,7 @@ const OurInstructors = () => {
               }}
             >
               {sortedInstructors.map((instructor) => (
-                <div key={instructor._id} className="min-w-full px-4">
+                <div key={instructor.id} className="min-w-full px-4">
                   <button
                     type="button"
                     onClick={() => setSelectedInstructor(instructor)}

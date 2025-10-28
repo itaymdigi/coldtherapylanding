@@ -4,17 +4,17 @@
  */
 
 import { supabase, query, mutation } from '../lib/supabase';
-import bcrypt from 'bcryptjs';
+// Note: bcryptjs is only used server-side. For browser, we'll use simple hashing temporarily
+// In production, password hashing should be done server-side via Supabase Edge Functions
 
-// Simple hash function (for compatibility with existing Convex hashes)
-function simpleHash(password) {
-  let hash = 0;
-  for (let i = 0; i < password.length; i++) {
-    const char = password.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return hash.toString(36);
+// Simple hash function using Web Crypto API (browser-compatible)
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }
 
 function generateToken() {
@@ -33,8 +33,8 @@ export async function register({ email, password, name, phone, gender }) {
     throw new Error('User with this email already exists');
   }
 
-  // Hash password using bcrypt for better security
-  const passwordHash = await bcrypt.hash(password, 10);
+  // Simple hash for now (in production, use Supabase Auth or Edge Functions)
+  const passwordHash = await hashPassword(password);
 
   // Create new user
   const user = await mutation.insert('users', {
@@ -85,7 +85,8 @@ export async function login({ email, password }) {
   const user = users[0];
 
   // Verify password
-  const isValid = await bcrypt.compare(password, user.password_hash);
+  const hashedInput = await hashPassword(password);
+  const isValid = hashedInput === user.password_hash;
   if (!isValid) {
     throw new Error('Invalid email or password');
   }

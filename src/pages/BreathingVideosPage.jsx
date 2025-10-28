@@ -1,6 +1,5 @@
-import { useQuery } from 'convex/react';
-import React, { useState } from 'react';
-import { api } from '../../convex/_generated/api';
+import React, { useEffect, useState } from 'react';
+import * as api from '../api';
 import { useApp } from '../contexts/AppContext';
 
 const BreathingVideosPage = () => {
@@ -35,13 +34,45 @@ const BreathingVideosPage = () => {
   };
 
   // Fetch videos and subscription
-  const allVideos = useQuery(api.breathingVideos.getAllVideos);
-  const freeVideos = useQuery(api.breathingVideos.getFreeVideos);
-  const premiumVideos = useQuery(api.breathingVideos.getPremiumVideos);
-  const subscription = useQuery(
-    api.subscriptions.checkSubscription,
-    userEmail ? { userEmail } : 'skip'
-  );
+  const [allVideos, setAllVideos] = useState([]);
+  const [freeVideos, setFreeVideos] = useState([]);
+  const [premiumVideos, setPremiumVideos] = useState([]);
+  const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadVideos() {
+      try {
+        const [all, free, premium] = await Promise.all([
+          api.getAllVideos(),
+          api.getFreeVideos(),
+          api.getPremiumVideos(),
+        ]);
+        setAllVideos(all);
+        setFreeVideos(free);
+        setPremiumVideos(premium);
+      } catch (error) {
+        console.error('Error loading videos:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadVideos();
+  }, []);
+
+  useEffect(() => {
+    async function checkSubscription() {
+      if (userEmail) {
+        try {
+          const sub = await api.checkSubscription({ userEmail });
+          setSubscription(sub);
+        } catch (error) {
+          console.error('Error checking subscription:', error);
+        }
+      }
+    }
+    checkSubscription();
+  }, [userEmail]);
 
   const hasActiveSubscription = subscription?.status === 'active';
 

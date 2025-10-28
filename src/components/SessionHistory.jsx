@@ -1,4 +1,3 @@
-import { useMutation, useQuery } from 'convex/react';
 import {
   Award,
   Calendar,
@@ -10,17 +9,34 @@ import {
   TrendingUp,
   Trophy,
 } from 'lucide-react';
-import { useState } from 'react';
-import { api } from '../../convex/_generated/api';
+import { useEffect, useState } from 'react';
+import * as api from '../api';
 
 export default function SessionHistory({ token, language = 'he' }) {
-  const sessions = useQuery(api.practiceSessions.getUserSessions, {
-    token,
-    limit: 20,
-  });
-  const stats = useQuery(api.practiceSessions.getUserStats, { token });
-  const deleteSessionMutation = useMutation(api.practiceSessions.deleteSession);
+  const [sessions, setSessions] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [sessionsData, statsData] = await Promise.all([
+          api.getUserSessions({ token, limit: 20 }),
+          api.getUserStats({ token }),
+        ]);
+        setSessions(sessionsData);
+        setStats(statsData);
+      } catch (error) {
+        console.error('Error loading session data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (token) {
+      loadData();
+    }
+  }, [token]);
 
   const translations = {
     he: {
@@ -102,7 +118,14 @@ export default function SessionHistory({ token, language = 'he' }) {
     if (confirm(language === 'he' ? 'האם למחוק אימון זה?' : 'Delete this session?')) {
       setDeletingId(sessionId);
       try {
-        await deleteSessionMutation({ token, sessionId });
+        await api.deleteSession({ token, sessionId });
+        // Reload data after delete
+        const [sessionsData, statsData] = await Promise.all([
+          api.getUserSessions({ token, limit: 20 }),
+          api.getUserStats({ token }),
+        ]);
+        setSessions(sessionsData);
+        setStats(statsData);
       } catch (error) {
         console.error('Error deleting session:', error);
         alert(error.message);

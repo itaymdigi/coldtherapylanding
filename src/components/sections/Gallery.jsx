@@ -1,11 +1,26 @@
-import { useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+import { useEffect, useState } from 'react';
+import { getGalleryImages } from '../../api/galleryImages';
 
 // Navigation ID for this section - must be static for anchor links to work
 const GALLERY_SECTION_ID = 'gallery';
 
 const Gallery = () => {
-  const galleryImages = useQuery(api.galleryImages.getGalleryImages);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadGalleryImages() {
+      try {
+        const images = await getGalleryImages();
+        setGalleryImages(images);
+      } catch (error) {
+        console.error('Error loading gallery images:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadGalleryImages();
+  }, []);
 
   return (
     <div
@@ -20,13 +35,18 @@ const Gallery = () => {
           See our cold therapy sessions in action and meet our community
         </p>
 
-        {galleryImages && galleryImages.length > 0 ? (
+        {loading ? (
+          <div className="text-center py-12 text-blue-200">
+            <div className="text-6xl mb-4">⏳</div>
+            <p className="text-xl">Loading gallery...</p>
+          </div>
+        ) : galleryImages && galleryImages.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 scroll-reveal">
             {galleryImages
               .sort((a, b) => a.order - b.order)
               .map((image) => (
                 <div
-                  key={image._id}
+                  key={image.id}
                   className="relative group overflow-hidden rounded-2xl border-2 border-cyan-400/30 hover:border-cyan-400 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-500"
                 >
                   <img

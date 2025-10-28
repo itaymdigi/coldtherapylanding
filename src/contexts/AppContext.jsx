@@ -1,24 +1,78 @@
-import { useMutation, useQuery } from 'convex/react';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { api } from '../../convex/_generated/api';
 import { translations } from '../data/translations';
+import * as api from '../api';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Convex queries
-  const convexGalleryImages = useQuery(api.galleryImages.getGalleryImages);
-  const convexScheduleImage = useQuery(api.scheduleImages.getActiveScheduleImage);
-  const convexDanPhoto = useQuery(api.danPhoto.getActiveDanPhoto);
-  const convexHeroVideo = useQuery(api.heroVideo.getActiveHeroVideo);
-  const siteStats = useQuery(api.siteStats.getSiteStats);
+  // Supabase data state
+  const [convexGalleryImages, setConvexGalleryImages] = useState([]);
+  const [convexScheduleImage, setConvexScheduleImage] = useState(null);
+  const [convexDanPhoto, setConvexDanPhoto] = useState(null);
+  const [convexHeroVideo, setConvexHeroVideo] = useState(null);
+  const [siteStats, setSiteStats] = useState(null);
+  const [dataLoading, setDataLoading] = useState(true);
 
-  // Convex mutations
-  const addGalleryImage = useMutation(api.galleryImages.addGalleryImage);
-  const updateGalleryImage = useMutation(api.galleryImages.updateGalleryImage);
-  const updateScheduleImage = useMutation(api.scheduleImages.addScheduleImage);
-  const updateDanPhotoMutation = useMutation(api.danPhoto.updateDanPhoto);
-  const uploadHeroVideoMutation = useMutation(api.heroVideo.uploadHeroVideo);
+  // Load data from Supabase
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [gallery, schedule, dan, hero, stats] = await Promise.all([
+          api.getGalleryImages(),
+          api.getActiveScheduleImage(),
+          api.getActiveDanPhoto(),
+          api.getActiveHeroVideo(),
+          api.getSiteStats(),
+        ]);
+        setConvexGalleryImages(gallery);
+        setConvexScheduleImage(schedule);
+        setConvexDanPhoto(dan);
+        setConvexHeroVideo(hero);
+        setSiteStats(stats);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Supabase mutations (async functions)
+  const addGalleryImage = async (args) => {
+    const result = await api.addGalleryImage(args);
+    const updated = await api.getGalleryImages();
+    setConvexGalleryImages(updated);
+    return result;
+  };
+
+  const updateGalleryImage = async (args) => {
+    const result = await api.updateGalleryImage(args);
+    const updated = await api.getGalleryImages();
+    setConvexGalleryImages(updated);
+    return result;
+  };
+
+  const updateScheduleImage = async (args) => {
+    const result = await api.addScheduleImage(args);
+    const updated = await api.getActiveScheduleImage();
+    setConvexScheduleImage(updated);
+    return result;
+  };
+
+  const updateDanPhotoMutation = async (args) => {
+    const result = await api.updateDanPhoto(args);
+    const updated = await api.getActiveDanPhoto();
+    setConvexDanPhoto(updated);
+    return result;
+  };
+
+  const uploadHeroVideoMutation = async (args) => {
+    const result = await api.uploadHeroVideo(args);
+    const updated = await api.getActiveHeroVideo();
+    setConvexHeroVideo(updated);
+    return result;
+  };
 
   // UI State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -301,29 +355,30 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const adminLoginMutation = useMutation(api.auth.adminLogin);
-  const adminLogoutMutation = useMutation(api.auth.adminLogout);
-  const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
-  const adminTokenVerification = useQuery(
-    api.auth.verifyAdminToken,
-    adminToken ? { token: adminToken } : 'skip'
-  );
-
   // Auto-verify admin token on mount
   useEffect(() => {
-    if (adminTokenVerification?.valid) {
-      setIsAuthenticated(true);
-    } else if (adminTokenVerification && !adminTokenVerification?.valid) {
-      // Token expired or invalid
-      localStorage.removeItem('adminToken');
-      setIsAuthenticated(false);
+    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+    if (adminToken) {
+      api.verifyAdminToken({ token: adminToken })
+        .then((isValid) => {
+          if (isValid) {
+            setIsAuthenticated(true);
+          } else {
+            localStorage.removeItem('adminToken');
+            setIsAuthenticated(false);
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('adminToken');
+          setIsAuthenticated(false);
+        });
     }
-  }, [adminTokenVerification]);
+  }, []);
 
   const handleLogin = async () => {
     try {
-      const result = await adminLoginMutation({ password });
-      if (result.success) {
+      const result = await api.adminLogin({ password });
+      if (result.token) {
         // Store token in localStorage
         localStorage.setItem('adminToken', result.token);
         setIsAuthenticated(true);
@@ -341,7 +396,7 @@ export const AppProvider = ({ children }) => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       try {
-        await adminLogoutMutation({ token });
+        await api.adminLogout({ token });
       } catch (error) {
         console.error('Logout error:', error);
       }

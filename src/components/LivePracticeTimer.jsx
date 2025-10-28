@@ -1,7 +1,6 @@
-import { useMutation } from 'convex/react';
 import { Heart, Pause, Play, Square, Star, Thermometer, Timer } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { api } from '../../convex/_generated/api';
+import * as api from '../api';
 
 export default function LivePracticeTimer({
   language = 'he',
@@ -23,7 +22,7 @@ export default function LivePracticeTimer({
   const startTimeRef = useRef(null);
   const pausedTimeRef = useRef(0);
 
-  const saveSessionMutation = useMutation(api.practiceSessions.saveSession);
+  // Supabase mutation is now async function
 
   const moodEmojis = {
     excellent: '😄',
@@ -241,7 +240,7 @@ export default function LivePracticeTimer({
 
   const handleSave = async () => {
     try {
-      const result = await saveSessionMutation({
+      const result = await api.saveSession({
         token,
         duration: time,
         temperature: temperature ? parseFloat(temperature) : undefined,

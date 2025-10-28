@@ -9,8 +9,14 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables:', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseAnonKey,
+  });
   throw new Error('Missing Supabase environment variables. Please check your .env file.');
 }
+
+console.log('✅ Initializing Supabase client...');
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -26,6 +32,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     },
   },
 });
+
+console.log('✅ Supabase client initialized successfully');
 
 // Helper functions to match Convex patterns
 
