@@ -75,8 +75,9 @@ Desktop.ini
 # Vercel
 .vercel
 
-# Convex
+# Convex (migrated to Supabase - ignore legacy files)
 .convex
+convex/
 convex/_generated
 
 # TanStack Router

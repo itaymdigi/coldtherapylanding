@@ -1,4 +1,13 @@
 {
     "claudeCode.environmentVariables": [],
-    "claude-code.selectedModel":"MiniMax-M2"
+    "claude-code.selectedModel":"MiniMax-M2",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+        "**/convex": true,
+        "**/node_modules/convex": true
+    },
+    "search.exclude": {
+        "**/convex": true,
+        "**/node_modules/convex": true
+    }
 }

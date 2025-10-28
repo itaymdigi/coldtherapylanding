@@ -59,7 +59,13 @@ export default function LivePractice({ language = 'he' }) {
         setIsVerifying(true);
         const verified = await verifyTokenApi({ token: currentToken });
         if (!verified) {
-          handleLogout();
+          // Direct logout without using handleLogout callback
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          setUser(null);
+          setToken(null);
+          setActiveTab('timer');
+          setHasVerifiedToken(false);
           return;
         }
         setUser(verified);
@@ -67,7 +73,13 @@ export default function LivePractice({ language = 'he' }) {
         setHasVerifiedToken(true);
       } catch (error) {
         console.error('Token verification failed:', error);
-        handleLogout();
+        // Direct logout without using handleLogout callback
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        setUser(null);
+        setToken(null);
+        setActiveTab('timer');
+        setHasVerifiedToken(false);
       } finally {
         setIsVerifying(false);
       }
@@ -78,7 +90,7 @@ export default function LivePractice({ language = 'he' }) {
     }
 
     verifyStoredToken(token);
-  }, [token, isVerifying, hasVerifiedToken, handleLogout]);
+  }, [token, isVerifying, hasVerifiedToken]);
 
   const translations = {
     he: {

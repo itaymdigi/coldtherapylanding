@@ -203,6 +203,16 @@ export default function LivePracticeTimer({
     };
   }, [isRunning, isPaused, announceTime]);
 
+  const speak = (text, lang = 'he-IL') => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleStart = () => {
     setIsRunning(true);
     setIsPaused(false);

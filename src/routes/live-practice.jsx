@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useQuery } from 'convex/react';
 import { Activity, Home, LogIn, LogOut, User } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { api } from '../../convex/_generated/api';
+import * as api from '../api';
 import AuthModal from '../components/AuthModal';
 import LivePracticeTimer from '../components/LivePracticeTimer';
 import SessionHistory from '../components/SessionHistory';
@@ -17,8 +16,8 @@ function LivePracticePage() {
   const [token, setToken] = useState(null);
   const [activeTab, setActiveTab] = useState('timer');
   const [language, setLanguage] = useState('he');
-
-  const verifiedUser = useQuery(api.auth.verifyToken, token ? { token } : 'skip');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [hasVerifiedToken, setHasVerifiedToken] = useState(false);
 
   const handleAuthSuccess = useCallback((userData, userToken) => {
     setUser(userData);
@@ -31,6 +30,8 @@ function LivePracticePage() {
     localStorage.removeItem('user');
     setUser(null);
     setToken(null);
+    setActiveTab('timer');
+    setHasVerifiedToken(false);
   }, []);
 
   const handleSessionSaved = useCallback(() => {
@@ -49,17 +50,52 @@ function LivePracticePage() {
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
+      setHasVerifiedToken(false);
+    } else if (storedToken) {
+      setToken(storedToken);
+      setHasVerifiedToken(false);
     }
     setLanguage(storedLanguage);
   }, []);
 
   useEffect(() => {
-    if (verifiedUser === null && token) {
-      handleLogout();
-    } else if (verifiedUser && !user) {
-      setUser(verifiedUser);
+    async function verifyStoredToken(currentToken) {
+      try {
+        setIsVerifying(true);
+        const verified = await api.verifyToken({ token: currentToken });
+        if (!verified) {
+          // Direct logout without using handleLogout callback
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          setUser(null);
+          setToken(null);
+          setActiveTab('timer');
+          setHasVerifiedToken(false);
+          return;
+        }
+        setUser(verified);
+        localStorage.setItem('user', JSON.stringify(verified));
+        setHasVerifiedToken(true);
+      } catch (error) {
+        console.error('Token verification failed:', error);
+        // Direct logout without using handleLogout callback
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        setUser(null);
+        setToken(null);
+        setActiveTab('timer');
+        setHasVerifiedToken(false);
+      } finally {
+        setIsVerifying(false);
+      }
     }
-  }, [verifiedUser, token, user, handleLogout]);
+
+    if (!token || isVerifying || hasVerifiedToken) {
+      return;
+    }
+
+    verifyStoredToken(token);
+  }, [token, isVerifying, hasVerifiedToken]);
 
   const translations = {
     he: {

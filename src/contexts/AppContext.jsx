@@ -6,10 +6,10 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // Supabase data state
-  const [convexGalleryImages, setConvexGalleryImages] = useState([]);
-  const [convexScheduleImage, setConvexScheduleImage] = useState(null);
-  const [convexDanPhoto, setConvexDanPhoto] = useState(null);
-  const [convexHeroVideo, setConvexHeroVideo] = useState(null);
+  const [galleryImagesData, setGalleryImagesData] = useState([]);
+  const [scheduleImageData, setScheduleImageData] = useState(null);
+  const [danPhotoData, setDanPhotoData] = useState(null);
+  const [heroVideoData, setHeroVideoData] = useState(null);
   const [siteStats, setSiteStats] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -24,10 +24,10 @@ export const AppProvider = ({ children }) => {
           api.getActiveHeroVideo(),
           api.getSiteStats(),
         ]);
-        setConvexGalleryImages(gallery);
-        setConvexScheduleImage(schedule);
-        setConvexDanPhoto(dan);
-        setConvexHeroVideo(hero);
+        setGalleryImagesData(gallery);
+        setScheduleImageData(schedule);
+        setDanPhotoData(dan);
+        setHeroVideoData(hero);
         setSiteStats(stats);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -42,35 +42,35 @@ export const AppProvider = ({ children }) => {
   const addGalleryImage = async (args) => {
     const result = await api.addGalleryImage(args);
     const updated = await api.getGalleryImages();
-    setConvexGalleryImages(updated);
+    setGalleryImagesData(updated);
     return result;
   };
 
   const updateGalleryImage = async (args) => {
     const result = await api.updateGalleryImage(args);
     const updated = await api.getGalleryImages();
-    setConvexGalleryImages(updated);
+    setGalleryImagesData(updated);
     return result;
   };
 
   const updateScheduleImage = async (args) => {
     const result = await api.addScheduleImage(args);
     const updated = await api.getActiveScheduleImage();
-    setConvexScheduleImage(updated);
+    setScheduleImageData(updated);
     return result;
   };
 
   const updateDanPhotoMutation = async (args) => {
     const result = await api.updateDanPhoto(args);
     const updated = await api.getActiveDanPhoto();
-    setConvexDanPhoto(updated);
+    setDanPhotoData(updated);
     return result;
   };
 
   const uploadHeroVideoMutation = async (args) => {
     const result = await api.uploadHeroVideo(args);
     const updated = await api.getActiveHeroVideo();
-    setConvexHeroVideo(updated);
+    setHeroVideoData(updated);
     return result;
   };
 
@@ -100,7 +100,7 @@ export const AppProvider = ({ children }) => {
     return true;
   });
 
-  // Initialize stats with manual values (from localStorage) or Convex data
+  // Initialize stats with manual values (from localStorage) or Supabase data
   const [statsSessions, setStatsSessions] = useState(() => {
     if (typeof window !== 'undefined') {
       const manualStats = localStorage.getItem('manualStats');
@@ -178,8 +178,8 @@ export const AppProvider = ({ children }) => {
     breathingVideosMenu: 'Breathwork Videos',
   };
   const galleryImages =
-    convexGalleryImages && convexGalleryImages.length > 0
-      ? convexGalleryImages.map((img) => img.url)
+    galleryImagesData && galleryImagesData.length > 0
+      ? galleryImagesData.map((img) => img.url)
       : [
           '/gallery1.jpg',
           '/gallery2.jpg',
@@ -189,9 +189,9 @@ export const AppProvider = ({ children }) => {
           '/gallery6.jpg',
           '/gallery7.jpg',
         ];
-  const scheduleImage = convexScheduleImage?.url || null;
-  const danPhoto = convexDanPhoto?.url || '/20250906_123005.jpg';
-  const heroVideo = convexHeroVideo?.url || '/dan_logo.mp4';
+  const scheduleImage = scheduleImageData?.url || null;
+  const danPhoto = danPhotoData?.url || '/20250906_123005.jpg';
+  const heroVideo = heroVideoData?.url || '/dan_logo.mp4';
 
   // Mouse tracking for parallax effect (throttled for performance)
   useEffect(() => {
@@ -292,7 +292,7 @@ export const AppProvider = ({ children }) => {
   const handleImageUpload = async (event, type, index = null) => {
     const file = event.target.files[0];
     if (file) {
-      // Check file size for videos (Convex has 1MB limit for documents)
+      // Check file size for videos (Supabase has reasonable limits)
       if (type === 'heroVideo') {
         const maxSize = 800 * 1024; // 800KB to be safe (base64 encoding increases size by ~33%)
         if (file.size > maxSize) {
@@ -316,7 +316,7 @@ export const AppProvider = ({ children }) => {
             });
             alert('✅ Schedule image uploaded successfully!');
           } else if (type === 'gallery' && index !== null) {
-            const existingImage = convexGalleryImages?.[index];
+            const existingImage = galleryImagesData?.[index];
             if (existingImage) {
               await updateGalleryImage({
                 id: existingImage._id,

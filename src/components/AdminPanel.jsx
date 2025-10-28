@@ -1,46 +1,19 @@
-import { useMutation, useQuery } from 'convex/react';
-import React, { useState } from 'react';
-import { api } from '../../convex/_generated/api';
-import { useApp } from '../contexts/AppContext';
+import React from 'react';
 
+// AdminPanel has been replaced by AdminPanelNew which uses Supabase
+// This is a stub component to prevent import errors
 const AdminPanel = () => {
-  const {
-    t,
-    isAuthenticated,
-    password,
-    setPassword,
-    adminSection,
-    setAdminSection,
-    scheduleImage,
-    galleryImages,
-    danPhoto,
-    heroVideo,
-    handleImageUpload,
-    handleLogin,
-    handleAdminClose,
-  } = useApp();
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="bg-white p-8 rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">Admin Panel Deprecated</h2>
+        <p>Please use the new admin panel with Supabase integration.</p>
+      </div>
+    </div>
+  );
+};
 
-  // Helper function to convert YouTube URLs to embed format
-  const convertToEmbedUrl = (url) => {
-    if (!url) return url;
-
-    // Already an embed URL
-    if (url.includes('/embed/')) return url;
-
-    // Convert youtube.com/watch?v=VIDEO_ID to youtube.com/embed/VIDEO_ID
-    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-    if (watchMatch) {
-      return `https://www.youtube.com/embed/${watchMatch[1]}`;
-    }
-
-    // Convert vimeo.com/VIDEO_ID to player.vimeo.com/video/VIDEO_ID
-    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-    if (vimeoMatch && !url.includes('player.vimeo.com')) {
-      return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-    }
-
-    return url;
-  };
+export default AdminPanel;
 
   // Video management state
   const [videoForm, setVideoForm] = useState({
