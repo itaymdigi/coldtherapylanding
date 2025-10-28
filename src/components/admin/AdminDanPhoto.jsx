@@ -1,15 +1,23 @@
-import { useMutation, useQuery } from 'convex/react';
-import React, { useState } from 'react';
-import { api } from '../../../convex/_generated/api';
+import React, { useEffect, useState } from 'react';
+import * as api from '../../api';
 
 const AdminDanPhoto = () => {
   const [danPhotoUrl, setDanPhotoUrl] = useState('');
+  const [allDanPhotos, setAllDanPhotos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Convex queries and mutations
-  const allDanPhotos = useQuery(api.danPhoto.getAllDanPhotos);
-  const addDanPhoto = useMutation(api.danPhoto.addDanPhoto);
-  const deleteDanPhoto = useMutation(api.danPhoto.deleteDanPhoto);
-  const setActiveDanPhoto = useMutation(api.danPhoto.setActiveDanPhoto);
+  // Load Dan photos on component mount
+  useEffect(() => {
+    const loadDanPhotos = async () => {
+      try {
+        const photos = await api.danPhoto.getAllDanPhotos();
+        setAllDanPhotos(photos);
+      } catch (error) {
+        console.error('Error loading Dan photos:', error);
+      }
+    };
+    loadDanPhotos();
+  }, []);
 
   const handleAddDanPhoto = async (e) => {
     e.preventDefault();
@@ -18,23 +26,32 @@ const AdminDanPhoto = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      await addDanPhoto({
+      await api.danPhoto.addDanPhoto({
         url: danPhotoUrl,
         isActive: false,
       });
       alert("✅ Dan's photo added successfully!");
       setDanPhotoUrl('');
+      // Reload photos
+      const photos = await api.danPhoto.getAllDanPhotos();
+      setAllDanPhotos(photos);
     } catch (error) {
       console.error("Error adding Dan's photo:", error);
-      alert('❌ Failed to add photo: ' + error.message);
+      alert(`❌ Failed to add photo: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSetActiveDanPhoto = async (photoId) => {
     try {
-      await setActiveDanPhoto({ id: photoId });
+      await api.danPhoto.setActiveDanPhoto({ id: photoId });
       alert('✅ Photo set as active!');
+      // Reload photos
+      const photos = await api.danPhoto.getAllDanPhotos();
+      setAllDanPhotos(photos);
     } catch (error) {
       console.error('Error setting active photo:', error);
       alert('❌ Failed to set active photo.');
@@ -44,8 +61,11 @@ const AdminDanPhoto = () => {
   const handleDeleteDanPhoto = async (photoId) => {
     if (confirm('Are you sure you want to delete this photo?')) {
       try {
-        await deleteDanPhoto({ id: photoId });
+        await api.danPhoto.deleteDanPhoto({ id: photoId });
         alert('✅ Photo deleted successfully!');
+        // Reload photos
+        const photos = await api.danPhoto.getAllDanPhotos();
+        setAllDanPhotos(photos);
       } catch (error) {
         console.error('Error deleting photo:', error);
         alert('❌ Failed to delete photo.');
@@ -60,8 +80,9 @@ const AdminDanPhoto = () => {
       {/* Dan Photo Form */}
       <form onSubmit={handleAddDanPhoto} className="space-y-4 bg-white/5 p-6 rounded-2xl">
         <div>
-          <label className="block text-white text-sm font-semibold mb-2">Photo URL *</label>
+          <label htmlFor="photo-url" className="block text-white text-sm font-semibold mb-2">Photo URL *</label>
           <input
+            id="photo-url"
             type="url"
             required
             value={danPhotoUrl}
@@ -76,9 +97,17 @@ const AdminDanPhoto = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+          disabled={isLoading}
+          className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          ➕ Add Photo
+          {isLoading ? (
+            <>
+              <span className="inline-block animate-spin mr-2">⏳</span>
+              Adding...
+            </>
+          ) : (
+            '➕ Add Photo'
+          )}
         </button>
       </form>
 
@@ -103,6 +132,7 @@ const AdminDanPhoto = () => {
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2">
                 {!photo.isActive && (
                   <button
+                    type="button"
                     onClick={() => handleSetActiveDanPhoto(photo._id)}
                     className="px-3 py-1 bg-green-500/80 text-white rounded-lg hover:bg-green-500 transition-all text-sm"
                   >
@@ -110,6 +140,7 @@ const AdminDanPhoto = () => {
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={() => handleDeleteDanPhoto(photo._id)}
                   className="px-3 py-1 bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-all text-sm"
                 >
