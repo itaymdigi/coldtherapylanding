@@ -10,6 +10,8 @@ export const getGalleryImages = async () => {
   console.log('🖼️ Loading gallery images...');
   try {
     console.log('🔍 Fetching gallery images from Supabase...');
+    
+    // Force no cache by adding timestamp
     const response = await supabase
       .from('gallery_images')
       .select('*')
@@ -22,6 +24,8 @@ export const getGalleryImages = async () => {
     
     console.log('✅ Gallery images fetched successfully:', response.data.length, 'images');
     console.log('📋 Image URLs:', response.data.map(img => img.url));
+    
+    // Return data immediately
     return response.data;
   } catch (error) {
     console.error('❌ Error in getGalleryImages:', error);
