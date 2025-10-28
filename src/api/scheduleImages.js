@@ -1,6 +1,6 @@
 /**
  * Schedule Images API
- * Replaces convex/scheduleImages.ts
+ * Enhanced with admin operations
  */
 
 import { supabase, query, mutation } from '../lib/supabase';
@@ -49,4 +49,59 @@ export async function updateScheduleImage({ id, url, title, description, isActiv
 // Delete schedule image
 export async function deleteScheduleImage(id) {
   return await mutation.delete('schedule_images', id);
+}
+
+// Set active schedule
+export async function setActiveSchedule({ id }) {
+  // First, set all schedules to inactive
+  await supabase
+    .from('schedule_images')
+    .update({ is_active: false })
+    .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all records
+  
+  // Then set the selected one as active
+  return await mutation.update('schedule_images', id, { is_active: true });
+}
+
+// Upload schedule image to Supabase Storage
+export async function uploadScheduleImage(file) {
+  const fileName = `${Date.now()}-${file.name}`;
+  const filePath = `schedule/${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from('assets')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    
+  if (error) throw error;
+  
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('assets')
+    .getPublicUrl(filePath);
+    
+  return publicUrl;
+}
+
+// Delete schedule image file from Supabase Storage
+export async function deleteScheduleImageFile(url) {
+  try {
+    // Extract file path from URL
+    const urlObj = new URL(url);
+    const pathMatch = urlObj.pathname.match(/\/assets\/schedule\/(.+)/);
+    if (!pathMatch) return;
+    
+    const filePath = `schedule/${pathMatch[1]}`;
+    
+    const { error } = await supabase.storage
+      .from('assets')
+      .remove([filePath]);
+      
+    if (error) throw error;
+  } catch (error) {
+    console.warn('Failed to delete file from storage:', error);
+    // Continue with database deletion even if file deletion fails
+  }
 }

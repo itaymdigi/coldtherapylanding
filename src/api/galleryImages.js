@@ -1,14 +1,9 @@
 /**
  * Gallery Images API
- * Replaces convex/galleryImages.ts
+ * Enhanced with admin operations
  */
 
-import { createClient } from '@supabase/supabase-js';
-
-// Create Supabase client directly to avoid import issues
-const supabaseUrl = 'https://hqumvakozmicqfrbjssr.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdW12YWtvem1pY3FmcmJqc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2MzYxNjUsImV4cCI6MjA3NzIxMjE2NX0.GdNY6Kf-LkIZ1DPQkq8ezphzliWBacbC64XSW54qc5Y';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase, query, mutation } from '../lib/supabase';
 
 // Get all gallery images
 export const getGalleryImages = async () => {
@@ -60,4 +55,47 @@ export async function updateGalleryImage({ id, url, order, altText }) {
 // Delete a gallery image
 export async function deleteGalleryImage(id) {
   return await mutation.delete('gallery_images', id);
+}
+
+// Upload image to Supabase Storage
+export async function uploadGalleryImage(file) {
+  const fileName = `${Date.now()}-${file.name}`;
+  const filePath = `gallery/${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from('assets')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    
+  if (error) throw error;
+  
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('assets')
+    .getPublicUrl(filePath);
+    
+  return publicUrl;
+}
+
+// Delete image from Supabase Storage
+export async function deleteGalleryImageFile(url) {
+  try {
+    // Extract file path from URL
+    const urlObj = new URL(url);
+    const pathMatch = urlObj.pathname.match(/\/assets\/gallery\/(.+)/);
+    if (!pathMatch) return;
+    
+    const filePath = `gallery/${pathMatch[1]}`;
+    
+    const { error } = await supabase.storage
+      .from('assets')
+      .remove([filePath]);
+      
+    if (error) throw error;
+  } catch (error) {
+    console.warn('Failed to delete file from storage:', error);
+    // Continue with database deletion even if file deletion fails
+  }
 }

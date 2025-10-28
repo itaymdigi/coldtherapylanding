@@ -1,23 +1,18 @@
-import { useMutation, useQuery } from 'convex/react';
-import { Edit2, Save, Trash2, Upload, UserPlus, X } from 'lucide-react';
-import { useId, useState } from 'react';
-import { api } from '../../../convex/_generated/api';
-import { formatFileSize, useFileStorage } from '../../hooks/useFileStorage';
+import React, { useState, useEffect, useId } from 'react';
+import { 
+  getAllInstructors,
+  addInstructor,
+  updateInstructor,
+  deleteInstructor,
+  uploadInstructorPhoto,
+  deleteInstructorPhoto
+} from '../../api/instructors';
 
 const AdminInstructors = () => {
-  const nameInputId = useId();
-  const titleInputId = useId();
-  const bioInputId = useId();
-  const orderInputId = useId();
-  const photoUploadId = useId();
-  const instructors = useQuery(api.instructor.getAllInstructors) || [];
-  const addInstructor = useMutation(api.instructor.addInstructor);
-  const updateInstructor = useMutation(api.instructor.updateInstructor);
-  const deleteInstructor = useMutation(api.instructor.deleteInstructor);
-  const { uploadFile } = useFileStorage();
-
+  const [instructors, setInstructors] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -27,13 +22,34 @@ const AdminInstructors = () => {
     order: 0,
   });
 
+  // Generate unique IDs for form inputs
+  const nameInputId = useId();
+  const titleInputId = useId();
+  const bioInputId = useId();
+  const orderInputId = useId();
+  const photoUploadId = useId();
+
+  // Load instructors on component mount
+  useEffect(() => {
+    loadInstructors();
+  }, []);
+
+  const loadInstructors = async () => {
+    try {
+      const data = await getAllInstructors();
+      setInstructors(data);
+    } catch (error) {
+      console.error('Error loading instructors:', error);
+    }
+  };
+
   const handleEdit = (instructor) => {
-    setEditingId(instructor._id);
+    setEditingId(instructor.id);
     setFormData({
       name: instructor.name,
       title: instructor.title,
       bio: instructor.bio,
-      photoUrl: instructor.photoUrl,
+      photoUrl: instructor.photo_url,
       order: instructor.order,
     });
     setIsAdding(false);
@@ -52,12 +68,16 @@ const AdminInstructors = () => {
   };
 
   const handleSave = async () => {
+    if (!formData.name || !formData.title || !formData.bio) {
+      alert('❌ Please fill in all required fields (name, title, bio)');
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const dataToSave = {
         ...formData,
-        photoUrl:
-          formData.photoUrl ||
-          'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23334155" width="400" height="400"/%3E%3Ctext fill="%23fff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EInstructor%3C/text%3E%3C/svg%3E',
+        order: formData.order || instructors.length,
       };
 
       if (editingId) {
@@ -65,65 +85,77 @@ const AdminInstructors = () => {
           id: editingId,
           ...dataToSave,
         });
+        alert('✅ Instructor updated successfully!');
       } else {
         await addInstructor(dataToSave);
+        alert('✅ Instructor added successfully!');
       }
+
       handleCancel();
+      await loadInstructors();
     } catch (error) {
       console.error('Error saving instructor:', error);
-      alert(`Failed to save instructor: ${error.message || error}`);
+      alert(`❌ Failed to save instructor: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this instructor?')) {
-      try {
-        await deleteInstructor({ id });
-      } catch (error) {
-        console.error('Error deleting instructor:', error);
-        alert('Failed to delete instructor');
+    if (!confirm('Are you sure you want to delete this instructor?')) return;
+
+    try {
+      // Get instructor data before deletion
+      const instructor = instructors.find(i => i.id === id);
+      
+      // Delete from database
+      await deleteInstructor(id);
+      
+      // Delete photo file from storage if it's a Supabase URL
+      if (instructor && instructor.photo_url && instructor.photo_url.includes('supabase.co')) {
+        await deleteInstructorPhoto(instructor.photo_url);
       }
+      
+      alert('✅ Instructor deleted successfully!');
+      await loadInstructors();
+    } catch (error) {
+      console.error('Error deleting instructor:', error);
+      alert('❌ Failed to delete instructor');
     }
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
     if (!file) return;
 
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('❌ Please select an image file');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('❌ Image size must be less than 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+
     try {
-      setIsUploading(true);
-
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file');
-        return;
-      }
-
-      // Validate file size (10MB limit for Convex storage)
-      if (file.size > 10 * 1024 * 1024) {
-        alert(
-          `File size (${formatFileSize(file.size)}) exceeds 10MB limit. Please compress your image.`
-        );
-        return;
-      }
-
-      // Upload to Convex storage
-      const result = await uploadFile(file, {
-        category: 'instructor',
-        tags: ['profile', 'team'],
-        description: `Profile photo for ${formData.name || 'instructor'}`,
+      // Upload to Supabase Storage
+      const publicUrl = await uploadInstructorPhoto(file);
+      
+      // Update form with uploaded URL
+      setFormData({
+        ...formData,
+        photoUrl: publicUrl
       });
-
-      // Get the actual URL from the storage ID
-      if (result.storageId) {
-        // Use the storage ID directly for now - the URL resolution can happen in the display component
-        setFormData({ ...formData, photoUrl: result.storageId });
-      }
-
-      alert('Image uploaded successfully!');
+      
+      alert('✅ Instructor photo uploaded successfully!');
     } catch (error) {
-      console.error('Error uploading image:', error);
-      alert(`Failed to upload image: ${error.message}`);
+      console.error('Error uploading instructor photo:', error);
+      alert('❌ Failed to upload instructor photo: ' + error.message);
     } finally {
       setIsUploading(false);
     }
@@ -142,135 +174,141 @@ const AdminInstructors = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-h-[70vh] overflow-y-auto">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Manage Instructors</h2>
-        <button
-          type="button"
-          onClick={handleAddNew}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all"
-        >
-          <UserPlus className="w-5 h-5" />
-          Add Instructor
-        </button>
+        <h4 className="text-2xl font-semibold text-white">
+          {editingId ? 'Edit Instructor' : 'Manage Instructors'}
+        </h4>
+        {!isAdding && !editingId && (
+          <button
+            type="button"
+            onClick={handleAddNew}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300"
+          >
+            ➕ Add Instructor
+          </button>
+        )}
       </div>
 
       {/* Add/Edit Form */}
       {(isAdding || editingId) && (
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-          <h3 className="text-xl font-bold text-white mb-4">
+        <div className="bg-white/5 p-6 rounded-2xl space-y-4">
+          <h5 className="text-xl font-semibold text-white mb-4">
             {editingId ? 'Edit Instructor' : 'Add New Instructor'}
-          </h3>
+          </h5>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor={nameInputId} className="block text-white mb-2">
-                Name
+              <label htmlFor={nameInputId} className="block text-white text-sm font-semibold mb-2">
+                Name *
               </label>
               <input
                 id={nameInputId}
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                 placeholder="Instructor name"
+                required
               />
             </div>
 
             <div>
-              <label htmlFor={titleInputId} className="block text-white mb-2">
-                Title
+              <label htmlFor={titleInputId} className="block text-white text-sm font-semibold mb-2">
+                Title *
               </label>
               <input
                 id={titleInputId}
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                 placeholder="e.g., Certified Wim Hof Instructor"
+                required
               />
             </div>
 
             <div className="md:col-span-2">
-              <label htmlFor={bioInputId} className="block text-white mb-2">
-                Bio
+              <label htmlFor={bioInputId} className="block text-white text-sm font-semibold mb-2">
+                Bio *
               </label>
               <textarea
                 id={bioInputId}
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 rows={4}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
                 placeholder="Brief bio about the instructor..."
+                required
               />
             </div>
 
             <div>
-              <label htmlFor={orderInputId} className="block text-white mb-2">
-                Order
+              <label htmlFor={orderInputId} className="block text-white text-sm font-semibold mb-2">
+                Display Order
               </label>
               <input
                 id={orderInputId}
                 type="number"
                 value={formData.order}
-                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value, 10) })}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                placeholder="Display order"
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value, 10) || 0 })}
+                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                placeholder="0"
               />
             </div>
 
             <div>
-              <label htmlFor={photoUploadId} className="block text-white mb-2">
-                Photo {isUploading && <span className="text-cyan-400">(Uploading...)</span>}
+              <label htmlFor={photoUploadId} className="block text-white text-sm font-semibold mb-2">
+                Instructor Photo
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id={photoUploadId}
-                  disabled={isUploading}
-                />
-                <label
-                  htmlFor={photoUploadId}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white cursor-pointer hover:bg-white/20 transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Upload className="w-5 h-5" />
-                  {isUploading ? 'Uploading...' : 'Upload Photo (Max 10MB)'}
-                </label>
-              </div>
-              <p className="text-xs text-white/60 mt-1">
-                Supports: JPG, PNG, WebP. Files stored in Convex cloud storage.
+              <input
+                id={photoUploadId}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                disabled={isUploading}
+                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 disabled:opacity-50"
+              />
+              <p className="text-blue-300 text-xs mt-1">
+                💡 Upload instructor photo (max 5MB, JPG/PNG/WebP)
               </p>
             </div>
 
             {formData.photoUrl && (
               <div className="md:col-span-2">
+                <div className="block text-white text-sm font-semibold mb-2">
+                  Photo Preview
+                </div>
                 <img
                   src={formData.photoUrl}
-                  alt="Preview"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-white/20"
+                  alt="Instructor preview"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-400/30"
                 />
               </div>
             )}
           </div>
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={handleSave}
-              disabled={!formData.name || !formData.title || !formData.bio || isUploading}
-              className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading || isUploading}
+              className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save className="w-5 h-5" />
-              Save
+              {isLoading ? (
+                <>
+                  <span className="inline-block animate-spin mr-2">⏳</span>
+                  Saving...
+                </>
+              ) : (
+                '💾 Save Instructor'
+              )}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="flex items-center gap-2 px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all"
+              className="px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300"
             >
-              <X className="w-5 h-5" />
               Cancel
             </button>
           </div>
@@ -278,54 +316,66 @@ const AdminInstructors = () => {
       )}
 
       {/* Instructors List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {instructors.map((instructor) => (
-          <div
-            key={instructor._id}
-            className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-cyan-500/50 transition-all"
-          >
-            <div className="flex items-start gap-4">
-              <img
-                src={instructor.photoUrl || 'https://via.placeholder.com/150'}
-                alt={instructor.name}
-                className="w-20 h-20 rounded-full object-cover border-2 border-cyan-500"
-              />
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-white">{instructor.name}</h3>
-                <p className="text-sm text-cyan-400">{instructor.title}</p>
-                <p className="text-xs text-white/60 mt-1">Order: {instructor.order}</p>
+      <div className="space-y-4">
+        <h4 className="text-xl font-semibold text-white">
+          All Instructors ({instructors?.length || 0})
+        </h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {instructors.map((instructor) => (
+            <div
+              key={instructor.id}
+              className="bg-white/5 p-6 rounded-xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <img
+                  src={instructor.photo_url || 'https://via.placeholder.com/150'}
+                  alt={instructor.name}
+                  className="w-20 h-20 rounded-full object-cover border-2 border-cyan-400/30"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/150';
+                  }}
+                />
+                <div className="flex-1">
+                  <h5 className="text-lg font-bold text-white">{instructor.name}</h5>
+                  <p className="text-sm text-cyan-400">{instructor.title}</p>
+                  <p className="text-xs text-blue-300 mt-1">Order: {instructor.order}</p>
+                </div>
+              </div>
+
+              <p className="text-white/80 text-sm mb-4 line-clamp-3">
+                {instructor.bio}
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleEdit(instructor)}
+                  disabled={isLoading}
+                  className="flex-1 px-3 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all text-sm disabled:opacity-50"
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(instructor.id)}
+                  disabled={isLoading}
+                  className="flex-1 px-3 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all text-sm disabled:opacity-50"
+                >
+                  🗑️ Delete
+                </button>
               </div>
             </div>
-
-            <p className="text-white/80 text-sm mt-4 line-clamp-3">{instructor.bio}</p>
-
-            <div className="flex gap-2 mt-4">
-              <button
-                type="button"
-                onClick={() => handleEdit(instructor)}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-all"
-              >
-                <Edit2 className="w-4 h-4" />
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(instructor._id)}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-all"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {instructors.length === 0 && !isAdding && (
-        <div className="text-center py-12">
-          <p className="text-white/60 text-lg">No instructors yet. Add your first instructor!</p>
+          ))}
         </div>
-      )}
+
+        {instructors?.length === 0 && !isAdding && (
+          <div className="text-center py-12 text-blue-200">
+            <div className="text-4xl mb-2">👥</div>
+            <p>No instructors yet. Add your first instructor above!</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

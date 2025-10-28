@@ -1,6 +1,6 @@
 /**
  * Breathing Videos API
- * Replaces convex/breathingVideos.ts
+ * Enhanced with admin operations and file upload
  */
 
 import { supabase, query, mutation } from '../lib/supabase';
@@ -10,6 +10,14 @@ export async function getAllVideos() {
   return await query.getWhere('breathing_videos', { is_published: true }, {
     orderBy: 'order',
     ascending: true,
+  });
+}
+
+// Get all videos for admin (including unpublished)
+export async function getAllVideosForAdmin() {
+  return await query.getAll('breathing_videos', {
+    orderBy: 'created_at',
+    ascending: false,
   });
 }
 
@@ -81,7 +89,6 @@ export async function addVideo({
     order,
     is_published: true,
     views: 0,
-    created_at: new Date().toISOString(),
   });
 }
 
@@ -103,6 +110,26 @@ export async function updateVideo({ id, ...updates }) {
   return await mutation.update('breathing_videos', id, supabaseUpdates);
 }
 
+// Toggle publish status
+export async function toggleVideoPublishStatus(id) {
+  const video = await query.getById('breathing_videos', id);
+  if (video) {
+    return await mutation.update('breathing_videos', id, {
+      is_published: !video.is_published,
+    });
+  }
+}
+
+// Toggle premium status
+export async function toggleVideoPremiumStatus(id) {
+  const video = await query.getById('breathing_videos', id);
+  if (video) {
+    return await mutation.update('breathing_videos', id, {
+      is_premium: !video.is_premium,
+    });
+  }
+}
+
 // Increment video views
 export async function incrementViews(id) {
   const video = await query.getById('breathing_videos', id);
@@ -116,4 +143,121 @@ export async function incrementViews(id) {
 // Delete video
 export async function deleteVideo(id) {
   return await mutation.delete('breathing_videos', id);
+}
+
+// Upload video thumbnail to Supabase Storage
+export async function uploadVideoThumbnail(file) {
+  const fileName = `thumbnail-${Date.now()}.${file.name.split('.').pop()}`;
+  const filePath = `breathing-videos/${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from('assets')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    
+  if (error) throw error;
+  
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('assets')
+    .getPublicUrl(filePath);
+    
+  return publicUrl;
+}
+
+// Delete video thumbnail file from Supabase Storage
+export async function deleteVideoThumbnail(url) {
+  try {
+    // Extract file path from URL
+    const urlObj = new URL(url);
+    const pathMatch = urlObj.pathname.match(/\/assets\/breathing-videos\/(.+)/);
+    if (!pathMatch) return;
+    
+    const filePath = `breathing-videos/${pathMatch[1]}`;
+    
+    const { error } = await supabase.storage
+      .from('assets')
+      .remove([filePath]);
+      
+    if (error) throw error;
+  } catch (error) {
+    console.warn('Failed to delete video thumbnail from storage:', error);
+    // Continue with database deletion even if file deletion fails
+  }
+}
+
+// Get video statistics
+export async function getVideoStats() {
+  const { data, error } = await supabase
+    .from('breathing_videos')
+    .select('is_premium, views, is_published')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  
+  const stats = {
+    total: data.length,
+    published: data.filter(v => v.is_published).length,
+    free: data.filter(v => v.is_published && !v.is_premium).length,
+    premium: data.filter(v => v.is_published && v.is_premium).length,
+    totalViews: data.reduce((sum, v) => sum + (v.views || 0), 0),
+  };
+  
+  return stats;
+}
+
+// Get all unique categories from existing videos
+export async function getAllCategories() {
+  const { data, error } = await supabase
+    .from('breathing_videos')
+    .select('category')
+    .not('category', 'is', null);
+  
+  if (error) throw error;
+  
+  // Get unique categories and count videos in each
+  const categoryCounts = {};
+  data.forEach(item => {
+    const category = item.category;
+    if (!categoryCounts[category]) {
+      categoryCounts[category] = 0;
+    }
+    categoryCounts[category]++;
+  });
+  
+  // Convert to array and sort
+  const categories = Object.entries(categoryCounts).map(([category, count]) => ({
+    name: category,
+    videoCount: count
+  })).sort((a, b) => a.name.localeCompare(b.name));
+  
+  return categories;
+}
+
+// Create a new category (validate and return formatted category name)
+export async function createCategory(categoryName) {
+  if (!categoryName || typeof categoryName !== 'string') {
+    throw new Error('Category name is required');
+  }
+  
+  // Format category name: trim, lowercase, replace spaces with hyphens
+  const formattedCategory = categoryName
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, ''); // Remove special characters except hyphens
+  
+  if (!formattedCategory) {
+    throw new Error('Invalid category name');
+  }
+  
+  // Check if category already exists
+  const existingCategories = await getAllCategories();
+  if (existingCategories.some(cat => cat.name === formattedCategory)) {
+    throw new Error('Category already exists');
+  }
+  
+  return formattedCategory;
 }

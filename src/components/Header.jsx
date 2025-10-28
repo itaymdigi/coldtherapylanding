@@ -93,8 +93,16 @@ const Header = () => {
                 onClick={toggleMusic}
                 className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-lg"
               >
-                {isPlaying ? '🔇' : '🔊'}
+                {isPlaying ? '🔇' : '🎵'}
               </button>
+
+              {/* Admin Link */}
+              <Link
+                to="/admin"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                🔧 Admin
+              </Link>
 
               {/* Admin Button */}
               <button
@@ -229,6 +237,13 @@ const Header = () => {
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 {t?.contact || 'Contact'}
+              </Link>
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
+              >
+                🔧 Admin
               </Link>
             </div>
           </div>
