@@ -11,8 +11,8 @@ npm install
 # Start development server
 npm run dev
 
-# Deploy Convex backend
-npx convex deploy
+# Run Supabase migrations or scripts (optional)
+# npm run migrate
 ```
 
 ## 📚 Documentation
@@ -26,7 +26,7 @@ npx convex deploy
 - **[Project Summary](/docs/PROJECT_SUMMARY.md)** - Complete project overview
 - **[PWA Guide](/docs/PWA_GUIDE.md)** - Progressive Web App features
 - **[AI Chatbot Setup](/docs/AI_CHATBOT_SETUP.md)** - Chatbot implementation
-- **[Convex Integration](/docs/CONVEX_INTEGRATION.md)** - Backend setup
+- **[CONVEX_TO_SUPABASE_MIGRATION.md](./CONVEX_TO_SUPABASE_MIGRATION.md)** - Migration reference
 
 ## 🎯 Features
 
