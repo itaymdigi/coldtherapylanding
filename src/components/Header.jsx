@@ -59,6 +59,12 @@ const Header = () => {
                 {t?.livePractice || 'Live Training'}
               </Link>
               <Link
+                to="/event-schedule"
+                className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
+              >
+                {t?.eventScheduleMenu || 'Event Schedule'}
+              </Link>
+              <Link
                 to="/#packages"
                 className="text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 font-medium text-base px-4 py-2 rounded-lg"
               >
@@ -213,6 +219,13 @@ const Header = () => {
                 className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
               >
                 ⏱️ {t?.livePractice || 'Live Training'}
+              </Link>
+              <Link
+                to="/event-schedule"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-blue-200 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all duration-300 font-medium text-lg"
+              >
+                📅 {t?.eventScheduleMenu || 'Event Schedule'}
               </Link>
               <Link
                 to="/#packages"

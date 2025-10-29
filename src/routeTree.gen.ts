@@ -16,6 +16,7 @@ import { Route as LivePracticeRouteImport } from './routes/live-practice'
 const InstructorTrainingLazyRouteImport = createFileRoute(
   '/instructor-training',
 )()
+const EventScheduleLazyRouteImport = createFileRoute('/event-schedule')()
 const BreathingVideosLazyRouteImport = createFileRoute('/breathing-videos')()
 const AdminLazyRouteImport = createFileRoute('/admin')()
 const IndexLazyRouteImport = createFileRoute('/')()
@@ -26,6 +27,13 @@ const InstructorTrainingLazyRoute = InstructorTrainingLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() =>
   import('./routes/instructor-training.lazy').then((d) => d.Route),
+)
+const EventScheduleLazyRoute = EventScheduleLazyRouteImport.update({
+  id: '/event-schedule',
+  path: '/event-schedule',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/event-schedule.lazy').then((d) => d.Route),
 )
 const BreathingVideosLazyRoute = BreathingVideosLazyRouteImport.update({
   id: '/breathing-videos',
@@ -55,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/live-practice': typeof LivePracticeRoute
   '/admin': typeof AdminLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/event-schedule': typeof EventScheduleLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesByTo {
@@ -62,6 +71,7 @@ export interface FileRoutesByTo {
   '/live-practice': typeof LivePracticeRoute
   '/admin': typeof AdminLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/event-schedule': typeof EventScheduleLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRoutesById {
@@ -70,6 +80,7 @@ export interface FileRoutesById {
   '/live-practice': typeof LivePracticeRoute
   '/admin': typeof AdminLazyRoute
   '/breathing-videos': typeof BreathingVideosLazyRoute
+  '/event-schedule': typeof EventScheduleLazyRoute
   '/instructor-training': typeof InstructorTrainingLazyRoute
 }
 export interface FileRouteTypes {
@@ -79,6 +90,7 @@ export interface FileRouteTypes {
     | '/live-practice'
     | '/admin'
     | '/breathing-videos'
+    | '/event-schedule'
     | '/instructor-training'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -86,6 +98,7 @@ export interface FileRouteTypes {
     | '/live-practice'
     | '/admin'
     | '/breathing-videos'
+    | '/event-schedule'
     | '/instructor-training'
   id:
     | '__root__'
@@ -93,6 +106,7 @@ export interface FileRouteTypes {
     | '/live-practice'
     | '/admin'
     | '/breathing-videos'
+    | '/event-schedule'
     | '/instructor-training'
   fileRoutesById: FileRoutesById
 }
@@ -101,6 +115,7 @@ export interface RootRouteChildren {
   LivePracticeRoute: typeof LivePracticeRoute
   AdminLazyRoute: typeof AdminLazyRoute
   BreathingVideosLazyRoute: typeof BreathingVideosLazyRoute
+  EventScheduleLazyRoute: typeof EventScheduleLazyRoute
   InstructorTrainingLazyRoute: typeof InstructorTrainingLazyRoute
 }
 
@@ -111,6 +126,13 @@ declare module '@tanstack/react-router' {
       path: '/instructor-training'
       fullPath: '/instructor-training'
       preLoaderRoute: typeof InstructorTrainingLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-schedule': {
+      id: '/event-schedule'
+      path: '/event-schedule'
+      fullPath: '/event-schedule'
+      preLoaderRoute: typeof EventScheduleLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/breathing-videos': {
@@ -149,6 +171,7 @@ const rootRouteChildren: RootRouteChildren = {
   LivePracticeRoute: LivePracticeRoute,
   AdminLazyRoute: AdminLazyRoute,
   BreathingVideosLazyRoute: BreathingVideosLazyRoute,
+  EventScheduleLazyRoute: EventScheduleLazyRoute,
   InstructorTrainingLazyRoute: InstructorTrainingLazyRoute,
 }
 export const routeTree = rootRouteImport

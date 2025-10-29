@@ -97,6 +97,29 @@ export const AppProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadScheduleImage = async () => {
+      try {
+        const schedule = await api.getActiveScheduleImage();
+        if (!isMounted) return;
+        setScheduleImage(schedule?.url ?? null);
+      } catch (error) {
+        console.error('Failed to load schedule image:', error);
+        if (isMounted) {
+          setScheduleImage(null);
+        }
+      }
+    };
+
+    loadScheduleImage();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Translations
   const t = translations[language] || translations.en || {
     footer: '© 2025 Cold Therapy by Dan Hayat. All rights reserved.',
@@ -113,6 +136,12 @@ export const AppProvider = ({ children }) => {
     livePractice: 'Live Training',
     instructorTraining: 'Instructor Training',
     breathingVideosMenu: 'Breathwork Videos',
+    eventScheduleMenu: 'Event Schedule',
+    eventScheduleTitle: 'Event Schedule',
+    eventScheduleSubtitle: 'See the weekly activities and events at the ice bath studio',
+    eventScheduleLoading: 'Loading event schedule...',
+    eventScheduleEmpty: 'No upcoming events right now. Check back soon!',
+    eventScheduleError: 'There was an error loading the event schedule. Please try again later.',
   };
 
   // Mouse tracking for parallax effect (throttled for performance)

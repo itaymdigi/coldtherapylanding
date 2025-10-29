@@ -1,7 +1,16 @@
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProvider } from '../src/contexts/AppContext';
 import HomePage from '../src/pages/HomePage';
+import Header from '../src/components/Header';
+
+vi.mock('@tanstack/react-router', () => ({
+  Link: ({ to, children, ...rest }) => (
+    <a href={to} {...rest}>
+      {children}
+    </a>
+  ),
+}));
 
 vi.mock('../src/api', () => ({
   addGalleryImage: vi.fn(),
@@ -42,5 +51,19 @@ describe('Top menu navigation anchors', () => {
 
     const packagesSection = document.getElementById('packages');
     expect(packagesSection).not.toBeNull();
+  });
+
+  it('includes an event schedule navigation link pointing to /event-schedule', () => {
+    render(
+      <AppProvider>
+        <Header />
+      </AppProvider>
+    );
+
+    const eventLinks = screen.queryAllByRole('link', {
+      name: /לוח אירועים|Event Schedule/,
+    });
+    expect(eventLinks.length).toBeGreaterThan(0);
+    expect(eventLinks[0]).toHaveAttribute('href', '/event-schedule');
   });
 });
