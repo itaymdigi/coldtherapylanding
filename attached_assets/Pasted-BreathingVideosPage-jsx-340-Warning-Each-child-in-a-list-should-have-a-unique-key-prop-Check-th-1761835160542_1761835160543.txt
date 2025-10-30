@@ -1,0 +1,31 @@
+BreathingVideosPage.jsx:340 Warning: Each child in a list should have a unique "key" prop.
+
+Check the render method of `BreathingVideosPage`. See https://reactjs.org/link/warning-keys for more information.
+    at VideoCard (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/src/pages/BreathingVideosPage.jsx:131:24)
+    at BreathingVideosPage (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/src/pages/BreathingVideosPage.jsx:24:17)
+    at MatchInnerImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6692:3)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at MatchImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6593:3)
+    at Suspense
+    at OutletImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6780:18)
+    at ErrorBoundary (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/src/components/ErrorBoundary.jsx:7:5)
+    at div
+    at Layout (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/src/components/Layout.jsx:29:48)
+    at AppProvider (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/src/contexts/AppContext.jsx:22:31)
+    at component
+    at MatchInnerImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6692:3)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at SafeFragment (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6515:87)
+    at MatchImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6593:3)
+    at CatchBoundaryImpl (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:5353:5)
+    at CatchBoundary (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:5333:32)
+    at MatchesInner (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6834:18)
+    at Suspense
+    at Matches (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6824:18)
+    at RouterContextProvider (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6946:3)
+    at RouterProvider (https://25416345-3236-4702-8e7b-df62c8b7b280-00-fvom88urzhci.riker.replit.dev/node_modules/.vite/deps/@tanstack_react-router.js?v=268730a7:6967:27
