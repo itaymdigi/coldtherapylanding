@@ -5,6 +5,7 @@ import AdminGallery from './AdminGallery';
 import AdminDanPhoto from './AdminDanPhoto';
 import AdminInstructors from './AdminInstructors';
 import AdminSettings from './AdminSettings';
+import AdminBreathingVideos from './AdminBreathingVideos';
 
 const AdminPanelNew = () => {
   const { isAuthenticated, adminSection, setAdminSection, handleAdminClose } = useApp();
@@ -80,6 +81,17 @@ const AdminPanelNew = () => {
               </button>
               <button
                 type="button"
+                onClick={() => setAdminSection('breathingVideos')}
+                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${
+                  adminSection === 'breathingVideos'
+                    ? 'bg-cyan-500 text-white'
+                    : 'bg-white/10 text-blue-200 hover:bg-white/20'
+                }`}
+              >
+                🌬️ Videos
+              </button>
+              <button
+                type="button"
                 onClick={() => setAdminSection('settings')}
                 className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${
                   adminSection === 'settings'
@@ -121,6 +133,8 @@ const AuthenticatedAdminContent = ({ adminSection }) => {
       return <AdminDanPhoto />;
     case 'instructors':
       return <AdminInstructors />;
+    case 'breathingVideos':
+      return <AdminBreathingVideos />;
     case 'settings':
       return <AdminSettings />;
     default:
