@@ -81,12 +81,27 @@ export default function LivePracticeTimer({
 
   const announceTime = useCallback(
     (seconds) => {
-      const speak = (text, lang = 'he-IL') => {
+      const speak = (text, lang = 'he-IL', isFemale = false) => {
         if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = lang === 'he-IL' ? 'he-IL' : 'en-US';
-          utterance.rate = 0.9;
-          utterance.pitch = 1;
+          utterance.rate = 0.85;
+          utterance.pitch = 1.05;
+          utterance.volume = 1;
+          
+          const voices = window.speechSynthesis.getVoices();
+          if (voices.length > 0) {
+            if (lang === 'he-IL') {
+              const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
+              if (hebrewVoice) utterance.voice = hebrewVoice;
+            } else {
+              const englishVoice = voices.find(v => v.lang.startsWith('en') && (isFemale ? v.name.toLowerCase().includes('female') : !v.name.toLowerCase().includes('female')));
+              if (englishVoice) utterance.voice = englishVoice;
+            }
+          }
+          
           window.speechSynthesis.speak(utterance);
         }
       };
@@ -113,20 +128,32 @@ export default function LivePracticeTimer({
           announcement = `${minutes} דקות עבר${pastSuffixPlural}`;
         }
 
-        // Add encouraging messages at milestones
+        // More encouraging and varied messages
         if (minutes > 0) {
           if (minutes === 1) {
-            encouragement = `כל הכבוד! ${you} מתחיל${isFemale ? 'ה' : ''} חזק`;
+            encouragement = `וואו! ${you} מתחיל${isFemale ? 'ה' : ''} חזק מאוד! המשיכ${presentSuffix} ככה!`;
           } else if (minutes === 2) {
-            encouragement = `שתי דקות כבר מאחור${isFemale ? 'יך' : 'יך'}! תמשיכ${presentSuffix} ככה`;
+            encouragement = `יופי! כבר דקתיים! ${you} עוש${isFemale ? 'ה' : 'ה'} עבודה מעולה!`;
           } else if (minutes === 3) {
-            encouragement = `מדהים! ${you} בשליטה מלאה`;
+            encouragement = `שלוש דקות! ${you} באמת גיבור${isFemale ? 'ה' : ''}! תשמור${presentSuffix} על הנשימה`;
+          } else if (minutes === 4) {
+            encouragement = `ארבע דקות של כוח! ${you} מדהימ${isFemale ? 'ה' : ''}! המשיכ${presentSuffix}!`;
           } else if (minutes === 5) {
-            encouragement = `חמש דקות של כוח! ${you} גיבור${isFemale ? 'ה' : ''}`;
+            encouragement = `חמש דקות! זה בדיוק המקום! ${you} אלופ${isFemale ? 'ה' : ''}!`;
+          } else if (minutes === 6) {
+            encouragement = `שש דקות! איזה כוח! ${you} בשליטה מלאה!`;
+          } else if (minutes === 7) {
+            encouragement = `שבע דקות! זה הישג אדיר! תמשיכ${presentSuffix} לנשום עמוק`;
+          } else if (minutes === 8) {
+            encouragement = `שמונה דקות! ${you} פשוט מדהימ${isFemale ? 'ה' : ''}! כל הכבוד!`;
           } else if (minutes === 10) {
-            encouragement = `עשר דקות! זה כבר הישג אמיתי`;
-          } else if (minutes % 3 === 0) {
-            encouragement = `כל הכבוד! תמשיכ${presentSuffix} ככה`;
+            encouragement = `עשר דקות! זה כבר רמה אחרת! ${you} אלופ${isFemale ? 'ת' : ''} אמיתי${isFemale ? 'ת' : ''}!`;
+          } else if (minutes === 15) {
+            encouragement = `חמש עשרה דקות! פשוט בלתי יאומן! ${you} גיבור${isFemale ? 'ת' : ''} על!`;
+          } else if (minutes % 5 === 0) {
+            encouragement = `${minutes} דקות! המשיכ${presentSuffix} חזק! ${you} עוש${isFemale ? 'ה' : 'ה'} נהדר!`;
+          } else if (minutes % 2 === 0) {
+            encouragement = `כל הכבוד! תמשיכ${presentSuffix} לנשום ולהישאר ממוקד${isFemale ? 'ת' : ''}!`;
           }
         }
 
@@ -136,12 +163,13 @@ export default function LivePracticeTimer({
         // Add seconds if not exact minutes
         if (remainingSeconds > 0) {
           const secondsText = remainingSeconds === 1 ? 'שנייה אחת' : `${remainingSeconds} שניות`;
-          speak(`${fullMessage}, ועוד ${secondsText}`, 'he-IL');
+          speak(`${fullMessage}, ועוד ${secondsText}`, 'he-IL', isFemale);
         } else {
-          speak(fullMessage, 'he-IL');
+          speak(fullMessage, 'he-IL', isFemale);
         }
       } else {
-        // English version with encouragement
+        // English version with more encouragement
+        const isFemale = gender === 'female';
         let announcement = '';
         let encouragement = '';
 
@@ -151,25 +179,37 @@ export default function LivePracticeTimer({
           announcement = `${minutes} minutes and ${remainingSeconds} seconds`;
         }
 
-        // Add encouraging messages
+        // More varied and encouraging messages
         if (minutes > 0) {
           if (minutes === 1) {
-            encouragement = 'Great start! Keep going strong!';
+            encouragement = 'Awesome start! Keep that energy going!';
           } else if (minutes === 2) {
-            encouragement = "Two minutes down! You're doing amazing!";
+            encouragement = "Two minutes! You're crushing it! Keep breathing deep!";
           } else if (minutes === 3) {
-            encouragement = "Fantastic! You've got this under control!";
+            encouragement = "Three minutes of power! You're in total control!";
+          } else if (minutes === 4) {
+            encouragement = "Four minutes! Incredible focus! Stay strong!";
           } else if (minutes === 5) {
-            encouragement = "Five minutes of power! You're a champion!";
+            encouragement = "Five minutes! You're a champion! Keep it up!";
+          } else if (minutes === 6) {
+            encouragement = "Six minutes! Amazing discipline! You got this!";
+          } else if (minutes === 7) {
+            encouragement = "Seven minutes! Phenomenal! Keep breathing steady!";
+          } else if (minutes === 8) {
+            encouragement = "Eight minutes! You're unstoppable! Great work!";
           } else if (minutes === 10) {
-            encouragement = "Ten minutes! That's a real achievement!";
-          } else if (minutes % 3 === 0) {
-            encouragement = 'Well done! Keep it up!';
+            encouragement = "Ten minutes! That's next level! You're incredible!";
+          } else if (minutes === 15) {
+            encouragement = "Fifteen minutes! Absolutely mind-blowing! You're a legend!";
+          } else if (minutes % 5 === 0) {
+            encouragement = `${minutes} minutes! Outstanding! Keep going strong!`;
+          } else if (minutes % 2 === 0) {
+            encouragement = 'Great job! Stay focused and keep breathing!';
           }
         }
 
         const fullMessage = encouragement ? `${announcement}. ${encouragement}` : announcement;
-        speak(fullMessage, 'en-US');
+        speak(fullMessage, 'en-US', isFemale);
       }
     },
     [language, gender]
