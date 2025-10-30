@@ -58,7 +58,8 @@ export async function uploadInstructorPhoto(file) {
     
     console.log('Uploading file:', { fileName, filePath, fileSize: file.size, fileType: file.type });
     
-    const { data, error } = await storageClient.storage
+    // Add timeout to prevent hanging
+    const uploadPromise = storageClient.storage
       .from('assets')
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -66,21 +67,29 @@ export async function uploadInstructorPhoto(file) {
         contentType: file.type
       });
     
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Upload timeout - please try again')), 30000)
+    );
+    
+    const { data, error } = await Promise.race([uploadPromise, timeoutPromise]);
+    
     if (error) {
       console.error('Supabase storage error:', error);
       throw new Error(`Storage upload failed: ${error.message}`);
     }
     
-    console.log('Upload successful:', data);
+    console.log('✅ Upload successful:', data);
     
     // Get public URL
     const { data: { publicUrl } } = storageClient.storage
       .from('assets')
       .getPublicUrl(filePath);
     
+    console.log('📸 Photo URL:', publicUrl);
+    
     return publicUrl;
   } catch (error) {
-    console.error('Upload error details:', error);
+    console.error('❌ Upload error:', error);
     throw error;
   }
 }
