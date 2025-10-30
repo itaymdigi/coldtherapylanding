@@ -23,9 +23,9 @@ const Header = () => {
             <Link to="/" className="flex-shrink-0 group">
               <div className="flex flex-col">
                 <div className="text-base sm:text-lg md:text-xl font-bold tracking-wider">
-                  <span className="text-white">{language === 'en' ? 'C' : 'ט'}</span>
+                  <span className="text-white">C</span>
                   <span className="text-cyan-400 mx-0.5">❄️</span>
-                  <span className="text-white">{language === 'en' ? 'LD THERAPY' : 'יפול בקור'}</span>
+                  <span className="text-white">LD THERAPY</span>
                 </div>
                 <div className="text-[10px] sm:text-xs tracking-widest text-white/70 group-hover:text-white/90 transition-colors">
                   {t?.logoSubtitle || 'BY DAN HAYAT'}
