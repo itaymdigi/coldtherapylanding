@@ -9,6 +9,8 @@ import {
   toggleVideoPremiumStatus,
   uploadVideoThumbnail,
   deleteVideoThumbnail,
+  uploadVideoFile,
+  deleteVideoFile,
   getAllCategories,
   createCategory
 } from '../../api/breathingVideos';
@@ -21,9 +23,11 @@ const AdminBreathingVideos = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [filter, setFilter] = useState('all'); // all, published, unpublished, free, premium
+  const [videoInputType, setVideoInputType] = useState('url'); // 'url' or 'file'
 
   const [formData, setFormData] = useState({
     title: '',
@@ -186,6 +190,11 @@ const AdminBreathingVideos = () => {
         await deleteVideoThumbnail(video.thumbnail_url);
       }
       
+      // Delete video file if it's a Supabase URL
+      if (video && video.video_url && video.video_url.includes('supabase.co')) {
+        await deleteVideoFile(video.video_url);
+      }
+      
       // Delete from database
       await deleteVideo(id);
       
@@ -231,6 +240,36 @@ const AdminBreathingVideos = () => {
       alert('❌ Failed to upload thumbnail: ' + error.message);
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleVideoFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // Upload to Supabase Storage with progress tracking
+      const publicUrl = await uploadVideoFile(file, (progress) => {
+        const percentage = (progress.loaded / progress.total) * 100;
+        setUploadProgress(Math.round(percentage));
+      });
+      
+      // Update form with uploaded URL
+      setFormData({
+        ...formData,
+        videoUrl: publicUrl
+      });
+      
+      alert('✅ Video uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      alert('❌ Failed to upload video: ' + error.message);
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -508,21 +547,86 @@ const AdminBreathingVideos = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label htmlFor={videoUrlInputId} className="block text-white text-sm font-semibold mb-2">
-                Video URL *
+              <label className="block text-white text-sm font-semibold mb-2">
+                Video Source *
               </label>
-              <input
-                id={videoUrlInputId}
-                type="url"
-                value={formData.videoUrl}
-                onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
-                placeholder="https://www.youtube.com/watch?v=..."
-                required
-              />
-              <p className="text-blue-300 text-xs mt-1">
-                💡 YouTube or Vimeo URL
-              </p>
+              
+              {/* Toggle between URL and File Upload */}
+              <div className="flex gap-4 mb-3">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="videoInputType"
+                    checked={videoInputType === 'url'}
+                    onChange={() => setVideoInputType('url')}
+                    className="w-4 h-4 text-cyan-500"
+                  />
+                  <span className="text-blue-300">🔗 URL (YouTube/Vimeo)</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="videoInputType"
+                    checked={videoInputType === 'file'}
+                    onChange={() => setVideoInputType('file')}
+                    className="w-4 h-4 text-cyan-500"
+                  />
+                  <span className="text-blue-300">📁 Upload File</span>
+                </label>
+              </div>
+
+              {videoInputType === 'url' ? (
+                <>
+                  <input
+                    id={videoUrlInputId}
+                    type="url"
+                    value={formData.videoUrl}
+                    onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-cyan-400"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                  />
+                  <p className="text-blue-300 text-xs mt-1">
+                    💡 YouTube or Vimeo URL
+                  </p>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo"
+                    onChange={handleVideoFileUpload}
+                    disabled={isUploading}
+                    className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600 disabled:opacity-50"
+                  />
+                  <p className="text-blue-300 text-xs mt-1">
+                    💡 Upload video file (MP4, WebM, OGG, MOV, AVI - max 500MB)
+                  </p>
+                  
+                  {/* Upload Progress Bar */}
+                  {isUploading && uploadProgress > 0 && (
+                    <div className="mt-3">
+                      <div className="flex justify-between text-sm text-blue-300 mb-1">
+                        <span>Uploading video...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-blue-900/50 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Show uploaded video URL */}
+                  {formData.videoUrl && !isUploading && (
+                    <p className="text-green-300 text-xs mt-2">
+                      ✅ Video uploaded successfully
+                    </p>
+                  )}
+                </>
+              )}
             </div>
 
             <div>

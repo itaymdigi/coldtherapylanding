@@ -188,6 +188,67 @@ export async function deleteVideoThumbnail(url) {
   }
 }
 
+// Upload video file to Supabase Storage
+export async function uploadVideoFile(file, onProgress) {
+  // Validate file type
+  const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo'];
+  if (!validVideoTypes.includes(file.type)) {
+    throw new Error('Invalid video format. Please upload MP4, WebM, OGG, MOV, or AVI files.');
+  }
+
+  // Validate file size (max 500MB)
+  const maxSize = 500 * 1024 * 1024; // 500MB
+  if (file.size > maxSize) {
+    throw new Error('Video file size must be less than 500MB');
+  }
+
+  const fileExt = file.name.split('.').pop();
+  const fileName = `video-${Date.now()}.${fileExt}`;
+  const filePath = `breathing-videos/videos/${fileName}`;
+  
+  // Upload with progress tracking
+  const { error, data } = await supabase.storage
+    .from('assets')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      onUploadProgress: onProgress
+    });
+    
+  if (error) throw error;
+  
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('assets')
+    .getPublicUrl(filePath);
+    
+  return publicUrl;
+}
+
+// Delete video file from Supabase Storage
+export async function deleteVideoFile(url) {
+  try {
+    // Only delete if it's a Supabase storage URL
+    if (!url.includes('supabase.co/storage')) return;
+    
+    // Extract file path from URL
+    const urlObj = new URL(url);
+    const pathMatch = urlObj.pathname.match(/\/assets\/breathing-videos\/videos\/(.+)/);
+    if (!pathMatch) return;
+    
+    const filePath = `breathing-videos/videos/${pathMatch[1]}`;
+    
+    const { error } = await supabase.storage
+      .from('assets')
+      .remove([filePath]);
+      
+    if (error) throw error;
+  } catch (error) {
+    console.warn('Failed to delete video file from storage:', error);
+    // Continue with database deletion even if file deletion fails
+  }
+}
+
 // Get video statistics
 export async function getVideoStats() {
   const { data, error } = await supabase
