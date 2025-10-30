@@ -8,12 +8,23 @@ A modern, bilingual (Hebrew/English) Progressive Web App for Dan's Cold Therapy 
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (runs on http://0.0.0.0:5000)
 npm run dev
 
-# Run Supabase migrations or scripts (optional)
-# npm run migrate
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
+
+## 🔐 Environment Variables
+
+Required environment variables (configured in Replit Secrets):
+
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Your Supabase anon/public key
+- `VITE_ADMIN_PASSWORD` - Admin dashboard password
 
 ## 📚 Documentation
 
@@ -43,9 +54,9 @@ npm run dev
 ## 🛠️ Tech Stack
 
 - **Frontend:** React + Vite + TailwindCSS
-- **Backend:** Convex (real-time database)
+- **Backend:** Supabase (PostgreSQL database)
 - **AI:** n8n + OpenAI GPT-4o-mini
-- **Deployment:** Vercel
+- **Deployment:** Replit
 - **PWA:** Service Workers + Web App Manifest
 
 ## 📦 Project Structure
@@ -55,15 +66,15 @@ npm run dev
   /components     - React components
   /contexts       - React contexts
   /data          - Static data & translations
-/convex          - Backend functions
+  /api           - Supabase API wrappers
+  /lib           - Supabase client configuration
 /public          - Static assets
 /docs            - 📚 All documentation
 ```
 
 ## 🔗 Links
 
-- **Production:** [Your Vercel URL]
-- **Convex Dashboard:** https://cheery-finch-992.convex.cloud
+- **Supabase Dashboard:** https://supabase.com/dashboard/project/hqumvakozmicqfrbjssr
 - **n8n Workflow:** https://n8n.digiautomation.cloud
 
 ---
