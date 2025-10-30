@@ -261,11 +261,11 @@ const OurInstructors = () => {
                 className="group w-full text-left"
                 aria-label={`View ${currentInstructor.name} details`}
               >
-                <div className="relative h-[420px] sm:h-[460px] md:h-[520px] flex items-center justify-center bg-black/30">
+                <div className="relative h-[420px] sm:h-[460px] md:h-[520px] flex items-center justify-center bg-black/30 overflow-hidden">
                   <StorageImage
                     storageId={currentInstructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
                     alt={currentInstructor.name}
-                    className="max-h-full max-w-full object-cover md:object-contain transition-transform duration-700 group-hover:scale-[1.01]"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
                   />
                   <div className="absolute inset-x-0 bottom-0 px-6 sm:px-8 md:px-12 pb-10 pt-24 bg-gradient-to-t from-black/85 via-black/50 to-transparent">
                     <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
@@ -428,13 +428,13 @@ const OurInstructors = () => {
               {/* Photo */}
               <div
                 key={`photo-${selectedInstructor.id}`}
-                className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full"
+                className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full overflow-hidden rounded-lg"
               >
                 <StorageImage
                   key={selectedInstructor.id}
                   storageId={selectedInstructor.photo_url || DEFAULT_INSTRUCTOR_PHOTO}
                   alt={selectedInstructor.name}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
               </div>
