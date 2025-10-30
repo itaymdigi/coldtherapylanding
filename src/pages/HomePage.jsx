@@ -157,19 +157,35 @@ const HomePage = () => {
         className="relative z-20 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent"
       >
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-start">
             {/* Image/Avatar Side */}
-            <div className="relative scroll-reveal group">
-              <div className="aspect-square rounded-3xl overflow-hidden border-4 border-cyan-400/30 group-hover:border-cyan-400 transition-all duration-500 shadow-2xl hover:shadow-cyan-500/30 bg-gradient-to-br from-slate-800 to-slate-900">
+            <div className="relative scroll-reveal group space-y-6">
+              {/* Dan's Photo - Moved up */}
+              <div className="aspect-square rounded-3xl overflow-hidden border-4 border-cyan-400/30 group-hover:border-cyan-400 transition-all duration-500 shadow-2xl hover:shadow-cyan-500/30 bg-gradient-to-br from-slate-800 to-slate-900 -mt-8 sm:-mt-12">
                 <img
                   src={danPhoto}
                   alt="Dan Hayat - Cold Therapy Expert"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
                 />
               </div>
+              
+              {/* Video Below Dan's Photo */}
+              <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/20 shadow-xl">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-auto object-cover"
+                >
+                  <source src="/dan_video.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              
               {/* Decorative Elements */}
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl animate-float"></div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl animate-float-delayed"></div>
+              <div className="absolute -top-12 -right-6 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl animate-float"></div>
+              <div className="absolute top-1/2 -left-6 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl animate-float-delayed"></div>
             </div>
 
             {/* Content Side */}
