@@ -99,9 +99,9 @@ export default function SessionHistory({ token, language = 'he' }) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     if (mins === 0) {
-      return `${secs}${t.seconds}`;
+      return `${secs} ${t.seconds}`;
     }
-    return secs > 0 ? `${mins}${t.minutes} ${secs}${t.seconds}` : `${mins}${t.minutes}`;
+    return secs > 0 ? `${mins} ${t.minutes} ${secs} ${t.seconds}` : `${mins} ${t.minutes}`;
   };
 
   const formatDate = (timestamp) => {
