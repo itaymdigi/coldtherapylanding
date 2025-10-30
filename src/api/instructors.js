@@ -7,10 +7,19 @@ import { mutation, query, storageClient } from '../lib/supabase';
 
 // Get all instructors
 export async function getAllInstructors() {
-  return await query.getAll('instructors', {
-    orderBy: 'order',
-    ascending: true,
-  });
+  console.log('👥 Fetching instructors from Supabase...');
+  try {
+    const data = await query.getAll('instructors', {
+      orderBy: 'order',
+      ascending: true,
+    });
+    console.log('✅ Instructors fetched successfully:', data.length, 'instructors');
+    console.log('📋 Instructors:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ Error fetching instructors:', error);
+    throw error;
+  }
 }
 
 // Add new instructor
