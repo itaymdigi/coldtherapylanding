@@ -147,7 +147,7 @@ const BreathingVideosPage = () => {
   }, [selectedCategory, allVideos]);
 
   const VideoCard = ({ video }) => {
-    const isLocked = video.isPremium && !hasActiveSubscription;
+    const isLocked = video.is_premium && !hasActiveSubscription;
 
     return (
       <div
@@ -160,9 +160,9 @@ const BreathingVideosPage = () => {
       >
         {/* Thumbnail */}
         <div className="relative aspect-video bg-gradient-to-br from-slate-800 to-slate-900">
-          {video.thumbnailUrl ? (
+          {video.thumbnail_url ? (
             <img
-              src={video.thumbnailUrl}
+              src={video.thumbnail_url}
               alt={video.title}
               className="w-full h-full object-cover"
             />
@@ -182,7 +182,7 @@ const BreathingVideosPage = () => {
           )}
 
           {/* Premium Badge */}
-          {video.isPremium && (
+          {video.is_premium && (
             <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1 rounded-full text-white text-xs font-bold flex items-center gap-1">
               <span>👑</span> PREMIUM
             </div>
@@ -369,7 +369,7 @@ const BreathingVideosPage = () => {
                 <div className="aspect-video bg-black">
                   <iframe
                     className="w-full h-full"
-                    src={ensureEmbedUrl(selectedVideo.videoUrl)}
+                    src={ensureEmbedUrl(selectedVideo.video_url)}
                     title={selectedVideo.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
