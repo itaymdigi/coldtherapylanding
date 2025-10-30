@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import OurInstructors from '../components/sections/OurInstructors';
 import Gallery from '../components/sections/Gallery';
 import StatsCounter from '../components/StatsCounter';
@@ -26,6 +27,22 @@ const HomePage = () => {
     setOpenFaq,
   } = useApp();
 
+  const videoRef = useRef(null);
+  const [shouldAutoplay, setShouldAutoplay] = useState(false);
+
+  useEffect(() => {
+    // Check if video has been played before
+    const hasPlayedBefore = localStorage.getItem('heroVideoPlayed');
+    if (!hasPlayedBefore) {
+      setShouldAutoplay(true);
+    }
+  }, []);
+
+  const handleVideoEnded = () => {
+    // Mark video as played
+    localStorage.setItem('heroVideoPlayed', 'true');
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -33,17 +50,18 @@ const HomePage = () => {
         id={homeId}
         className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-8 md:px-16 lg:px-24 pt-20"
       >
-        <div className="text-center space-y-4 sm:space-y-6 max-w-4xl mt-12 sm:mt-20">
-          {/* Hero Video */}
+        <div className="text-center space-y-4 sm:space-y-6 w-full mt-12 sm:mt-20">
+          {/* Hero Video - Full Width, Mobile Optimized */}
           {heroVideo && (
-            <div className="mb-6 sm:mb-8 animate-fadeInUp flex justify-center">
+            <div className="mb-6 sm:mb-8 animate-fadeInUp w-full px-0 sm:px-4 md:px-8 lg:px-12">
               <video
-                autoPlay
+                ref={videoRef}
+                autoPlay={shouldAutoplay}
                 muted
-                loop
                 playsInline
                 controls
-                className="w-64 h-auto sm:w-80 md:w-96 lg:w-[500px] xl:w-[600px] max-w-full object-contain rounded-2xl shadow-2xl shadow-cyan-500/30 hover:scale-105 transition-transform duration-500"
+                onEnded={handleVideoEnded}
+                className="w-full h-auto max-w-full object-cover rounded-lg sm:rounded-xl md:rounded-2xl shadow-2xl shadow-cyan-500/30 hover:scale-[1.02] transition-transform duration-500"
               >
                 <source src={heroVideo} type="video/mp4" />
                 Your browser does not support the video tag.
