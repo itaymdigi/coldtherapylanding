@@ -24,8 +24,13 @@ const AdminDashboard = () => {
     setIsLoading(true);
 
     try {
-      // Simple password authentication (in production, use proper auth)
-      const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'coldtherapy2024';
+      const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+      
+      if (!ADMIN_PASSWORD) {
+        alert('❌ Admin password not configured. Please set VITE_ADMIN_PASSWORD in environment variables.');
+        setIsLoading(false);
+        return;
+      }
       
       if (password === ADMIN_PASSWORD) {
         setIsAuthenticated(true);
