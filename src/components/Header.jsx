@@ -93,7 +93,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'he' : 'en')}
-                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-sm font-semibold text-white"
+                className="px-3 py-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 text-base font-semibold text-white"
               >
                 {language === 'en' ? '🇮🇱' : '🇺🇸'}
               </button>
@@ -102,7 +102,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={toggleMusic}
-                className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-lg"
+                className="px-3 py-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 hover:bg-white/20 hover:scale-105 hover:rotate-12 transition-all duration-300 text-base"
               >
                 {isPlaying ? '🔇' : '🎵'}
               </button>
@@ -111,7 +111,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={() => setShowAdmin(true)}
-                className="p-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-lg"
+                className="px-3 py-2 bg-cyan-500/20 backdrop-blur-md rounded-lg border border-cyan-400/30 hover:bg-cyan-500/30 hover:scale-105 transition-all duration-300 text-base"
                 title={t?.adminButton || 'Admin'}
               >
                 🔐
