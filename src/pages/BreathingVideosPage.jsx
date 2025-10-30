@@ -172,6 +172,15 @@ const BreathingVideosPage = () => {
             </div>
           )}
 
+          {/* Play Button Overlay */}
+          {!isLocked && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+              <div className="bg-cyan-500 rounded-full p-4 group-hover:scale-110 transition-transform">
+                <div className="w-0 h-0 border-l-[20px] border-l-white border-y-[12px] border-y-transparent ml-1" />
+              </div>
+            </div>
+          )}
+
           {/* Premium Badge */}
           {video.isPremium && (
             <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1 rounded-full text-white text-xs font-bold flex items-center gap-1">
@@ -358,25 +367,14 @@ const BreathingVideosPage = () => {
               <div className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-xl rounded-3xl border-2 border-cyan-400/50 overflow-hidden">
                 {/* Video Player */}
                 <div className="aspect-video bg-black">
-                  {(() => {
-                    const videoId = getYouTubeVideoId(selectedVideo.videoUrl);
-                    return videoId ? (
-                      <VideoPlayer
-                        videoId={videoId}
-                        title={selectedVideo.title}
-                        className="w-full h-full"
-                      />
-                    ) : (
-                      <iframe
-                        className="w-full h-full"
-                        src={ensureEmbedUrl(selectedVideo.videoUrl)}
-                        title={selectedVideo.title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      ></iframe>
-                    );
-                  })()}
+                  <iframe
+                    className="w-full h-full"
+                    src={ensureEmbedUrl(selectedVideo.videoUrl)}
+                    title={selectedVideo.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
                 </div>
 
                 {/* Video Info */}
