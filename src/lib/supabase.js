@@ -35,6 +35,8 @@ if (!effectiveSupabaseUrl || !effectiveSupabaseAnonKey) {
 
 if (!isTestEnv) {
   console.log('✅ Initializing Supabase client...');
+  console.log('📍 Supabase URL:', effectiveSupabaseUrl);
+  console.log('🔑 Anon Key (first 20 chars):', effectiveSupabaseAnonKey?.substring(0, 20) + '...');
 }
 
 export const supabase = createClient(effectiveSupabaseUrl, effectiveSupabaseAnonKey, {
